@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#d6e5ee">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1826">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Proofs">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon-64.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Proof Archipelago</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a sea chart. Map view = five chapter islands on one voyage route; island view = a trail of level nodes;
+   level view = a play board with hearts, an instruction card and live feedback. Island colours follow the chapter tabs. */
+:root{
+  --sea:#d6e5ee; --sea-line:#c1d5e1; --paper:#fbfcfc; --ink:#13213a; --pencil:#556378; --rule:#d0dae3;
+  --accent:#1e5bd0; --on-accent:#ffffff; --accent-soft:#e0e9fb;
+  --good:#13804a; --good-soft:#dcf1e4; --bad:#c2372c; --bad-soft:#f9e1de; --gold:#c98f0a; --heart:#d93a52;
+  --i-ind:#e9785f; --i-ind-s:#fbe3dc; --i-mac:#dda722; --i-mac-s:#f8edc9; --i-rit:#ec8636; --i-rit-s:#fbe4cf;
+  --i-str:#4b9fd4; --i-str-s:#dbeefa; --i-inf:#8a72d0; --i-inf-s:#e9e3f8; --i-skl:#2a9a8a; --i-skl-s:#d6f0eb;
+  --sq-a:#d9e3fa; --sq-b:#f6eac6; --water:#4f8fdc; --glass:#eef3f9;
+  --f-disp:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sea:#0d1826; --sea-line:#16263b; --paper:#16212f; --ink:#e7edf5; --pencil:#9cadc4; --rule:#27364c;
+    --accent:#7ea6ff; --on-accent:#0c1430; --accent-soft:#1f2b48;
+    --good:#58cf8c; --good-soft:#143224; --bad:#ff7d72; --bad-soft:#3b1d1c; --gold:#f3c34f; --heart:#ff6f86;
+    --i-ind:#f08f78; --i-ind-s:#3a2420; --i-mac:#eec04e; --i-mac-s:#352c14; --i-rit:#f6a15a; --i-rit-s:#3a2716;
+    --i-str:#6cb8ea; --i-str-s:#14303f; --i-inf:#a593ea; --i-inf-s:#272240; --i-skl:#4cc3b2; --i-skl-s:#12302c;
+    --sq-a:#25304d; --sq-b:#3a321e; --water:#3f80cc; --glass:#1f2633;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --sea:#0d1826; --sea-line:#16263b; --paper:#16212f; --ink:#e7edf5; --pencil:#9cadc4; --rule:#27364c;
+  --accent:#7ea6ff; --on-accent:#0c1430; --accent-soft:#1f2b48;
+  --good:#58cf8c; --good-soft:#143224; --bad:#ff7d72; --bad-soft:#3b1d1c; --gold:#f3c34f; --heart:#ff6f86;
+  --i-ind:#f08f78; --i-ind-s:#3a2420; --i-mac:#eec04e; --i-mac-s:#352c14; --i-rit:#f6a15a; --i-rit-s:#3a2716;
+  --i-str:#6cb8ea; --i-str-s:#14303f; --i-inf:#a593ea; --i-inf-s:#272240; --i-skl:#4cc3b2; --i-skl-s:#12302c;
+  --sq-a:#25304d; --sq-b:#3a321e; --water:#3f80cc; --glass:#1f2633;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--sea);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.5;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px 56px}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 20px;margin-bottom:14px}
+.brand h1{font-family:var(--f-disp);font-weight:800;font-size:clamp(28px,5vw,42px);line-height:1;margin:0;letter-spacing:-.02em}
+.brand p{margin:6px 0 0;color:var(--pencil);font-size:14px}
+.score{display:flex;gap:14px;font-family:var(--f-disp);font-weight:700;font-size:18px;align-items:center}
+.score .star{color:var(--gold)}
+.ru{color:var(--pencil);font-size:.88em}
+p.ru{margin:3px 0 0}
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:14px;padding:18px clamp(14px,2.6vw,26px)}
+.btn{font:inherit;font-size:14.5px;color:var(--ink);background:var(--paper);border:1.5px solid var(--rule);border-radius:10px;padding:8px 14px;cursor:pointer;line-height:1.25;text-align:left;touch-action:manipulation}
+.btn:hover:not(:disabled){border-color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.btn.ok{border-color:var(--good);background:var(--good-soft);color:var(--good);font-weight:700}
+.btn.no{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);text-decoration:line-through}
+.btn.sel{border-color:var(--accent);background:var(--accent-soft)}
+.btn:focus-visible,select:focus-visible,input:focus-visible,.isl:focus-visible,.node:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.col{display:grid;gap:8px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+input[type=number],input[type=text],select{font:inherit;font-family:var(--f-mono);padding:7px 10px;border:1.5px solid var(--rule);border-radius:9px;background:var(--paper);color:var(--ink)}
+input[type=number]{width:6em}
+
+/* map */
+.sea{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--sea-line);background:var(--sea)}
+.sea svg{display:block;width:100%;height:auto}
+.wave{fill:none;stroke:var(--sea-line);stroke-width:2}
+.route{fill:none;stroke:var(--pencil);stroke-width:2.5;stroke-dasharray:2 9;stroke-linecap:round;opacity:.7}
+.isl{cursor:pointer}
+.isl .land{stroke:var(--ink);stroke-width:2.2}
+.isl:hover .land{stroke-width:3.4}
+.isl .ring{fill:none;stroke:var(--ink);stroke-width:1;opacity:.25}
+.isl-name{font-family:var(--f-disp);font-weight:800;font-size:22px;fill:var(--ink)}
+.isl-sub{font-family:var(--f-mono);font-size:12px;fill:var(--pencil)}
+.isl-stars{font-family:var(--f-disp);font-weight:700;font-size:15px;fill:var(--ink)}
+.ship{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+.legend-list{display:grid;gap:8px;margin-top:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
+.legend-list button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;border-left:6px solid var(--ic)}
+.legend-list .t{font-family:var(--f-disp);font-weight:700;font-size:16px}
+.tip{margin-top:14px;font-size:14px}
+.reset{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--pencil)}
+
+/* island */
+.band{border-radius:16px;padding:18px clamp(14px,2.6vw,26px);background:var(--ics);border:1.5px solid var(--ic);margin-bottom:16px}
+.band h2{font-family:var(--f-disp);font-weight:800;font-size:clamp(26px,4.4vw,36px);margin:0;line-height:1.05;letter-spacing:-.01em}
+.band .ch{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--pencil);margin-bottom:4px}
+.trail{list-style:none;margin:0;padding:0;display:grid;gap:12px;position:relative}
+.trail::before{content:"";position:absolute;left:35px;top:20px;bottom:20px;border-left:3px dotted var(--pencil);opacity:.5}
+.node{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;background:var(--paper);border:1.5px solid var(--rule);border-radius:14px;padding:10px 14px 10px 10px;font:inherit;color:var(--ink);text-align:left;cursor:pointer;position:relative}
+.node:hover:not(:disabled){border-color:var(--ic)}
+.node:disabled{cursor:not-allowed;opacity:.55}
+.node .num{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-disp);font-weight:800;font-size:19px;background:var(--ics);border:2px solid var(--ic);margin-left:4px}
+.node.boss .num{border-radius:12px;background:var(--ic);color:var(--paper)}
+.node .tt{font-family:var(--f-disp);font-weight:700;font-size:18px;line-height:1.15}
+.node .meta{font-size:13px;color:var(--pencil)}
+.stars{font-size:18px;letter-spacing:2px;color:var(--rule);white-space:nowrap}
+.stars b{color:var(--gold);font-weight:400}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:11px;padding:1px 7px;border-radius:99px;background:var(--bad-soft);color:var(--bad);margin-left:6px;vertical-align:middle}
+
+/* level */
+.lvbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.lvbar h2{font-family:var(--f-disp);font-weight:800;font-size:clamp(22px,3.6vw,30px);margin:0;line-height:1.1}
+.hearts{font-size:24px;letter-spacing:3px;color:var(--heart)}
+.hearts .lost{color:var(--rule)}
+.brief{background:var(--ics);border:1.5px solid var(--ic);border-radius:14px;padding:12px 16px;margin-bottom:14px}
+.brief p{margin:0}
+.stage-tag{font-family:var(--f-mono);font-size:12px;color:var(--pencil);margin-bottom:8px}
+.feedback{min-height:1.6em;margin-top:12px;padding:10px 14px;border-radius:10px;font-size:14.5px}
+.feedback:empty{display:none}
+.feedback.bad{background:var(--bad-soft);color:var(--ink);border-left:5px solid var(--bad)}
+.feedback.good{background:var(--good-soft);color:var(--ink);border-left:5px solid var(--good)}
+.feedback.info{background:var(--accent-soft);color:var(--ink);border-left:5px solid var(--accent)}
+.q{font-size:17px;font-weight:700;margin:0 0 4px}
+.opts{display:grid;gap:8px;margin-top:12px}
+.why{margin-top:12px;padding:10px 14px;border-radius:10px;background:var(--good-soft);font-size:14.5px}
+.fig{margin:8px 0}
+.fig svg{display:block;max-width:100%;height:auto}
+.proof{counter-reset:ln;display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.proof li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start;padding:8px 10px;border-radius:9px;background:var(--good-soft);font-size:14.5px}
+.proof li::before{counter-increment:ln;content:counter(ln);font-family:var(--f-mono);color:var(--good);font-weight:600}
+.proof li.empty{background:transparent;border:1.5px dashed var(--rule);color:var(--pencil)}
+.proof .rsn{display:block;font-family:var(--f-mono);font-size:12.5px;color:var(--good);margin-top:2px}
+.pool{display:grid;gap:8px}
+.reasons{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.reasons .btn{font-family:var(--f-mono);font-size:13px;padding:6px 10px}
+.two{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:860px){.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.h3{font-family:var(--f-mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--pencil);margin:0 0 8px}
+.result{text-align:left}
+.result .big{font-family:var(--f-disp);font-weight:800;font-size:clamp(28px,5vw,40px);margin:0;line-height:1.05}
+.result .stars{font-size:38px}
+.lesson{margin-top:12px;padding:12px 16px;border-radius:12px;background:var(--accent-soft)}
+.lesson b{color:var(--accent)}
+
+/* custom boards */
+.board svg{display:block;width:100%;max-width:420px;height:auto}
+.sq{stroke:var(--rule);stroke-width:1}
+.sq.plain{fill:var(--paper)} .sq.even{fill:var(--sq-a)} .sq.odd{fill:var(--sq-b)}
+.robot-body{fill:var(--accent);stroke:var(--ink);stroke-width:1.5}
+.robot-eye{fill:var(--on-accent)}
+.tgt{fill:none;stroke-width:2.5}
+.tgt.open{stroke:var(--bad)} .tgt.done{stroke:var(--good)}
+.tgt-t{font-family:var(--f-disp);font-weight:800;font-size:15px}
+.tgt-t.open{fill:var(--bad)} .tgt-t.done{fill:var(--good)}
+.svg-m{fill:var(--pencil);font-family:var(--f-mono);font-size:11px}
+.svg-b{fill:var(--ink);font-family:var(--f-mono);font-size:14px;font-weight:600}
+.svg-t{fill:var(--ink);font-family:var(--f-body);font-size:13px}
+.jug-glass{fill:var(--glass);stroke:var(--ink);stroke-width:2}
+.jug-water{fill:var(--water)}
+.amounts{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.amt{border:1.5px solid var(--rule);border-radius:12px;padding:10px;background:var(--paper);display:grid;gap:6px;align-content:start;min-height:96px}
+.amt .n{font-family:var(--f-disp);font-weight:800;font-size:24px;line-height:1}
+.amt.done{border-color:var(--good);background:var(--good-soft)}
+.amt.off{opacity:.55}
+.amt.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.amt .btn{font-size:13px;padding:6px 9px}
+.wcards{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.wcard{border:1.5px solid var(--rule);border-radius:12px;padding:10px 12px;background:var(--paper);display:grid;gap:6px}
+.wcard.need{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.wcard .nm{font-family:var(--f-disp);font-weight:800;font-size:18px}
+.chip{display:inline-block;font-family:var(--f-mono);font-size:12.5px;padding:2px 8px;border-radius:7px;background:var(--sea);border:1px solid var(--rule);margin:0 3px 3px 0}
+.chip.x{text-decoration:line-through;opacity:.5}
+.chip.keep{background:var(--good-soft);border-color:var(--good)}
+table.t{border-collapse:collapse;width:100%;font-size:13.5px}
+table.t th,table.t td{border-bottom:1px solid var(--rule);padding:5px 8px;text-align:left;vertical-align:top}
+table.t th{font-size:12px;color:var(--pencil);font-weight:600}
+.scroll{overflow-x:auto}
+.mline{stroke:var(--accent);stroke-width:4;stroke-linecap:round}
+.pname{cursor:pointer}
+.pname rect{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+.pname.sel rect{fill:var(--accent-soft);stroke:var(--accent);stroke-width:3}
+.stone{fill:var(--pencil);stroke:var(--ink);stroke-width:1;cursor:pointer}
+.stone:hover{fill:var(--bad)}
+.stone.hint{fill:var(--bad-soft);stroke:var(--bad);stroke-width:2}
+.bitc{fill:var(--paper);stroke:var(--rule);cursor:default}
+.bitc.dg{stroke:var(--accent);stroke-width:2.5}
+.bitc.d{fill:var(--good-soft);stroke:var(--good);cursor:pointer}
+.bitc.dbad{fill:var(--bad-soft);stroke:var(--bad);cursor:pointer}
+.arr{stroke:var(--ink);stroke-width:1.8;fill:none}
+.mk{fill:var(--ink)}
+.dot{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+/* write mode */
+.keys{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;gap:5px;padding:8px 0 10px;background:var(--paper);border-bottom:1px solid var(--rule);margin-bottom:12px}
+.btn.key{font-family:var(--f-mono);font-size:16px;min-width:38px;padding:6px 8px;text-align:center}
+.cloze{display:grid;gap:10px}
+.cl{margin:0;font-family:var(--f-mono);font-size:14px;line-height:2.1}
+.gapw{display:inline;white-space:normal}
+.gap{font-family:var(--f-mono);font-size:14px;padding:3px 7px;border:1.5px dashed var(--accent);border-radius:7px;background:var(--accent-soft);color:var(--ink);max-width:100%}
+select.gap{font-family:var(--f-body)}
+.gapw.ok .gap{border:1.5px solid var(--good);background:var(--good-soft)}
+.gapw.self .gap{border:1.5px solid var(--good);background:var(--good-soft);border-style:dashed}
+.gapw.miss .gap{border:1.5px solid var(--bad);background:var(--bad-soft)}
+.gapw.ask .gap{border:1.5px solid var(--gold)}
+.model{display:inline;font-family:var(--f-mono);font-size:13px;color:var(--good);margin-left:6px}
+.gapw.miss .model{color:var(--bad)}
+.btn.mini{font-size:12px;padding:3px 8px;margin-left:4px}
+.modelproof{margin-top:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--good);background:var(--paper)}
+.modelproof p{margin:0 0 4px;font-family:var(--f-mono);font-size:13.5px}
+.tag.write{background:var(--i-skl-s);color:var(--i-skl)}
+@keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+.pop{animation:pop .28s ease-out}
+@media (prefers-reduced-motion: reduce){.pop{animation:none}}
+</style>
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{min-height:100%}
+body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Proof Archipelago</h1>
+      <p>Midterm 2 quest · chapters 5–8 · six islands, 34 levels · <span class="ru">квест по главам 5–8 + режим письма</span></p>
+    </div>
+    <div class="score" id="score" aria-live="polite"></div>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ================= helpers ================= */
+const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
+function h(tag,attrs,...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs||{})){if(v==null||v===false)continue;if(k==='class')e.className=v;else if(k==='html')e.innerHTML=v;else if(k.startsWith('on')&&typeof v==='function')e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?'':v);}for(const c of kids.flat(9)){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
+const SVGNS='http://www.w3.org/2000/svg';
+function sv(tag,attrs,...kids){const e=document.createElementNS(SVGNS,tag);for(const[k,v]of Object.entries(attrs||{})){if(v==null||v===false)continue;if(k.startsWith('on')&&typeof v==='function')e.addEventListener(k.slice(2),v);else e.setAttribute(k,v);}for(const c of kids.flat(9)){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const gcd=(a,b)=>{while(b)[a,b]=[b,a%b];return Math.abs(a);};
+const ru=t=>t?h('span',{class:'ru',style:'display:block'},t):null;
+
+/* ================= ritual engine ================= */
+function ritualRun(pm,pw){const cr=pm.map(()=>new Set()),days=[];for(let g=0;g<200;g++){const target=pm.map((L,i)=>L.find(j=>!cr[i].has(j)));const by={};target.forEach((j,i)=>(by[j]=by[j]||[]).push(i));const keep={},rej=[];for(const j in by){const L=pw[j];const best=by[j].reduce((a,b)=>L.indexOf(a)<=L.indexOf(b)?a:b);keep[j]=best;by[j].forEach(i=>{if(i!==best)rej.push(i);});}days.push({target,by,keep,rej});if(!rej.length)return{days,wife:target};rej.forEach(i=>cr[i].add(target[i]));}return null;}
+function rogues(pm,pw,wife){const hus=[];wife.forEach((w,m)=>hus[w]=m);const out=[];pm.forEach((L,m)=>{for(const w of L){if(w===wife[m])break;if(pw[w].indexOf(m)<pw[w].indexOf(hus[w]))out.push([m,w]);}});return out;}
+const EX3={men:['Adam','Ben','Carl'],wom:['Xena','Yara','Zoe'],pm:[[2,1,0],[2,0,1],[1,2,0]],pw:[[0,2,1],[1,2,0],[2,1,0]]};
+const EX4={men:['Adam','Ben','Carl','Dan'],wom:['Xena','Yara','Zoe','Wren'],pm:[[1,0,3,2],[1,3,0,2],[0,1,2,3],[0,1,3,2]],pw:[[1,0,3,2],[2,3,1,0],[0,1,2,3],[3,2,1,0]]};
+const BOSS3={men:['Adam','Ben','Carl'],wom:['Xena','Yara','Zoe'],pm:[[0,2,1],[0,1,2],[1,0,2]],pw:[[2,0,1],[0,1,2],[1,2,0]]};
+const listOf=(D,isMan,i)=>(isMan?D.pm[i].map(j=>D.wom[j]):D.pw[i].map(j=>D.men[j])).join(', ');
+
+/* ================= progress ================= */
+const KEY='proof-archipelago-v1';
+let prog={};
+try{prog=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){prog={};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(prog));}catch(e){}}
+</script>
+
+<script>
+/* ================= content ================= */
+const WORLDS=[
+/* ---------- Ch. 5 ---------- */
+{id:'ind',name:'Domino Coast',ru:'Берег домино',ch:'Ch. 5 · Induction',c:'ind',x:170,y:140,levels:[
+  {id:'ind1',title:'Stamp shop',ru:'Марки по 4 и 5',type:'stamps',
+   brief:'Every amount n ≥ 12 can be paid with 4-cent and 5-cent stamps. Prove it amount by amount, the way strong induction does: either it is a base case (write it out), or you get it from n − 4 by adding one 4-cent stamp.',
+   briefRu:'Каждую сумму от 12: либо база (расписать), либо «n − 4 плюс марка 4». Шаг тянется назад на 4.',
+   lesson:'The step reaches back 4 places, so you need 4 base cases (12, 13, 14, 15). 11 cannot be paid at all, so the claim starts at 12. This is strong induction: P(n+1) uses P(n−3), not P(n).'},
+  {id:'ind2',title:'Find the bug',ru:'Найди ошибку',type:'mc',
+   brief:'Each “proof” below is broken. Pick the real problem.',briefRu:'Каждое «доказательство» сломано. Найди настоящую ошибку.',
+   lesson:'An induction proof needs a true base case that matches the claim, and a step that works for every n from the base on, including the smallest one.',
+   qs:[
+    {q:'“All horses have the same colour.” Step: from n + 1 horses remove the first → n horses, same colour (IH); remove the last → same colour (IH); the groups overlap, so all n + 1 have one colour. Where is the bug?',
+     opts:['The base case n = 1 is false','The step fails for n = 1: the groups {h₁} and {h₂} do not overlap','You may not use the IH twice','Horses cannot be counted'],a:1,
+     why:'For n + 1 = 2 each group has one horse and they share nobody, so nothing links the two colours. The step has to work for every n ≥ base.'},
+    {q:'Claim: n² + n + 1 is even for every n ∈ ℕ. Step: if n² + n + 1 is even, then (n+1)² + (n+1) + 1 = (n² + n + 1) + 2(n + 1) is even. What is wrong?',
+     opts:['Nothing, it is a valid proof','The algebra in the step is wrong','There is no base case, and P(0) is false: 1 is odd','It needs strong induction'],a:2,
+     why:'The step is correct, but a step without a true base proves nothing. In fact n² + n + 1 = n(n + 1) + 1 is always odd.'},
+    {q:'Strong induction: base P(0); step: P(n + 1) is proved from P(n − 1) for every n ≥ 1. What is missing?',
+     opts:['Nothing','A base case P(1): from P(0) the step only reaches 2, 4, 6, …','The IH must be P(n) only','The claim must start at 1'],a:1,
+     why:'Every step jumps by 2. From P(0) you reach only even numbers, so P(1) needs its own base case.'},
+    {q:'“Assume P(n) holds for all n ∈ ℕ. Then P(n + 1) holds, so the claim is proved.” What is wrong?',
+     opts:['The IH is the claim itself — circular','Nothing','It should say n ≥ 1','It should use WOP'],a:0,
+     why:'The IH is P(n) for one fixed n. Assuming it for all n assumes what you want to prove.'},
+   ]},
+  {id:'ind3',title:'Ordinary or strong?',ru:'Обычная или сильная?',type:'mc',
+   brief:'For each claim: is the previous case P(n) enough, or does P(n + 1) need cases further back?',briefRu:'Хватает ли P(n), или шагу нужны случаи раньше?',
+   lesson:'Strong induction is the same proof with a bigger IH: P(0), …, P(n). Use it when n + 1 depends on n − 3, on two previous values, or on factors of n + 1.',
+   opts:['ordinary is enough','needs strong'],
+   qs:[
+    {q:'Σᵢ₌₁ⁿ i = n(n + 1)/2',a:0,why:'Σ up to n + 1 = Σ up to n + (n + 1): only P(n) is used.'},
+    {q:'Every n ≥ 12 is 4a + 5b with a, b ∈ ℕ',a:1,why:'n + 1 comes from n − 3 (add a 4): you need P(n − 3), not P(n).'},
+    {q:'Every n ≥ 2 is a product of primes',a:1,why:'If n + 1 = a·b, you need P(a) and P(b) for smaller a, b — any of them.'},
+    {q:'2ⁿ ≥ n + 1',a:0,why:'2ⁿ⁺¹ = 2·2ⁿ ≥ 2(n + 1) ≥ n + 2 uses only P(n).'},
+    {q:'Fibonacci: F(n) < 2ⁿ',a:1,why:'F(n + 1) = F(n) + F(n − 1) needs the two previous cases.'},
+    {q:'3 divides n³ + 2n',a:0,why:'(n+1)³ + 2(n+1) = (n³ + 2n) + 3(n² + n + 1): only P(n).'},
+   ]},
+  {id:'ind4',title:'Boss: the doubling sum',ru:'Босс: сумма степеней двойки',type:'order',boss:true,
+   brief:'Build the proof of Σₖ₌₀ⁿ 2ᵏ = 2ⁿ⁺¹ − 1 for all n ∈ ℕ. Click the lines in the right order; after a line with an equality, pick its reason. Some lines are traps.',
+   briefRu:'Собери доказательство: строки по порядку, у равенств — причина. Есть ловушки.',
+   lesson:'Method · predicate · base for the first n · IH marked · the step splits off the last term and uses the IH · conclusion with ∎.',
+   lines:[
+    {t:'Proof. By induction on n, with P(n) ::= Σₖ₌₀ⁿ 2ᵏ = 2ⁿ⁺¹ − 1.'},
+    {t:'Base case n = 0: Σₖ₌₀⁰ 2ᵏ = 2⁰ = 1 and 2¹ − 1 = 1, so P(0) holds.'},
+    {t:'Inductive step: let n ≥ 0 and assume P(n) (IH).'},
+    {t:'Σₖ₌₀ⁿ⁺¹ 2ᵏ = Σₖ₌₀ⁿ 2ᵏ + 2ⁿ⁺¹',r:'split off the last term'},
+    {t:'= (2ⁿ⁺¹ − 1) + 2ⁿ⁺¹',r:'by the IH'},
+    {t:'= 2·2ⁿ⁺¹ − 1 = 2ⁿ⁺² − 1, so P(n + 1) holds.',r:'algebra'},
+    {t:'By induction, P(n) holds for all n ∈ ℕ. ∎'},
+   ],
+   distractors:[
+    {t:'Assume P(n) holds for all n ∈ ℕ.',why:'That is the claim itself (circular). The IH is P(n) for one fixed n.'},
+    {t:'Base case n = 1: 1 + 2 = 3 = 2² − 1.',why:'The claim starts at n = 0, so the base case is n = 0.'},
+    {t:'Check n = 0, 1, 2, 3: it works, so it always works.',why:'Examples are not a proof.'},
+   ],
+   reasons:['split off the last term','by the IH','algebra','by WOP','by definition of P']},
+]},
+/* ---------- Ch. 6.1–6.3 ---------- */
+{id:'mac',name:'Invariant Harbor',ru:'Гавань инвариантов',ch:'Ch. 6.1–6.3 · State machines',c:'mac',x:470,y:210,levels:[
+  {id:'mac1',title:'The bishop robot',ru:'Робот-слон',type:'robot',
+   brief:'The robot moves only diagonally: (±1, ±1). Visit the targets A and B. One target can never be reached: declare it and choose the invariant that proves it.',
+   briefRu:'Дойди до A и B. Одну цель не достать — объяви её и выбери инвариант.',
+   lesson:'P ::= “m + n is even”. Every move changes m + n by +2, 0 or −2, P(0, 0) is true, so P holds in every reachable state. (1, 0) has m + n = 1, so it is unreachable.'},
+  {id:'mac2',title:'Die Hard jugs',ru:'Кувшины',type:'jugs',
+   brief:'Part 1: jugs of 5 l and 3 l. Get exactly 4 l in the big jug. Part 2: jugs of 18 l and 12 l. Can you get 4 l? If not, say why.',
+   briefRu:'Часть 1: 5 и 3 литра → 4 литра. Часть 2: 18 и 12 → 4 литра? Если нельзя — почему.',
+   lesson:'New amounts are always sums and differences of old amounts and the jug sizes, so “gcd(a, b) divides both amounts” is preserved. gcd(5, 3) = 1 lets you reach 4; gcd(18, 12) = 6 never does.'},
+  {id:'mac3',title:'Read the gauges',ru:'Производные величины',type:'mc',
+   brief:'A derived variable is a number computed from the state. Classify each one: what does every possible move do to it?',
+   briefRu:'Производная величина — число от состояния. Что с ней делает каждый ход?',
+   lesson:'“none” needs one move up and one move down. ↑s, ↑w and const need algebra for every type of move. Termination needs an ℕ-valued strictly decreasing variable.',
+   opts:['↑s strictly increasing','↑w weakly increasing','↓s strictly decreasing','↓w weakly decreasing','const','none'],
+   qs:[
+    {q:'Coins (h heads, t tails). Moves: flip x heads and y tails with x + y = 10; or, if h ≥ 1, add h + 1 tails. Variable C = h + t.',a:1,why:'Flip: (h − x + y) + (t + x − y) = h + t, no change. Add: up by h + 1. Never down, and not ↑s because flipping keeps it equal.'},
+    {q:'Coins. Variable H = h.',a:5,why:'Flip 10 heads: h goes down by 10. Flip 10 tails: h goes up by 10.'},
+    {q:'Coins. Variable H mod 2.',a:4,why:'Flip: new h = h + 2y − 10, the difference is even. Add: h unchanged. So the parity of h never changes.'},
+    {q:'Coins. Variable C mod 2.',a:5,why:'Flip keeps C. Add changes C by h + 1: when h is even, the parity of C flips both ways (0 → 1 → 0).'},
+    {q:'Euclid: (x, y) → (y, x mod y) while y > 0. Variable y.',a:2,why:'x mod y < y. This is the countdown that proves termination.'},
+    {q:'Euclid. Variable x + y.',a:3,why:'y + (x mod y) ≤ y + x, but (12, 18) → (18, 12) keeps 30.'},
+    {q:'Euclid. Variable x.',a:5,why:'(12, 18) → (18, 12) raises x; (48, 18) → (18, 12) lowers it.'},
+    {q:'Piggy bank: start 0, moves +2 and +3. Variable n.',a:0,why:'Every move adds 2 or 3, both > 0.'},
+   ]},
+  {id:'mac4',title:'Boss: one lonely head',ru:'Босс: ровно один орёл',type:'order',boss:true,
+   brief:'From (98 heads, 4 tails), with the moves “flip 10” and “add h + 1 tails”, prove that a state with exactly one head is not reachable.',
+   briefRu:'Докажи, что ровно один орёл недостижим. Строки по порядку, у шагов — причина.',
+   lesson:'Invariant proof: name P · show every move type keeps P · P(start) · Invariant Principle · the target breaks P.',
+   lines:[
+    {t:'Let P((h, t)) ::= “h is even”.'},
+    {t:'Flip x heads and y tails (x + y = 10): the new h is h − x + y = h + 2y − 10.',r:'def. of the move'},
+    {t:'The difference 2y − 10 is even, so h keeps its parity.',r:'algebra'},
+    {t:'Add h + 1 tails: h does not change.',r:'def. of the move'},
+    {t:'So P is preserved, and P((98, 4)) is true because 98 is even.'},
+    {t:'So P holds in every reachable state.',r:'Invariant Principle'},
+    {t:'Exactly one head means h = 1, which is odd, so that state is not reachable. ∎'},
+   ],
+   distractors:[
+    {t:'We tried 50 random moves and never got one head.',why:'Experiments are not a proof.'},
+    {t:'H = h is strictly decreasing, so it can never reach 1.',why:'False: flipping 10 tails raises h. And decreasing would make 1 easier to reach.'},
+    {t:'P is preserved because it holds in every reachable state.',why:'Circular: reachable states are what the Invariant Principle gives you at the end.'},
+   ],
+   reasons:['def. of the move','algebra','Invariant Principle','by the IH','by WOP']},
+]},
+/* ---------- Ch. 6.4 ---------- */
+{id:'rit',name:'Balcony Bay',ru:'Бухта балконов',ch:'Ch. 6.4 · Stable matching',c:'rit',x:810,y:140,levels:[
+  {id:'rit1',title:'Afternoon judge',ru:'Судья дня',type:'stages',
+   brief:'You are every woman in the afternoon. The men have serenaded; whoever has several suitors keeps the one highest on HER list. Pick him. Two rounds: 3 couples, then 4.',
+   briefRu:'Ты — каждая женщина днём: оставь лучшего по ЕЁ списку.',
+   lesson:'The men serenade, so every man ends with his optimal wife and every woman with her pessimal husband (Th 6.4.9), even when a man ends with his last choice.',
+   stages:[{type:'judge',data:'EX3',tag:'Round 1 · 3 couples'},{type:'judge',data:'EX4',tag:'Round 2 · 4 couples'},
+    {type:'mc',tag:'Debrief',qs:[{q:'In round 2 Adam married Zoe, the LAST name on his list. Is Zoe his optimal wife?',opts:['Yes: the men serenaded, so every man gets his optimal wife — no stable matching gives Adam anyone better','No: optimal means first choice','Only if Zoe likes him most'],a:0,why:'Optimal = best among FEASIBLE wives (wives in some stable matching), not his first choice.'}]}]},
+  {id:'rit2',title:'Rogue hunter',ru:'Охота на бунтарей',type:'rogue',
+   brief:'Four matchings, same people. For each: find a rogue couple (click a man, then a woman) or declare the matching stable.',
+   briefRu:'Найди бунтующую пару (мужчина, потом женщина) или скажи «стабильно».',
+   lesson:'Check row by row: for each man, every woman he prefers to his wife — does she prefer him to her husband? One “yes” is a rogue couple.'},
+  {id:'rit3',title:'True or false',ru:'Правда или нет',type:'mc',
+   brief:'Facts about the Mating Ritual. These are Ex4 points.',briefRu:'Факты о ритуале — это баллы Ex4.',
+   lesson:'Her suitor only gets better · once she has one she always has one · crossed-off names never return · suitors optimal, receivers pessimal.',
+   opts:['true','false'],
+   qs:[
+    {q:'Once a woman has a suitor, she has a suitor on every later day.',a:0,why:'She only rejects a man when a better one is there.'},
+    {q:'A woman’s suitor can get worse from one day to the next.',a:1,why:'She keeps the best one; a new one replaces him only if he is better for her.'},
+    {q:'A man can serenade a woman he crossed off earlier.',a:1,why:'Crossed-off names never return.'},
+    {q:'If the men serenade, every woman ends up with her optimal husband.',a:1,why:'She gets her PESSIMAL husband. Women serenade ⇒ women optimal.'},
+    {q:'A man and a woman who are each other’s first choice are married in every stable matching.',a:0,why:'Otherwise they would be a rogue couple.'},
+    {q:'With n men and n women the ritual can end with someone unmarried.',a:1,why:'Invariant: if w rejected m, she has a suitor. So every woman ends with a suitor and everyone is married.'},
+   ]},
+  {id:'rit4',title:'Boss: Ex2',ru:'Босс: Ex2',type:'stages',boss:true,
+   brief:'New lists. Run the ritual with the men as suitors (on paper is fine), enter the weddings, then write the sentence that earns the points.',
+   briefRu:'Новые списки. Прогони ритуал, впиши свадьбы, выбери предложение под баллы.',
+   lesson:'Ex2 = day table + “By Th 6.4.9 every man is married to his optimal wife.” Stable alone does not mean optimal.',
+   stages:[{type:'matchpick',data:'BOSS3',tag:'Step 1 · weddings'},
+    {type:'mc',tag:'Step 2 · the sentence',qs:[
+     {q:'Which sentence proves “every man gets his optimal wife”?',opts:['The Mating Ritual with the men as suitors ends with this matching; by Th 6.4.9 every man is married to his optimal wife.','This matching is stable, so every man has his optimal wife.','Every man got his first choice, so it is optimal.'],a:0,why:'Stable alone is not enough: there can be several stable matchings. The theorem about the men-serenade ritual gives optimality.'},
+     {q:'Which ritual gives every WOMAN her optimal husband?',opts:['the women serenade','the men serenade','either one'],a:0,why:'Suitors get their optimal partner.'}]}]},
+]},
+/* ---------- Ch. 7 ---------- */
+{id:'str',name:'Recursion Reef',ru:'Риф рекурсии',ch:'Ch. 7 · Recursive data',c:'str',x:680,y:420,levels:[
+  {id:'str1',title:'Unboxing',ru:'Распаковка строк',type:'mc',
+   brief:'A string is ⟨a, s⟩ (a letter on the left of a smaller string) or λ. Pick the next rewriting step.',briefRu:'Выбери следующий шаг переписывания.',
+   lesson:'Every rule eats the leftmost letter: ⟨a, s⟩ · t = ⟨a, s · t⟩ · |⟨a, s⟩| = 1 + |s| · f*(⟨a, s⟩) = ⟨f(a), f*(s)⟩.',
+   qs:[
+    {q:'⟨a, ⟨b, λ⟩⟩ · “c”: first step?',opts:['⟨a, ⟨b, λ⟩ · “c”⟩ — def. of ·','⟨b, ⟨a, λ⟩⟩ · “c”','“c” · ⟨a, ⟨b, λ⟩⟩','⟨a, ⟨b, “c”⟩⟩ in one jump'],a:0,why:'⟨a, s⟩ · t = ⟨a, s · t⟩: the left letter stays outside, · moves inside.'},
+    {q:'⟨a, ⟨b, λ⟩ · “c”⟩: next?',opts:['⟨a, ⟨b, λ · “c”⟩⟩ — def. of ·','⟨a, ⟨b, λ⟩⟩ · “c”','⟨a, “c” · ⟨b, λ⟩⟩'],a:0,why:'Same rule on the inner ⟨b, λ⟩ · “c”.'},
+    {q:'⟨a, ⟨b, λ · “c”⟩⟩: last step?',opts:['⟨a, ⟨b, “c”⟩⟩ = “abc” — λ · t = t','⟨a, ⟨b, λ⟩⟩ — t disappears','⟨a, ⟨b, ⟨c, λ⟩⟩⟩ · λ'],a:0,why:'Base rule of ·.'},
+    {q:'|⟨a, ⟨b, λ⟩⟩|: first step?',opts:['1 + |⟨b, λ⟩|','|a| + |⟨b, λ⟩|','2','1 + 1'],a:0,why:'|⟨a, s⟩| = 1 + |s|. |a| is not defined: a is a letter, not a string.'},
+    {q:'f(a) = 0, f(b) = 1. f*(⟨a, ⟨b, λ⟩⟩) = ?',opts:['⟨0, f*(⟨b, λ⟩)⟩','⟨f*(a), ⟨b, λ⟩⟩','f(⟨a, ⟨b, λ⟩⟩)','⟨0, ⟨b, λ⟩⟩'],a:0,why:'f* applies f to the first letter and recurses on the rest.'},
+   ]},
+  {id:'str2',title:'Which variable?',ru:'По какой переменной?',type:'mc',
+   brief:'Before you write a structural induction, decide what to induct on and what you need. Includes the midterm trap with “if … then”.',
+   briefRu:'По чему индукция и что нужно заранее. Есть ловушка с импликацией.',
+   lesson:'Induct on the variable the definitions recurse on. If the claim starts with “if s is in a recursively defined set”, induct on that set’s own constructors, and the “if” disappears.',
+   qs:[
+    {q:'(r · s) · t = r · (s · t). Induct on …',opts:['r','s','t','|t|'],a:0,why:'· recurses on its left argument; r is the leftmost string on both sides.'},
+    {q:'Constructor case of |s · t| = |s| + |t|. Which line uses the IH?',opts:['1 + |s′ · t| = 1 + |s′| + |t|','|⟨a, s′⟩ · t| = |⟨a, s′ · t⟩|','|⟨a, s′ · t⟩| = 1 + |s′ · t|','1 + |s′| + |t| = |⟨a, s′⟩| + |t|'],a:0,why:'Every other line is a definition. Mark the IH line in the exam.'},
+    {q:'rev(s · t) = rev(t) · rev(s). Which lemmas do you need first?',opts:['associativity of · and t · λ = t','rev(rev(s)) = s','|rev(s)| = |s|','none'],a:0,why:'Base: rev(t) = rev(t) · λ. Step: (rev(t) · rev(s′)) · ⟨a, λ⟩ must be regrouped.'},
+    {q:'“If s ∈ RecMatch, then s has as many [ as ].” What do you induct on?',opts:['Structural induction on the definition of RecMatch: cases λ and [u]v','Structural induction on s ∈ A* with cases λ and ⟨a, s′⟩','Ordinary induction on the number of [','Nothing — it is obvious'],a:0,why:'The premise is itself recursively defined. Inducting on its constructors removes the “if”: in the case [u]v you get P(u) and P(v) as two IHs.'},
+    {q:'Claim Q(s) ⇒ R(s), by induction on s ∈ A*. In the constructor case you assume Q(⟨a, s′⟩). What must you get before you can use the IH?',opts:['Q(s′) — the IH only says Q(s′) ⇒ R(s′)','R(s′)','Q(λ)','nothing, apply the IH directly'],a:0,why:'The IH is an implication. You can only use it after you have shown its premise for the smaller string.'},
+   ]},
+  {id:'str3',title:'Well-defined?',ru:'Корректно ли определение?',type:'mc',
+   brief:'Is each recursive definition correct? Compute f(1), f(2), f(3) in your head if unsure.',briefRu:'Корректно ли определение? Посчитай f(1), f(2), f(3).',
+   lesson:'Base case · every call on a smaller argument · stays in the domain · overlapping cases agree. And watch out: a product with base 0 is 0 forever.',
+   opts:['✓ well-defined','✗ argument grows','✗ no base case','✗ leaves ℕ','✗ cases clash'],
+   qs:[
+    {q:'f(0) = 1;  f(n) = 2·f(n + 1) + 1 for n ≥ 1',a:1,why:'f(1) needs f(2), which needs f(3), …'},
+    {q:'h(n + 1) = 2·h(n) + 1, and no other rule',a:2,why:'h(0) is never given; every choice of h(0) gives a different function.'},
+    {q:'p(0) = 0;  p(n) = p(n − 2) + 1 for n ≥ 1',a:3,why:'p(1) = p(−1) + 1, and −1 ∉ ℕ.'},
+    {q:'q(0) = 1;  q(n + 1) = q(n) + 2·q(⌊n/2⌋)',a:0,why:'Both calls are smaller than n + 1: q(1) = 3, q(2) = 5, q(3) = 11.'},
+    {q:'F(0) = 0, F(1) = 1;  F(n) = F(n − 1) + F(n − 2) for n ≥ 2',a:0,why:'Two base cases, two smaller calls.'},
+    {q:'g(0) = 1;  g(n) = g(n/2) + 1 for n ≥ 1',a:3,why:'g(1) = g(1/2) + 1, and 1/2 ∉ ℕ.'},
+    {q:'k(0) = 1;  k(n + 1) = 2·k(n) if n is even;  k(n + 1) = k(n) + 1 for every n',a:4,why:'For even n both rules apply: k(3) would be 2·3 = 6 and 3 + 1 = 4.'},
+    {q:'a(0) = 0;  a(n + 1) = a(n)·(n + 1). (This one is about the values.) Is it well-defined?',opts:['✓ well-defined, but every value is 0','✗ not well-defined','✓ it is n!','✓ it is (n + 1)!'],a:0,why:'0 · anything = 0. The midterm trap: with base 0, all such product sequences are the same sequence 0, 0, 0, …'},
+   ]},
+  {id:'str4',title:'Nim duel',ru:'Ним против компьютера',type:'nim',
+   brief:'Piles 6, 12, 18. You move first; whoever takes the last stone wins. The computer plays perfectly. Win.',briefRu:'Ходишь первой, кто взял последний — победил. Выиграй.',
+   lesson:'xor the piles column by column. s ≠ 0: the player to move wins by leaving s = 0 (pile t → t xor s). s = 0: every move breaks it.'},
+  {id:'str5',title:'Boss: Ex1',ru:'Босс: Ex1',type:'stages',boss:true,
+   brief:'Two structural induction proofs. Click lines in order and give a reason for every equality. The second one has an “if … then”, like on the midterm.',
+   briefRu:'Два доказательства. Во втором — «если … то», как на мидтерме.',
+   lesson:'Predicate · base λ · constructor with the IH marked · reasons on every line · conclusion. For “if s ∈ RecMatch”, induct on RecMatch’s constructors: two IHs for [u]v.',
+   stages:[
+    {type:'order',tag:'Proof 1 · (g ∘ f)*(s) = g*(f*(s)) — Midterm 2024',
+     lines:[
+      {t:'Proof. By structural induction on s ∈ A*, with P(s) ::= (g ∘ f)*(s) = g*(f*(s)).'},
+      {t:'Base case s = λ: (g ∘ f)*(λ) = λ = g*(λ) = g*(f*(λ)), so P(λ) holds.',r:'def. of *'},
+      {t:'Constructor case s = ⟨a, t⟩: assume P(t) (IH).'},
+      {t:'(g ∘ f)*(⟨a, t⟩) = ⟨(g ∘ f)(a), (g ∘ f)*(t)⟩',r:'def. of *'},
+      {t:'= ⟨g(f(a)), g*(f*(t))⟩',r:'def. of ∘ and the IH'},
+      {t:'= g*(⟨f(a), f*(t)⟩)',r:'def. of g*, right to left'},
+      {t:'= g*(f*(⟨a, t⟩)), so P(⟨a, t⟩) holds.',r:'def. of f*, right to left'},
+      {t:'By structural induction, P(s) holds for all s ∈ A*. ∎'},
+     ],
+     distractors:[
+      {t:'Constructor case s = ⟨a, t⟩: assume P(⟨a, t⟩) (IH).',why:'The IH is about the smaller string t, not ⟨a, t⟩.'},
+      {t:'Base case s = ⟨a, λ⟩.',why:'The base case of A* is λ.'},
+     ],
+     reasons:['def. of *','def. of ∘ and the IH','def. of g*, right to left','def. of f*, right to left','by the IH only','def. of ·']},
+    {type:'order',tag:'Proof 2 · if s ∈ RecMatch, then #[(s) = #](s)',
+     lines:[
+      {t:'Proof. By structural induction on the definition of RecMatch, with P(s) ::= #[(s) = #](s).'},
+      {t:'Base case s = λ: #[(λ) = 0 = #](λ), so P(λ) holds.'},
+      {t:'Constructor case s = [u]v with u, v ∈ RecMatch: assume P(u) and P(v) (IH).'},
+      {t:'#[([u]v) = 1 + #[(u) + #[(v)',r:'count the brackets'},
+      {t:'= 1 + #](u) + #](v)',r:'IH for u and for v'},
+      {t:'= #]([u]v), so P([u]v) holds.',r:'count the brackets'},
+      {t:'By structural induction, P(s) holds for every s ∈ RecMatch. ∎'},
+     ],
+     distractors:[
+      {t:'Constructor case s = ⟨a, s′⟩ with a ∈ {[, ]}: assume P(s′).',why:'That is induction over all strings, and “]” alone is not in RecMatch. Use RecMatch’s own constructor [u]v.'},
+      {t:'Constructor case s = [u]v: assume P(u).',why:'[u]v has two parts, so you need the IH for both u and v.'},
+     ],
+     reasons:['count the brackets','IH for u and for v','IH for u only','def. of ·']},
+   ]},
+]},
+/* ---------- Ch. 8 ---------- */
+{id:'inf',name:'Diagonal Deep',ru:'Диагональная бездна',ch:'Ch. 8 · Infinity & halting',c:'inf',x:260,y:430,levels:[
+  {id:'inf1',title:'Arrow shapes',ru:'Стрелки: inj, surj, bij',type:'mc',
+   brief:'Each picture shows arrows from A (left) to B (right). Name the shape.',briefRu:'Стрелки из A в B. Что это?',
+   lesson:'function: ≤ 1 arrow out · total: ≥ 1 out · injective: ≤ 1 in · surjective: ≥ 1 in · bijective: exactly 1 out and 1 in. A surj B means A is at least as big as B.',
+   qs:[
+    {q:'Which is it?',fig:[[0,0],[1,1],[2,2],'3,3'],opts:['bijection','surjective, not injective','injective, not surjective','not a function'],a:0,why:'One arrow out of each a, one arrow into each b.'},
+    {q:'Which is it?',fig:[[0,0],[1,0],[2,1],'3,2'],opts:['bijection','surjective, not injective','injective, not surjective','not a function'],a:1,why:'Every b is hit, but x is hit twice.'},
+    {q:'Which is it?',fig:[[0,0],[1,2],'2,3'],opts:['bijection','surjective, not injective','injective, not surjective','not a function'],a:2,why:'No b is hit twice, but y is never hit.'},
+    {q:'Which is it?',fig:[[0,0],[0,1],[1,1],'3,2'],opts:['bijection','surjective, not injective','injective, not surjective','not a function'],a:3,why:'Element 1 has two arrows out: that is not a function (and 3 has none).'},
+    {q:'There is a surjective function A → B. So …',opts:['A is at least as big as B (A surj B)','B is at least as big as A','A and B have the same size','A ⊆ B'],a:0,why:'A covers all of B, so A has at least as many elements.'},
+    {q:'Cantor: there is no surjection A → pow(A). So …',opts:['pow(A) is strictly bigger than A, for every A','only for finite A','for infinite A they have the same size','A is bigger than pow(A)'],a:0,why:'Holds for every set; that is why pow(ℕ) is uncountable.'},
+   ]},
+  {id:'inf2',title:'Line them up',ru:'Выстрой очередь',type:'input',
+   brief:'Countable means: a list in which every element gets a finite place. Places start at 0.',briefRu:'Счётно = очередь, где у каждого есть конечный номер. Номера с 0.',
+   lesson:'ℤ: zigzag 0, −1, 1, −2, 2, … · ℕ × ℕ: by diagonals m + n = 0, 1, 2, …; place of (m, n) = (m+n)(m+n+1)/2 + m.',
+   qs:[
+    {q:'ℤ listed as 0, −1, 1, −2, 2, … At which place is −3?',a:5,why:'−k sits at place 2k − 1 = 5.'},
+    {q:'Same list. Which integer is at place 8?',a:4,why:'Even place n holds n/2 = 4.'},
+    {q:'ℕ × ℕ by diagonals: (0,0), (0,1), (1,0), (0,2), (1,1), (2,0), … At which place is (1, 2)?',a:7,why:'d = 3: 3·4/2 + 1 = 7.'},
+    {q:'How many pairs lie on the diagonal m + n = 5?',a:6,why:'(0,5), (1,4), …, (5,0): six. Every diagonal is finite, so the walk reaches everything.'},
+   ]},
+  {id:'inf3',title:'Countable or not?',ru:'Счётно или нет?',type:'mc',
+   brief:'Sort each set.',briefRu:'Рассортируй множества.',
+   lesson:'Countable: anything you can list (finite strings, pairs, fractions, programs). Uncountable: infinite sequences and all subsets of an infinite set (diagonal).',
+   opts:['countable','uncountable'],
+   qs:[
+    {q:'ℤ',a:0,why:'Zigzag list.'},{q:'ℚ',a:0,why:'List the fractions m/n by diagonals.'},
+    {q:'{0,1}*: all FINITE binary strings',a:0,why:'List by length, then alphabetically: each length class is finite.'},
+    {q:'{0,1}^ω: all INFINITE binary sequences',a:1,why:'Cantor’s diagonal.'},
+    {q:'pow(ℕ)',a:1,why:'pow(ℕ) bij {0,1}^ω (characteristic sequences).'},
+    {q:'all programs (ASCII strings)',a:0,why:'Finite strings over a finite alphabet.'},
+    {q:'the finite subsets of ℕ',a:0,why:'List them by largest element: each group is finite.'},
+    {q:'ℝ',a:1,why:'Contains [0, 1], which is already uncountable.'},
+    {q:'all languages L ⊆ ASCII*',a:1,why:'pow of a countably infinite set. Programs are countable, so most languages have no recognizer.'},
+   ]},
+  {id:'inf4',title:'Diagonal escape',ru:'Побег по диагонали',type:'stages',
+   brief:'Five infinite 0/1 sequences are listed. Build d so that it differs from row i at place i. Click the cells of d.',briefRu:'Построй d: в позиции i — не то, что у строки i.',
+   lesson:'d(n) ::= 1 − sₙ(n). Then d ≠ sₙ for every n, so no list contains all sequences.',
+   stages:[{type:'diag',tag:'Build d'},{type:'mc',tag:'Then what?',qs:[{q:'You add d to the list as a new row s₅. Is the list complete now?',opts:['No: build a new d from the 6 rows; it differs from s₅ at place 5','Yes, d is in it now','Only if d starts with 0'],a:0,why:'Whatever list you give, the diagonal builds a sequence it misses.'}]}]},
+  {id:'inf5',title:'Self-reference',ru:'Программа на себе',type:'mc',
+   brief:'Programs are strings, so a program can run on its own code. No-halt = {s | P_s does NOT halt on s}.',briefRu:'No-halt — коды программ, которые не останавливаются на своём коде.',
+   lesson:'If D recognized No-halt, then D halts on its own code d ⟺ d ∈ No-halt ⟺ D does not halt on d. So No-halt is not recognizable (Th 8.2.2). Its complement is.',
+   qs:[
+    {q:'P_halt halts on every input. Is its code in No-halt?',opts:['No: it halts on its own code','Yes'],a:0,why:'No-halt needs NOT halting on its own code.'},
+    {q:'P_loop runs forever on every input. Is its code in No-halt?',opts:['Yes','No'],a:0,why:'It does not halt on its own code.'},
+    {q:'Suppose D recognizes No-halt. Run D on its own code d. If D halts on d, then …',opts:['d ∈ No-halt, so D does NOT halt on d — contradiction','nothing special happens','d ∉ No-halt','D is in Always-halt'],a:0,why:'D halts exactly on No-halt. Halting on d puts d into No-halt, which means D does not halt on d.'},
+    {q:'Which set IS recognizable?',opts:['the complement of No-halt','No-halt','Empty-halt','Always-halt'],a:0,why:'Run P_s on s; if it halts, halt.'},
+    {q:'In a proof that L is not recognizable, you build s′ from …',opts:['s, a code that may or may not be in No-halt','a recognizer for No-halt','the empty string','M only'],a:0,why:'The direction is always from No-halt to L.'},
+   ]},
+  {id:'inf6',title:'Boss: Ex3',ru:'Босс: Ex3',type:'stages',boss:true,
+   brief:'Prove that Empty-halt = {s | lang(P_s) = ∅} is not recognizable, then answer the 2024 trap question.',briefRu:'Докажи, что Empty-halt нераспознаваемо, и ответь на ловушку 2024.',
+   lesson:'Assume a recognizer Q · build s′ from s · two cases · s ∈ No-halt ⟺ s′ ∈ L · “compute s′, run Q” recognizes No-halt · contradiction with Th 8.2.2.',
+   stages:[
+    {type:'mc',tag:'Step 1 · the construction',qs:[{q:'Which program s′ do you build from s?',opts:['on input t: run P_s on s; then halt','on input t: run P_s on t','on input t: halt'],a:0,why:'s′ must halt on nothing exactly when P_s loops on s. The other two do not depend on whether P_s halts on s.'}]},
+    {type:'order',tag:'Step 2 · the proof',
+     lines:[
+      {t:'Suppose, for contradiction, that Empty-halt = lang(Q) for some program Q.'},
+      {t:'For s ∈ ASCII*, let s′ be the code of “on input t: run P_s on s, then halt”. A program can compute s′ from s.'},
+      {t:'If s ∈ No-halt: lang(P_s′) = ∅, so s′ ∈ Empty-halt.',r:'step 1 never ends'},
+      {t:'If s ∉ No-halt: lang(P_s′) = ASCII* ≠ ∅, so s′ ∉ Empty-halt.',r:'step 1 ends, then it halts'},
+      {t:'Hence s ∈ No-halt ⟺ s′ ∈ Empty-halt.'},
+      {t:'Then “on input s: compute s′ and run Q on s′” halts exactly when s ∈ No-halt, so No-halt is recognizable.'},
+      {t:'This contradicts Th 8.2.2 (No-halt is not recognizable). ∎'},
+     ],
+     distractors:[
+      {t:'Suppose, for contradiction, that No-halt = lang(Q).',why:'Assume a recognizer for the TARGET set, Empty-halt.'},
+      {t:'If s ∈ No-halt, P_s′ halts at once, so lang(P_s′) = ASCII*.',why:'If P_s does not halt on s, P_s′ is stuck in step 1 forever: it halts on nothing.'},
+     ],
+     reasons:['step 1 never ends','step 1 ends, then it halts','def. of No-halt','by the IH']},
+    {type:'mc',tag:'Step 3 · the 2024 trap',qs:[{q:'Ex3 2024: target is the complement of H_M = {s | lang(P_s) = lang(M)}, with s′ = “run P_s on s; then run M on t”. Why must M halt on at least one input?',opts:['So that lang(M) ≠ ∅: then for s ∈ No-halt, lang(P_s′) = ∅ ≠ lang(M), and s′ lands in the complement','So that M terminates','So that s′ is computable','It is not needed'],a:0,why:'With lang(M) = ∅, the case s ∈ No-halt gives lang(P_s′) = ∅ = lang(M), and the translation breaks.'}]},
+   ]},
+]},
+];
+const DATA={EX3,EX4,BOSS3};
+/* ---------- Write mode: fill the skeleton ---------- */
+const RS1=['def. of ·','def. of length','IH'];
+const RSF=['def. of ·','def. of f*','def. of f*, right to left','def. of ·, right to left','IH'];
+const PRIME=["P(s')","P(s′)"];
+WORLDS.push({id:'skl',name:'Skeleton Shipyard',ru:'Верфь скелетов',ch:'Write mode · Ex1 · Ex2 · Ex3',c:'skl',x:540,y:560,write:true,levels:[
+  {id:'skl1',title:'Ex1 · |s · t| = |s| + |t|',ru:'Длина конкатенации',type:'cloze',
+   brief:'Fill the gaps of the structural induction skeleton. Type with the symbol keys; ASCII also works: < > for ⟨ ⟩, lambda for λ, forall for ∀, . for ·.',
+   briefRu:'Заполни пропуски в скелете. Символы — кнопками сверху; можно и ASCII: < > , lambda, forall, точка = ·.',
+   lesson:'Predicate with ∀t inside · base λ computed on both sides · constructor: def. of ·, def. of length, IH, def. of length.',
+   lines:['Proof. By structural induction on {v} ∈ A*, with P(s) ::= {P}.',
+    'Base case s = λ: |λ · t| = {b1} (def. of ·) = 0 + |t| = {b2} (def. of length). So P(λ) holds.',
+    'Constructor case s = ⟨a, s′⟩ with a ∈ A, s′ ∈ A*. Assume {ih} (IH).',
+    '|⟨a, s′⟩ · t| = {c1}   [{r1}]',
+    '= 1 + {c2}   [{r2}]',
+    '= 1 + |s′| + |t|   [{r3}]',
+    '= {c4} + |t|   [def. of length], so P(⟨a, s′⟩) holds.',
+    'By {m}, P(s) holds for every s ∈ A*. ∎'],
+   gaps:{v:{a:['s']},P:{a:['∀t∈A*. |s·t| = |s|+|t|','∀t. |s·t| = |s|+|t|']},b1:{a:['|t|']},b2:{a:['|λ|+|t|']},ih:{a:PRIME},
+    c1:{a:["|⟨a, s′·t⟩|"]},r1:{o:RS1,a:'def. of ·'},c2:{a:["|s′·t|"]},r2:{o:RS1,a:'def. of length'},r3:{o:RS1,a:'IH'},c4:{a:['|⟨a, s′⟩|']},
+    m:{o:['structural induction','the Invariant Principle','WOP'],a:'structural induction'}}},
+  {id:'skl2',title:'Ex1 · s · λ = s',ru:'Лемма 7.1.4',type:'cloze',
+   brief:'Short one: the right identity of concatenation.',briefRu:'Короткая: λ справа ничего не меняет.',
+   lesson:'Induct on s (the left string). The constructor step is def. of ·, then the IH inside ⟨a, …⟩.',
+   lines:['Proof. By structural induction on s ∈ A*, with P(s) ::= {P}.',
+    'Base case s = λ: λ · λ = {b} by the definition of ·, so P(λ) holds.',
+    'Constructor case s = ⟨a, s′⟩: assume {ih} (IH).',
+    '⟨a, s′⟩ · λ = {c1}   [{r1}]',
+    '= {c2}   [{r2}], so P(⟨a, s′⟩) holds.',
+    'By structural induction, P(s) holds for every s ∈ A*. ∎'],
+   gaps:{P:{a:['s·λ = s']},b:{a:['λ']},ih:{a:PRIME},c1:{a:['⟨a, s′·λ⟩']},r1:{o:RS1,a:'def. of ·'},c2:{a:['⟨a, s′⟩']},r2:{o:RS1,a:'IH'}}},
+  {id:'skl3',title:'Ex1 · f*(s · t) = f*(s) · f*(t)',ru:'f* и конкатенация',type:'cloze',
+   brief:'Mapping a function onto a concatenation. Watch the two “right to left” steps.',briefRu:'Два шага читаются справа налево.',
+   lesson:'Push · inside (def. of ·), push f* inside (def. of f*), use the IH, then fold back: def. of · and def. of f* read right to left.',
+   lines:['Proof. By structural induction on {v} ∈ A*, with P(s) ::= {P}.',
+    'Base case s = λ: f*(λ · t) = {b1}   [def. of ·]   = λ · f*(t)   [def. of ·]   = {b2}   [def. of f*].',
+    'Constructor case s = ⟨a, s′⟩: assume P(s′) (IH).',
+    'f*(⟨a, s′⟩ · t) = f*(⟨a, s′ · t⟩)   [{r1}]',
+    '= {c2}   [def. of f*]',
+    '= ⟨f(a), f*(s′) · f*(t)⟩   [{r3}]',
+    '= {c4} · f*(t)   [def. of ·, right to left]',
+    '= f*(⟨a, s′⟩) · f*(t)   [{r5}], so P(⟨a, s′⟩) holds. ∎'],
+   gaps:{v:{a:['s']},P:{a:['∀t∈A*. f*(s·t) = f*(s)·f*(t)','∀t. f*(s·t) = f*(s)·f*(t)']},b1:{a:['f*(t)']},b2:{a:['f*(λ)·f*(t)']},
+    r1:{o:RSF,a:'def. of ·'},c2:{a:['⟨f(a), f*(s′·t)⟩']},r3:{o:RSF,a:'IH'},c4:{a:['⟨f(a), f*(s′)⟩']},r5:{o:RSF,a:'def. of f*, right to left'}}},
+  {id:'skl4',title:'Ex1 · if s ∈ RecMatch, then #[ = #]',ru:'Импликация: индукция по RecMatch',type:'cloze',
+   brief:'The midterm trap: the claim starts with “if”. Induct on the definition of the set in the premise.',briefRu:'Ловушка мидтерма: индукция по определению RecMatch.',
+   lesson:'For “if s ∈ RecMatch then …” induct on RecMatch itself: base λ, constructor [u]v with two IHs, P(u) and P(v).',
+   lines:['Proof. By structural induction on {what}, with P(s) ::= #[(s) = #](s).',
+    'Base case s = {b}: #[(λ) = 0 = #](λ), so P(λ) holds.',
+    'Constructor case s = {c} with u, v ∈ RecMatch. Assume {ih} (IH).',
+    '#[([u]v) = 1 + {x}   [count the brackets]',
+    '= 1 + #](u) + #](v)   [{r}]',
+    '= #]([u]v), so P([u]v) holds.',
+    'By structural induction, P(s) holds for every s ∈ {set}. ∎'],
+   gaps:{what:{o:['the definition of RecMatch','s ∈ A* (all strings)','the number of brackets'],a:'the definition of RecMatch'},b:{a:['λ']},c:{a:['[u]v']},
+    ih:{a:['P(u) and P(v)','P(u)∧P(v)','P(u), P(v)']},x:{a:['#[(u)+#[(v)']},r:{o:['IH for u and v','IH for u only','def. of ·'],a:'IH for u and v'},set:{a:['RecMatch']}}},
+  {id:'skl5',title:'Ex3 · Empty-halt',ru:'Empty-halt нераспознаваемо',type:'cloze',
+   brief:'Empty-halt = {s | lang(P_s) = ∅}. Fill the reduction from No-halt.',briefRu:'Заполни редукцию из No-halt.',
+   lesson:'Recognizer Q for the target · s′ = “run P_s on s, then halt” · two cases · ⟺ · “compute s′, run Q” recognizes No-halt · contradiction with Th 8.2.2.',
+   lines:['Suppose, for contradiction, that Empty-halt = lang({q}) for some program Q.',
+    'For s ∈ ASCII*, let s′ be the code of: on input t, {c}. A program can compute s′ from s.',
+    'If s ∈ No-halt: step 1 never ends, so lang(P_s′) = {a}, hence s′ {in1} Empty-halt.',
+    'If s ∉ No-halt: step 1 ends and P_s′ halts on every t, so lang(P_s′) = {b}, hence s′ {in2} Empty-halt.',
+    'Hence s ∈ No-halt {iff} s′ ∈ Empty-halt.',
+    'Then “on input s, compute s′ and run {q2} on s′” halts exactly on No-halt, so No-halt is {rec}.',
+    'This contradicts {th}. ∎'],
+   gaps:{q:{a:['Q']},c:{o:['run P_s on s, then halt','run P_s on t','halt'],a:'run P_s on s, then halt'},a:{a:['∅']},in1:{o:['∈','∉'],a:'∈'},b:{a:['ASCII*']},in2:{o:['∈','∉'],a:'∉'},
+    iff:{a:['⟺']},q2:{a:['Q']},rec:{a:['recognizable']},th:{o:['Th 8.2.2 (No-halt is not recognizable)','the Invariant Principle','Cantor’s theorem'],a:'Th 8.2.2 (No-halt is not recognizable)'}}},
+  {id:'skl6',title:'Ex3 · Finite-halt',ru:'Finite-halt нераспознаваемо',type:'cloze',
+   brief:'Finite-halt = {s | lang(P_s) is finite}. Same construction, other target.',briefRu:'Та же конструкция, другое множество.',
+   lesson:'∅ is finite, ASCII* is infinite: the same s′ works for Empty-halt and Finite-halt.',
+   lines:['Suppose, for contradiction, that Finite-halt = lang(Q) for some program Q.',
+    'For s ∈ ASCII*, let s′ be the code of: on input t, {c}.',
+    'If s ∈ No-halt: lang(P_s′) = {a}, which is {f1}, so s′ ∈ Finite-halt.',
+    'If s ∉ No-halt: lang(P_s′) = {b}, which is {f2}, so s′ ∉ Finite-halt.',
+    'Hence s ∈ No-halt ⟺ s′ ∈ Finite-halt, and “compute s′, run Q on s′” recognizes {nh} — contradicting Th 8.2.2. ∎'],
+   gaps:{c:{o:['run P_s on s, then halt','run P_s on t','loop forever'],a:'run P_s on s, then halt'},a:{a:['∅']},f1:{o:['finite','infinite'],a:'finite'},b:{a:['ASCII*']},f2:{o:['finite','infinite'],a:'infinite'},nh:{a:['No-halt']}}},
+  {id:'skl7',title:'Ex3 · complement of H_M (2024)',ru:'Ex3 2024',type:'cloze',
+   brief:'H_M = {s | lang(P_s) = lang(M)}, where M halts on at least one input. Show that its complement is not recognizable.',briefRu:'Дополнение H_M. Не забудь условие про M.',
+   lesson:'Step (2) runs M on t. The condition “M halts on at least one input” gives lang(M) ≠ ∅, which makes the case s ∈ No-halt land in the complement.',
+   lines:['Suppose, for contradiction, that the complement of H_M = lang(Q) for some program Q.',
+    'For s ∈ ASCII*, let s′ be the code of: on input t, (1) run P_s on s; (2) {c}.',
+    'If s ∈ No-halt: lang(P_s′) = ∅ {neq} lang(M), because {why}; so s′ ∈ the complement of H_M.',
+    'If s ∉ No-halt: lang(P_s′) = {l}, so s′ {in} the complement of H_M.',
+    'Hence s ∈ No-halt ⟺ s′ ∈ the complement of H_M, so “compute s′, run Q on s′” recognizes No-halt — contradicting Th 8.2.2. ∎'],
+   gaps:{c:{o:['run M on t','halt','run M on s'],a:'run M on t'},neq:{a:['≠']},why:{o:['M halts on at least one input','M halts on every input','P_s halts on s'],a:'M halts on at least one input'},l:{a:['lang(M)']},in:{o:['∈','∉'],a:'∉'}}},
+  {id:'skl8',title:'Ex3 · Always-halt',ru:'Always-halt: третья конструкция',type:'cloze',
+   brief:'Always-halt = {s | lang(P_s) = ASCII*}. Here the first construction does not work; use the step-counting one.',briefRu:'Нужна конструкция «считаем |t| шагов».',
+   lesson:'s″ simulates |t| steps: if P_s never halts on s, s″ halts on everything; if it halts after k steps, s″ loops on every t with |t| ≥ k.',
+   lines:['Suppose, for contradiction, that Always-halt = lang(Q) for some program Q.',
+    'For s ∈ ASCII*, let s″ be the code of: on input t, run P_s on s for {k} steps; if it has not halted, {a1}; if it has halted, {a2}.',
+    'If s ∈ No-halt: P_s never halts on s, so P_s″ halts on every t: lang(P_s″) = {x}, so s″ {in1} Always-halt.',
+    'If s ∉ No-halt: P_s halts on s after k steps, so P_s″ loops on every t with |t| ≥ k: lang(P_s″) ≠ ASCII*, so s″ {in2} Always-halt.',
+    'Hence s ∈ No-halt ⟺ s″ ∈ Always-halt — and the usual contradiction with Th 8.2.2. ∎'],
+   gaps:{k:{a:['|t|']},a1:{o:['halt','loop forever'],a:'halt'},a2:{o:['halt','loop forever'],a:'loop forever'},x:{a:['ASCII*']},in1:{o:['∈','∉'],a:'∈'},in2:{o:['∈','∉'],a:'∉'}}},
+  {id:'skl9',title:'Ex2 · the sentences',ru:'Ex2: предложения под баллы',type:'cloze',
+   brief:'Lists — Adam: Xena, Zoe, Yara · Ben: Xena, Yara, Zoe · Carl: Yara, Xena, Zoe · Xena: Carl, Adam, Ben · Yara: Adam, Ben, Carl · Zoe: Ben, Carl, Adam. Run the ritual on paper, then fill in.',
+   briefRu:'Прогони ритуал на бумаге и заполни.',
+   lesson:'Day table + “The Mating Ritual with the men as suitors ends with … ; by Th 6.4.9 every man is married to his optimal wife.” Receivers get their pessimal partner.',
+   lines:['The Mating Ritual with the {who} as suitors ends on day {d} with (Adam, {w1}), (Ben, {w2}), (Carl, {w3}).',
+    'By Th {th} every man is married to his {opt} wife,',
+    'and every woman is married to her {pes} husband.'],
+   gaps:{who:{o:['men','women'],a:'men'},d:{a:['4']},w1:{a:['Zoe']},w2:{a:['Yara']},w3:{a:['Xena']},th:{a:['6.4.9']},opt:{o:['optimal','pessimal','first-choice'],a:'optimal'},pes:{o:['optimal','pessimal'],a:'pessimal'}}},
+  {id:'skl10',title:'Induction · Σ (2i − 1) = n²',ru:'Обычная индукция',type:'cloze',
+   brief:'Sum of the first n odd numbers. Type ^2 for ², or use the key.',briefRu:'Сумма первых n нечётных.',
+   lesson:'Split off the last term, use the IH, finish with algebra: n² + 2n + 1 = (n + 1)².',
+   lines:['Proof. By induction on n, with P(n) ::= Σᵢ₌₁ⁿ (2i − 1) = n².',
+    'Base case n = {n0}: the empty sum is 0 = {b}, so P(0) holds.',
+    'Inductive step: let n ≥ 0 and assume {ih} (IH).',
+    'Σᵢ₌₁ⁿ⁺¹ (2i − 1) = Σᵢ₌₁ⁿ (2i − 1) + {last}   [split off the last term]',
+    '= n² + 2n + 1   [{r}]',
+    '= {sq}, so P(n + 1) holds.',
+    'By {m}, P(n) holds for all n ∈ ℕ. ∎'],
+   gaps:{n0:{a:['0']},b:{a:['0²','0']},ih:{a:['P(n)']},last:{a:['2(n+1)−1','2n+1']},r:{o:['IH','algebra','def. of Σ'],a:'IH'},sq:{a:['(n+1)²']},m:{o:['induction','structural induction','WOP'],a:'induction'}}},
+  {id:'skl11',title:'Invariant · the bishop robot',ru:'Доказательство через инвариант',type:'cloze',
+   brief:'The robot starts at (0, 0) and moves (±1, ±1). Prove that (1, 0) is unreachable.',briefRu:'Докажи, что (1, 0) недостижима.',
+   lesson:'Name P · every move keeps it · true at the start · Invariant Principle · the target breaks it.',
+   lines:['Let P((m, n)) ::= “{P}”.',
+    'Each move changes m + n by +2, 0 or {d}, so P is {pr}.',
+    'P((0, 0)) is {tv}, because 0 + 0 = 0 is even.',
+    'By the {ip}, P holds in every reachable state.',
+    '(1, 0) has m + n = {s}, which is odd, so (1, 0) is not {re}. ∎'],
+   gaps:{P:{a:['m+n is even','m+n even','m+n ≡ 0 mod 2','2 | m+n']},d:{a:['−2']},pr:{o:['preserved','not preserved'],a:'preserved'},tv:{o:['true','false'],a:'true'},
+    ip:{o:['Invariant Principle','Well Ordering Principle','Pigeonhole Principle'],a:'Invariant Principle'},s:{a:['1']},re:{a:['reachable']}}},
+]});
+
+</script>
+
+<script>
+/* ================= components ================= */
+const C={};
+
+C.mc=function(box,L,api,done){
+  let i=0;
+  function show(){
+    const q=L.qs[i], opts=q.opts||L.opts, shared=!q.opts;
+    const order=shared?opts.map((_,k)=>k):shuffle(opts.map((_,k)=>k));
+    const why=h('div',{class:'why',hidden:true});
+    const next=h('button',{class:'btn primary',hidden:true,onclick:()=>{i++;if(i<L.qs.length)show();else done();}},i<L.qs.length-1?'Next question →':'Finish');
+    const btns=order.map(k=>h('button',{class:'btn',onclick:e=>{
+      if(k===q.a){btns.forEach(b=>b.disabled=true);e.currentTarget.className='btn ok';why.hidden=false;why.replaceChildren(h('b',{},'Why: '),q.why||'');next.hidden=false;next.focus();api.clear();}
+      else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake(q.wrong&&q.wrong[k]?q.wrong[k]:'Not this one. Read the statement again.');}
+    }},opts[k]));
+    box.replaceChildren(h('div',{class:'stage-tag'},`Question ${i+1} of ${L.qs.length}`),q.fig?h('div',{class:'fig'},arrowFig(q.fig)):null,h('p',{class:'q'},q.q),h('div',{class:'opts'},btns),why,h('div',{class:'row',style:'margin-top:12px'},next));
+  }
+  show();
+};
+function arrowFig(spec){
+  const sizes=spec[spec.length-1].split(',').map(Number),edges=spec.slice(0,-1),A=sizes[0],B=sizes[1];
+  const an=['1','2','3','4'],bn=['x','y','z','w'],W=300,M=Math.max(A,B),Hh=40+M*46;
+  const ay=k=>44+k*46+(M-A)*23,by=k=>44+k*46+(M-B)*23;
+  const s=sv('svg',{viewBox:`0 0 ${W} ${Hh}`,width:W,role:'img','aria-label':'arrow diagram'});
+  s.append(sv('defs',{},sv('marker',{id:'mk',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'},sv('path',{d:'M0,0 L10,5 L0,10 z',class:'mk'}))));
+  s.append(sv('text',{x:50,y:16,'text-anchor':'middle',class:'svg-m'},'A'),sv('text',{x:250,y:16,'text-anchor':'middle',class:'svg-m'},'B'));
+  edges.forEach(([a,b])=>s.append(sv('line',{x1:62,y1:ay(a),x2:236,y2:by(b),class:'arr','marker-end':'url(#mk)'})));
+  for(let k=0;k<A;k++){s.append(sv('circle',{cx:50,cy:ay(k),r:12,class:'dot'}),sv('text',{x:50,y:ay(k)+5,'text-anchor':'middle',class:'svg-b'},an[k]));}
+  for(let k=0;k<B;k++){s.append(sv('circle',{cx:250,cy:by(k),r:12,class:'dot'}),sv('text',{x:250,y:by(k)+5,'text-anchor':'middle',class:'svg-b'},bn[k]));}
+  return s;
+}
+
+C.input=function(box,L,api,done){
+  let i=0;
+  function show(){
+    const q=L.qs[i];const inp=h('input',{type:'number',id:'ans-'+L.id+'-'+i,'aria-label':'answer'});
+    const why=h('div',{class:'why',hidden:true});
+    const next=h('button',{class:'btn primary',hidden:true,onclick:()=>{i++;if(i<L.qs.length)show();else done();}},i<L.qs.length-1?'Next →':'Finish');
+    const check=h('button',{class:'btn primary',onclick:go},'Check');
+    function go(){if(inp.value==='')return;if(Number(inp.value)===q.a){inp.disabled=true;check.disabled=true;why.hidden=false;why.replaceChildren(h('b',{},'Yes. '),q.why);next.hidden=false;next.focus();api.clear();}else{api.mistake(`${inp.value} is not it. Write out the first few places and count.`);inp.select();}}
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+    box.replaceChildren(h('div',{class:'stage-tag'},`Question ${i+1} of ${L.qs.length}`),h('p',{class:'q'},q.q),h('div',{class:'row',style:'margin-top:10px'},inp,check),why,h('div',{class:'row',style:'margin-top:12px'},next));
+    inp.focus();
+  }
+  show();
+};
+
+C.order=function(box,L,api,done){
+  const lines=L.lines.map((x,i)=>({...x,i,kind:'ok'})),pool=shuffle(lines.concat(L.distractors.map(d=>({...d,kind:'bad'}))));
+  let placed=0,pending=null;const used=new Set();
+  function render(){
+    const proof=h('ol',{class:'proof'});
+    lines.slice(0,placed).forEach(l=>proof.append(h('li',{},h('span',{},l.t,l.r?h('span',{class:'rsn'},'reason: '+l.r):null))));
+    if(pending){const l=pending;proof.append(h('li',{class:'pop'},h('span',{},l.t,h('span',{class:'rsn',style:'color:var(--accent)'},'reason? ↓'),
+      h('div',{class:'reasons'},shuffle(L.reasons).map(r=>h('button',{class:'btn',onclick:e=>{if(r===l.r){placed++;pending=null;api.clear();render();if(placed===lines.length)done();}else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake(`“${r}” does not justify this line.`);}}},r))))));}
+    else if(placed<lines.length)proof.append(h('li',{class:'empty'},h('span',{},'next line …')));
+    const poolBox=h('div',{class:'pool'},pool.filter(p=>!used.has(p)).map(p=>h('button',{class:'btn',disabled:!!pending,onclick:()=>pick(p)},p.t)));
+    box.replaceChildren(h('div',{class:'two'},h('div',{},h('p',{class:'h3'},'Your proof · твоё доказательство'),proof),h('div',{},h('p',{class:'h3'},'Lines to choose from · строки'),pending?h('p',{class:'ru'},'Сначала выбери причину для последней строки.'):null,poolBox)));
+  }
+  function pick(p){
+    if(pending)return;
+    if(p.kind==='bad'){used.add(p);api.mistake(p.why);render();return;}
+    if(p.i!==placed){api.mistake('Not yet: this line comes later. Which line must follow the last one?');return;}
+    used.add(p);api.clear();
+    if(p.r){pending=p;render();}else{placed++;render();if(placed===lines.length)done();}
+  }
+  render();
+};
+
+C.stages=function(box,L,api,done){
+  let k=0;
+  function run(){const S=L.stages[k];const inner=h('div',{});box.replaceChildren(h('div',{class:'stage-tag',style:'font-weight:600'},`${S.tag||''} · part ${k+1} of ${L.stages.length}`),inner);
+    C[S.type](inner,{...S,id:L.id+'-'+k},api,()=>{k++;if(k<L.stages.length){api.info('Part done. On to the next one.');run();}else done();});}
+  run();
+};
+
+/* ---- strong induction stamps ---- */
+C.stamps=function(box,L,api,done){
+  const DEC={12:'4 + 4 + 4',13:'4 + 4 + 5',14:'4 + 5 + 5',15:'5 + 5 + 5'};
+  let cur=12;const label={};let choosing=false;
+  function render(){
+    const cards=[h('div',{class:'amt off'},h('div',{class:'n'},'11'),h('div',{class:'ru'},'4a + 5b? нет: 11 − 5 = 6, 11 − 4 = 7, 11 − 8 = 3. Начинаем с 12.'))];
+    for(let n=12;n<=23;n++){
+      const st=n<cur?'done':n===cur?'active':'';
+      const c=h('div',{class:'amt '+st},h('div',{class:'n'},n));
+      if(n<cur)c.append(h('div',{class:'mono',style:'font-size:13px'},label[n]));
+      if(n===cur){
+        if(!choosing)c.append(h('button',{class:'btn',onclick:()=>base(n)},'Base case'),h('button',{class:'btn',onclick:()=>step(n)},`From ${n-4}, add a 4`));
+        else{const opts=shuffle([DEC[n],...Object.entries(DEC).filter(([k])=>+k!==n).slice(0,2).map(([,v])=>v)]);
+          c.append(h('div',{class:'ru'},`${n} = ?`),...opts.map(o=>h('button',{class:'btn mono',onclick:e=>{if(o===DEC[n]){label[n]=`${n} = ${o}  (base)`;choosing=false;next();}else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake(`${o} = ${o.split('+').reduce((a,b)=>a+ +b,0)}, not ${n}.`);}}},o)));}
+      }
+      cards.push(c);
+    }
+    box.replaceChildren(h('p',{class:'q'},'P(n) ::= n = 4a + 5b for some a, b ∈ ℕ. Prove P(12), P(13), …, P(23) in order.'),h('div',{class:'amounts',style:'margin-top:10px'},cards));
+  }
+  function next(){api.clear();cur++;if(cur>23){done();return;}render();}
+  function base(n){if(n>=16){api.info(`True, ${n} can be written out directly. But a proof cannot list infinitely many base cases: ${n-4} is already proved, so use the step.`);return;}choosing=true;render();}
+  function step(n){if(n-4<12){api.mistake(`${n} − 4 = ${n-4} is below 12, so P(${n-4}) is not proved. ${n} must be a base case.`);return;}label[n]=`${n} = (${n-4}) + 4`;next();}
+  render();
+};
+
+/* ---- robot ---- */
+C.robot=function(box,L,api,done){
+  const N=3,Cc=48;let pos={m:0,n:0},paint=false,decl=false;
+  const T=[{k:'A',m:2,n:2,ok:false},{k:'B',m:-1,n:3,ok:false},{k:'C',m:1,n:0,ok:false,imp:true}];
+  const svg=sv('svg',{viewBox:`-24 -4 ${7*Cc+28} ${7*Cc+28}`,role:'img','aria-label':'board'});
+  const X=m=>(m+N)*Cc,Y=n=>(N-n)*Cc;
+  function draw(){
+    svg.replaceChildren();
+    for(let m=-N;m<=N;m++)for(let n=-N;n<=N;n++)svg.append(sv('rect',{x:X(m),y:Y(n),width:Cc,height:Cc,class:'sq '+(paint?((m+n)%2===0?'even':'odd'):'plain')}));
+    for(let m=-N;m<=N;m++)svg.append(sv('text',{x:X(m)+Cc/2,y:7*Cc+16,'text-anchor':'middle',class:'svg-m'},m));
+    for(let n=-N;n<=N;n++)svg.append(sv('text',{x:-8,y:Y(n)+Cc/2+4,'text-anchor':'end',class:'svg-m'},n));
+    T.forEach(t=>{const c=t.ok?'done':'open';svg.append(sv('rect',{x:X(t.m)+4,y:Y(t.n)+4,width:Cc-8,height:Cc-8,rx:8,class:'tgt '+c}),sv('text',{x:X(t.m)+Cc-12,y:Y(t.n)+18,'text-anchor':'middle',class:'tgt-t '+c},t.k));});
+    svg.append(sv('g',{transform:`translate(${X(pos.m)+Cc/2},${Y(pos.n)+Cc/2})`},sv('rect',{x:-13,y:-12,width:26,height:24,rx:7,class:'robot-body'}),sv('circle',{cx:-5,cy:-2,r:2.8,class:'robot-eye'}),sv('circle',{cx:5,cy:-2,r:2.8,class:'robot-eye'})));
+  }
+  function move(dm,dn){const a=pos.m+dm,b=pos.n+dn;if(Math.abs(a)>N||Math.abs(b)>N){api.info('Edge of the board.');return;}pos={m:a,n:b};T.forEach(t=>{if(!t.imp&&t.m===a&&t.n===b&&!t.ok){t.ok=true;api.info(`${t.k} reached.`);}});draw();status();check();}
+  const st=h('div',{class:'mono',style:'font-size:14px'});
+  function status(){st.textContent=`robot at (${pos.m}, ${pos.n}) · m + n = ${pos.m+pos.n} · targets: ${T.map(t=>t.k+(t.ok?' ✓':'')).join('  ')}`;}
+  const declBox=h('div',{class:'col'});
+  function declare(t){
+    if(!t.imp){api.mistake(`${t.k} = (${t.m}, ${t.n}) has m + n = ${t.m+t.n}, even like the start. It is reachable: walk there.`);return;}
+    declBox.replaceChildren(h('p',{class:'q'},'Which invariant proves that C = (1, 0) is unreachable?'),...shuffle([
+      ['m + n is even',true,''],['m is even',false,'Not preserved: (0, 0) → (1, 1) makes m odd.'],['m ≤ n',false,'Not preserved: (0, 0) → (1, −1) gives m > n.']]).map(([txt,ok,why])=>h('button',{class:'btn',onclick:e=>{if(ok){T[2].ok=true;decl=true;e.currentTarget.className='btn ok';api.info('Right: every move changes m + n by +2, 0 or −2, so it stays even. C has m + n = 1.');paint=true;draw();status();check();}else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake(why);}}},txt)));
+  }
+  function check(){if(T.every(t=>t.ok))setTimeout(done,500);}
+  const pad=h('div',{style:'display:grid;grid-template-columns:repeat(2,56px);gap:6px'},
+    h('button',{class:'btn',style:'font-size:20px;text-align:center','aria-label':'up left',onclick:()=>move(-1,1)},'↖'),h('button',{class:'btn',style:'font-size:20px;text-align:center','aria-label':'up right',onclick:()=>move(1,1)},'↗'),
+    h('button',{class:'btn',style:'font-size:20px;text-align:center','aria-label':'down left',onclick:()=>move(-1,-1)},'↙'),h('button',{class:'btn',style:'font-size:20px;text-align:center','aria-label':'down right',onclick:()=>move(1,-1)},'↘'));
+  box.replaceChildren(h('div',{class:'two'},h('div',{class:'board'},svg),h('div',{class:'col',style:'align-content:start;gap:12px'},st,pad,
+    h('div',{},h('p',{class:'h3'},'Declare unreachable · объявить недостижимой'),h('div',{class:'row'},T.map(t=>h('button',{class:'btn',onclick:()=>declare(t)},t.k+` (${t.m}, ${t.n})`)))),
+    declBox,h('button',{class:'btn',onclick:()=>{paint=!paint;draw();}},'Hint: paint the board by m + n'))));
+  draw();status();
+};
+
+/* ---- jugs ---- */
+C.jugs=function(box,L,api,done){
+  let part=1,A=5,B=3,b=0,l=0,goal=4,hist=[];
+  const MOVES=[['Fill big',()=>[A,l]],['Fill little',()=>[b,B]],['Empty big',()=>[0,l]],['Empty little',()=>[b,0]],['Pour big → little',()=>{const a=Math.min(b,B-l);return[b-a,l+a];}],['Pour little → big',()=>{const a=Math.min(l,A-b);return[b+a,l-a];}]];
+  const svg=sv('svg',{viewBox:'0 0 360 230',role:'img','aria-label':'two jugs'});
+  function draw(){svg.replaceChildren();const mx=Math.max(A,B),Hh=170,base=200;
+    [[40,120,A,b,'big'],[210,90,B,l,'little']].forEach(([x,w,cap,v,nm])=>{const hh=Hh*cap/mx;svg.append(sv('rect',{x,y:base-hh,width:w,height:hh,rx:9,class:'jug-glass'}));if(v>0)svg.append(sv('rect',{x:x+3,y:base-Hh*v/mx,width:w-6,height:Math.max(0,Hh*v/mx-3),rx:6,class:'jug-water'}));
+      svg.append(sv('text',{x:x+w/2,y:base+20,'text-anchor':'middle',class:'svg-t'},`${nm} · ${cap} l`),sv('text',{x:x+w/2,y:base-hh-8,'text-anchor':'middle',class:'svg-b'},`${v} l`));});}
+  const chips=h('div',{class:'mono',style:'font-size:13px'});
+  const moves=h('div',{style:'display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px'});
+  const why=h('div',{class:'col'});
+  function apply(f,nm){[b,l]=f();hist.push(`(${b},${l})`);draw();chips.textContent=`(0,0) → `+hist.slice(-8).join(' → ');if(part===1&&b===goal){api.info('4 litres! Part 1 done.');setTimeout(startPart2,700);}}
+  function startPart2(){part=2;A=18;B=12;b=0;l=0;hist=[];why.replaceChildren();render();}
+  function impossible(){
+    if(part===1){api.mistake('It IS possible with 5 and 3. Hint: 5 − 3 = 2, and 2 + … ?');return;}
+    why.replaceChildren(h('p',{class:'q'},'Why is 4 l impossible with 18 and 12?'),...shuffle([['Every amount stays a multiple of gcd(18, 12) = 6, and 4 is not',true,''],['You can never measure less than the little jug',false,'Die Hard got 4 l with a 3 l jug: size is not the obstacle.'],['It would take more than 20 moves',false,'“Impossible” means no number of moves. That needs an invariant, not a count.']]).map(([t,ok,w])=>h('button',{class:'btn',onclick:e=>{if(ok){e.currentTarget.className='btn ok';done();}else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake(w);}}},t)));
+  }
+  function render(){draw();moves.replaceChildren(...MOVES.map(([nm,f])=>h('button',{class:'btn',onclick:()=>apply(f,nm)},nm)));chips.textContent='(0,0)';
+    box.replaceChildren(h('div',{class:'stage-tag',style:'font-weight:600'},part===1?'Part 1 · jugs 5 l and 3 l · goal: 4 l in the big jug':'Part 2 · jugs 18 l and 12 l · goal: 4 l'),h('div',{class:'two'},h('div',{class:'board'},svg),h('div',{class:'col',style:'align-content:start;gap:10px'},moves,chips,h('button',{class:'btn',onclick:impossible},'Impossible!'),why)));}
+  render();
+};
+
+/* ---- ritual: afternoon judge ---- */
+C.judge=function(box,L,api,done){
+  const D=DATA[L.data],n=D.men.length,cr=D.pm.map(()=>new Set());let day=0,target,by,decided;
+  function morning(){day++;target=D.pm.map((Lm,i)=>Lm.find(j=>!cr[i].has(j)));by={};target.forEach((j,i)=>(by[j]=by[j]||[]).push(i));decided={};render();}
+  function contested(){return Object.keys(by).filter(j=>by[j].length>1).map(Number);}
+  function render(){
+    const con=contested();
+    const menT=h('table',{class:'t'},h('thead',{},h('tr',{},h('th',{},'man'),h('th',{},'his list (best → worst)'),h('th',{},'today'))),h('tbody',{},D.men.map((m,i)=>h('tr',{},h('td',{},h('b',{},m)),h('td',{},D.pm[i].map(j=>h('span',{class:'chip'+(cr[i].has(j)?' x':'')},D.wom[j]))),h('td',{},'→ '+D.wom[target[i]])))));
+    const cards=D.wom.map((w,j)=>{const s=by[j]||[];const need=s.length>1&&decided[j]==null;
+      return h('div',{class:'wcard'+(need?' need':'')},h('div',{class:'nm'},w),h('div',{class:'ru'},'her list: '+listOf(D,false,j)),
+        s.length===0?h('div',{class:'ru'},'no suitor today'):s.length===1?h('div',{},h('span',{class:'chip keep'},D.men[s[0]]),' only one: keeps him'):
+        decided[j]!=null?h('div',{},s.map(i=>h('span',{class:'chip'+(i===decided[j]?' keep':' x')},D.men[i]))):
+        h('div',{class:'row'},s.map(i=>h('button',{class:'btn',onclick:e=>judge(j,i,e.currentTarget)},'keep '+D.men[i]))));});
+    const allDone=con.every(j=>decided[j]!=null);
+    box.replaceChildren(h('div',{class:'stage-tag'},`Day ${day} · afternoon`),
+      h('div',{class:'wcards'},cards),
+      h('div',{class:'row',style:'margin-top:12px'},con.length===0?h('button',{class:'btn primary',onclick:wed},'No rejections: weddings!'):h('button',{class:'btn primary',disabled:!allDone,onclick:evening},allDone?'Evening: rejected men cross her off →':'Decide every highlighted woman first')),
+      h('div',{class:'scroll',style:'margin-top:14px'},menT));
+  }
+  function judge(j,i,btn){const Lw=D.pw[j];const best=by[j].reduce((a,b)=>Lw.indexOf(a)<=Lw.indexOf(b)?a:b);
+    if(i===best){decided[j]=i;api.clear();render();}else{btn.className='btn no';btn.disabled=true;api.mistake(`${D.wom[j]}'s list: ${listOf(D,false,j)}. ${D.men[best]} is higher than ${D.men[i]}.`);}}
+  function evening(){contested().forEach(j=>by[j].forEach(i=>{if(i!==decided[j])cr[i].add(j);}));api.info('Evening: '+contested().map(j=>by[j].filter(i=>i!==decided[j]).map(i=>`${D.men[i]} crosses off ${D.wom[j]}`).join(', ')).join('; ')+'.');morning();}
+  function wed(){api.info('Weddings: '+target.map((j,i)=>`(${D.men[i]}, ${D.wom[j]})`).join(', ')+`. ${day} days.`);setTimeout(done,900);}
+  morning();
+};
+
+/* ---- ritual: rogue hunter ---- */
+C.rogue=function(box,L,api,done){
+  const D=EX3,rounds=[[1,0,2],[0,2,1],[2,1,0],[0,1,2]];let r=0,selM=null;
+  function render(){
+    const wife=rounds[r],hus=[];wife.forEach((w,m)=>hus[w]=m);
+    const W=520,Hh=60+D.men.length*64;const svg=sv('svg',{viewBox:`0 0 ${W} ${Hh}`,role:'img','aria-label':'matching'});
+    const y=i=>40+i*64;
+    wife.forEach((w,m)=>svg.append(sv('line',{x1:170,y1:y(m)+15,x2:350,y2:y(w)+15,class:'mline'})));
+    D.men.forEach((nm,m)=>{const g=sv('g',{class:'pname'+(selM===m?' sel':''),tabindex:0,role:'button','aria-label':'select '+nm});g.append(sv('rect',{x:100,y:y(m),width:70,height:30,rx:8}),sv('text',{x:135,y:y(m)+20,'text-anchor':'middle',class:'svg-b'},nm),sv('text',{x:92,y:y(m)+20,'text-anchor':'end',class:'svg-m'},listOf(D,true,m)));
+      const pick=()=>{selM=m;render();};g.addEventListener('click',pick);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});svg.append(g);});
+    D.wom.forEach((nm,w)=>{const g=sv('g',{class:'pname',tabindex:0,role:'button','aria-label':'accuse with '+nm});g.append(sv('rect',{x:350,y:y(w),width:70,height:30,rx:8}),sv('text',{x:385,y:y(w)+20,'text-anchor':'middle',class:'svg-b'},nm),sv('text',{x:428,y:y(w)+20,class:'svg-m'},listOf(D,false,w)));
+      const pick=()=>accuse(w);g.addEventListener('click',pick);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});svg.append(g);});
+    box.replaceChildren(h('div',{class:'stage-tag'},`Matching ${r+1} of ${rounds.length} · lists: best → worst`),h('div',{class:'scroll'},svg),
+      h('p',{class:'ru'},selM==null?'Кликни мужчину, потом женщину — или нажми «стабильно».':`Выбран ${D.men[selM]}: теперь кликни женщину.`),
+      h('div',{class:'row',style:'margin-top:8px'},h('button',{class:'btn primary',onclick:stable},'It is stable')));
+  }
+  function nextRound(msg){api.info(msg);selM=null;r++;if(r<rounds.length)render();else setTimeout(done,600);}
+  function accuse(w){if(selM==null){api.info('Click a man first.');return;}const m=selM,wife=rounds[r],hus=[];wife.forEach((x,k)=>hus[x]=k);const R=rogues(D.pm,D.pw,wife);
+    if(R.some(([a,b])=>a===m&&b===w)){nextRound(`Rogue couple (${D.men[m]}, ${D.wom[w]}): ${D.men[m]} prefers ${D.wom[w]} to ${D.wom[wife[m]]}, and ${D.wom[w]} prefers ${D.men[m]} to ${D.men[hus[w]]}.`);return;}
+    let why;if(wife[m]===w)why=`They are married to each other.`;else if(D.pm[m].indexOf(w)>D.pm[m].indexOf(wife[m]))why=`${D.men[m]} prefers his wife ${D.wom[wife[m]]} to ${D.wom[w]}.`;else why=`${D.wom[w]} prefers her husband ${D.men[hus[w]]} to ${D.men[m]}.`;
+    selM=null;api.mistake(`Not rogue: ${why}`);render();}
+  function stable(){const wife=rounds[r],R=rogues(D.pm,D.pw,wife);if(!R.length)nextRound('Stable: nobody has a partner who would run away with them.');else{api.mistake('Not stable: there is a rogue couple. Go man by man: whom does he prefer to his wife, and does she prefer him back?');}}
+  render();
+};
+
+/* ---- ritual boss: enter the weddings ---- */
+C.matchpick=function(box,L,api,done){
+  const D=DATA[L.data],res=ritualRun(D.pm,D.pw).wife;
+  const sels=D.men.map((m,i)=>h('select',{id:'mp-'+i,'aria-label':m+' marries'},h('option',{value:''},'—'),D.wom.map((w,j)=>h('option',{value:j},w))));
+  const tbl=h('table',{class:'t'},h('thead',{},h('tr',{},h('th',{},'person'),h('th',{},'list (best → worst)'))),h('tbody',{},D.men.map((m,i)=>h('tr',{},h('td',{},h('b',{},m)),h('td',{},listOf(D,true,i)))),D.wom.map((w,j)=>h('tr',{},h('td',{},h('b',{},w)),h('td',{},listOf(D,false,j))))));
+  box.replaceChildren(h('div',{class:'two'},h('div',{},h('p',{class:'h3'},'Lists'),tbl,h('p',{class:'ru',style:'margin-top:8px'},'Прогони ритуал на бумаге: таблица по дням.')),
+    h('div',{class:'col',style:'align-content:start'},h('p',{class:'h3'},'Weddings when the men serenade'),...D.men.map((m,i)=>h('label',{class:'row',for:'mp-'+i},h('b',{style:'min-width:4em'},m+' ⚭'),sels[i])),
+      h('button',{class:'btn primary',onclick:()=>{const v=sels.map(s=>s.value);if(v.some(x=>x===''))return api.info('Choose a wife for every man.');if(new Set(v).size<v.length)return api.mistake('Two men cannot marry the same woman.');
+        if(v.every((x,i)=>+x===res[i])){api.info('Correct: '+res.map((j,i)=>`(${D.men[i]}, ${D.wom[j]})`).join(', ')+'.');done();}else api.mistake('That is not where the ritual ends. Write the day table: Day 1 morning, who goes where, whom does each woman keep?');}},'Check'))));
+};
+
+/* ---- write mode: fill the skeleton ---- */
+function nrm(x){
+  return String(x).toLowerCase()
+    .replace(/[’′‘`]/g,"'").replace(/″/g,"''")
+    .replace(/lambda/g,'λ').replace(/forall/g,'∀').replace(/emptyset|\{\}/g,'∅')
+    .replace(/<=>|<->|\biff\b/g,'⟺').replace(/=>|->/g,'⇒').replace(/!=|=\/=/g,'≠')
+    .replace(/</g,'⟨').replace(/>/g,'⟩')
+    .replace(/\^2/g,'²').replace(/[−–—]/g,'-')
+    .replace(/\bin\b/g,'∈').replace(/\band\b/g,'∧').replace(/&/g,'∧')
+    .replace(/[.·]/g,'·')
+    .replace(/[_\s"“”]/g,'')
+    .replace(/[,;:·]+$/,'')
+    .replace(/^(∀[a-z]+(?:∈[a-z*]+)?)[·,:]/,'$1');
+}
+const KEYS=['⟨','⟩','λ','·','∀','∈','∉','∅','≠','⟺','⇒','∧','∘','*','′','²','|','#'];
+C.cloze=function(box,L,api,done){
+  let last=null;const gapEls={};const keys=Object.keys(L.gaps);
+  const bar=h('div',{class:'keys',role:'toolbar','aria-label':'Symbols'},KEYS.map(k=>h('button',{class:'btn key',type:'button','aria-label':'insert '+k,onmousedown:e=>e.preventDefault(),onclick:()=>{
+    const el=last;if(!el||el.tagName!=='INPUT'||el.readOnly)return api.info('Tap a gap first, then a symbol.');
+    const a=el.selectionStart??el.value.length,b=el.selectionEnd??el.value.length;el.value=el.value.slice(0,a)+k+el.value.slice(b);el.focus();el.setSelectionRange(a+k.length,a+k.length);}},k)));
+  const lines=L.lines.map(t=>{const p=h('p',{class:'cl'});t.split(/\{(\w+)\}/).forEach((part,i)=>{
+    if(i%2===0){if(part)p.append(part);return;}
+    const g=L.gaps[part];let el;
+    if(g.o){el=h('select',{id:`cz-${L.id}-${part}`,class:'gap','aria-label':'choose'},h('option',{value:''},'…'),shuffle(g.o).map(o=>h('option',{value:o},o)));}
+    else{const w=Math.max(4,...g.a.map(x=>x.length))+2;el=h('input',{type:'text',id:`cz-${L.id}-${part}`,class:'gap',autocomplete:'off',autocapitalize:'off',spellcheck:'false',style:`width:${Math.min(w,28)}ch`,'aria-label':'gap'});}
+    el.addEventListener('focus',()=>{last=el;});
+    const wrap=h('span',{class:'gapw'},el);gapEls[part]={el,wrap,g,state:null};p.append(wrap);});return p;});
+  const check=h('button',{class:'btn primary',onclick:run},'Check my skeleton');
+  const out=h('div',{});
+  box.replaceChildren(bar,h('div',{class:'cloze'},lines),h('div',{class:'row',style:'margin-top:12px'},check),out);
+  function run(){
+    const empty=keys.filter(k=>!gapEls[k].el.value.trim());
+    if(empty.length&&!check.dataset.sure){check.dataset.sure='1';api.info(`${empty.length} gap(s) are still empty. Press “Check” again to check anyway.`);return;}
+    check.disabled=true;api.clear();
+    keys.forEach(k=>{const G=gapEls[k],v=G.el.value;
+      const ok=G.g.o?v===G.g.a:G.g.a.some(a=>nrm(a)===nrm(v));
+      G.el.disabled=!!G.g.o;G.el.readOnly=true;
+      if(ok){G.state='ok';G.wrap.className='gapw ok';return;}
+      const model=G.g.o?G.g.a:G.g.a[0];
+      if(G.g.o||!v.trim()){G.state='miss';G.wrap.className='gapw miss';G.wrap.append(h('span',{class:'model'},'→ '+model));return;}
+      G.state='ask';G.wrap.className='gapw ask';
+      const yes=h('button',{class:'btn mini',onclick:()=>judge(G,true)},'same meaning ✓'),no=h('button',{class:'btn mini',onclick:()=>judge(G,false)},'missed ✗');
+      G.extra=h('span',{class:'model'},'model: '+model+' ',yes,no);G.wrap.append(G.extra);});
+    maybeEnd();
+  }
+  function judge(G,ok){G.state=ok?'self':'miss';G.wrap.className='gapw '+(ok?'self':'miss');$$('button',G.extra).forEach(b=>b.remove());maybeEnd();}
+  function maybeEnd(){
+    if(keys.some(k=>gapEls[k].state==='ask')){api.info('Some answers differ from the model in form. Compare and judge each one honestly: same meaning, or missed?');return;}
+    const tot=keys.length,good=keys.filter(k=>['ok','self'].includes(gapEls[k].state)).length,r=good/tot;
+    api.stars=r>=0.9?3:r>=0.7?2:1;api.summary=`${good} of ${tot} gaps right`;
+    const model=h('div',{class:'modelproof'},h('p',{class:'h3'},'Model skeleton · образец'),L.lines.map(t=>h('p',{},t.replace(/\{(\w+)\}/g,(_,k)=>{const g=L.gaps[k];return g.o?g.a:g.a[0];}))));
+    out.replaceChildren(h('div',{class:'feedback info',style:'display:block'},`${good} of ${tot} gaps right. Copy the model into your notes if anything was missing.`),model,h('div',{class:'row',style:'margin-top:12px'},h('button',{class:'btn primary',onclick:done},'Finish')));
+  }
+};
+
+/* ---- Nim duel ---- */
+C.nim=function(box,L,api,done){
+  let piles=[6,12,18],turn=0,busy=false,hint=null,cols=false;
+  const xr=a=>a.reduce((x,y)=>x^y,0);
+  function win(){const s=xr(piles);if(!s)return null;for(let i=0;i<piles.length;i++){const t=piles[i]^s;if(t<piles[i])return{i,to:t};}return null;}
+  function render(){
+    const maxP=18,sw=22,W=90+maxP*sw,Hh=piles.length*46+12;const svg=sv('svg',{viewBox:`0 0 ${W} ${Hh}`,role:'img','aria-label':'piles'});
+    piles.forEach((p,i)=>{const y=24+i*46;svg.append(sv('text',{x:8,y:y+5,class:'svg-b'},p));for(let j=0;j<p;j++){const c=sv('circle',{cx:56+j*sw+9,cy:y,r:9,class:'stone'+(hint&&hint.i===i&&j>=hint.to?' hint':''),tabindex:0,role:'button','aria-label':`leave ${j} in pile ${i+1}`});const go=()=>take(i,j);c.addEventListener('click',go);c.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});svg.append(c);}});
+    const s=xr(piles),b=5;
+    const tb=cols?h('table',{class:'t mono',style:'max-width:360px'},h('tbody',{},piles.map(p=>h('tr',{},h('td',{},p),h('td',{},p.toString(2).padStart(b,'0')))),h('tr',{},h('td',{},h('b',{},'xor')),h('td',{},h('b',{},s.toString(2).padStart(b,'0')+` = ${s}`))))):null;
+    box.replaceChildren(h('div',{class:'stage-tag'},busy?'The computer is thinking …':turn===0?'Your move: click a stone — it and every stone to its right are taken.':''),h('div',{class:'scroll'},svg),
+      h('div',{class:'row',style:'margin-top:10px'},h('button',{class:'btn',onclick:()=>{cols=!cols;render();}},cols?'Hide binary columns':'Show binary columns'),h('button',{class:'btn',onclick:()=>{hint=win();render();if(!hint)api.info('No winning move here: Nim-sum is 0.');}},'Hint')),tb);
+  }
+  function take(i,j){if(busy||turn!==0||j>=piles[i])return;piles[i]=j;hint=null;api.clear();if(piles.every(p=>!p)){api.info('You took the last stone!');setTimeout(done,500);return;}turn=1;busy=true;render();setTimeout(cpu,800);}
+  function cpu(){const w=win();if(w)piles[w.i]=w.to;else{let m=0;piles.forEach((p,k)=>{if(p>piles[m])m=k;});piles[m]-=1;}busy=false;turn=0;
+    if(piles.every(p=>!p)){api.mistake('The computer took the last stone. Leave Nim-sum 0 after every move of yours. New game.');piles=[6,12,18];}
+    else if(xr(piles)!==0&&!w){api.info('The computer had no winning move: you left Nim-sum 0. Keep doing that.');}
+    render();}
+  render();
+};
+
+/* ---- diagonal ---- */
+C.diag=function(box,L,api,done){
+  const R=5,Cn=7,rows=[...Array(R)].map(()=>[...Array(Cn)].map(()=>Math.random()<.5?1:0)),d=Array(Cn).fill(null);
+  function render(){
+    const c=40,ox=44,oy=26,W=ox+Cn*c+70,Hh=oy+(R+1)*c+30;const svg=sv('svg',{viewBox:`0 0 ${W} ${Hh}`,role:'img','aria-label':'diagonal table'});
+    for(let j=0;j<Cn;j++)svg.append(sv('text',{x:ox+j*c+c/2,y:oy-8,'text-anchor':'middle',class:'svg-m'},j));
+    rows.forEach((row,i)=>{svg.append(sv('text',{x:ox-8,y:oy+i*c+c/2+5,'text-anchor':'end',class:'svg-b'},'s'+i));row.forEach((v,j)=>{svg.append(sv('rect',{x:ox+j*c,y:oy+i*c,width:c,height:c,class:'bitc'+(i===j?' dg':'')}),sv('text',{x:ox+j*c+c/2,y:oy+i*c+c/2+5,'text-anchor':'middle',class:'svg-b'},v));});svg.append(sv('text',{x:ox+Cn*c+8,y:oy+i*c+c/2+5,class:'svg-m'},'…'));});
+    const yd=oy+R*c+10;svg.append(sv('text',{x:ox-8,y:yd+c/2+5,'text-anchor':'end',class:'svg-b'},'d'));
+    d.forEach((v,j)=>{const bad=j<R&&v!=null&&v===rows[j][j];const r=sv('rect',{x:ox+j*c,y:yd,width:c,height:c,class:'bitc '+(bad?'dbad':'d'),tabindex:0,role:'button','aria-label':'d place '+j});
+      const go=()=>{d[j]=d[j]==null?0:d[j]===0?1:null;render();};r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});
+      svg.append(r,sv('text',{x:ox+j*c+c/2,y:yd+c/2+5,'text-anchor':'middle',class:'svg-b',style:'pointer-events:none'},v==null?'?':v));});
+    box.replaceChildren(h('p',{class:'ru'},'Клик по клетке d: ? → 0 → 1. Синие рамки — диагональ. Места 5 и 6 могут быть любыми.'),h('div',{class:'scroll'},svg),
+      h('button',{class:'btn primary',style:'margin-top:8px',onclick:check},'Check d'));
+  }
+  function check(){for(let i=0;i<R;i++){if(d[i]==null)return api.info(`Fill place ${i} of d.`);if(d[i]===rows[i][i])return api.mistake(`d agrees with s${i} at place ${i} (both ${d[i]}). Flip it.`);}api.info('d differs from every row sᵢ at place i, so d is not in the list.');setTimeout(done,600);}
+  render();
+};
+</script>
+
+<script>
+/* ================= screens ================= */
+const app=$('#app');
+let view={v:'map'};
+const allLevels=()=>WORLDS.flatMap(w=>w.levels);
+function starsOf(id){return prog[id]||0;}
+function unlocked(W,idx){return idx===0||starsOf(W.levels[idx-1].id)>0;}
+function starStr(n){return h('span',{class:'stars','aria-label':n+' of 3 stars'},h('b',{},'★'.repeat(n)),'★'.repeat(3-n));}
+function renderScore(){const L=allLevels(),st=L.reduce((a,l)=>a+starsOf(l.id),0),cl=L.filter(l=>starsOf(l.id)>0).length;$('#score').replaceChildren(h('span',{},h('span',{class:'star'},'★ '),`${st}/${L.length*3}`),h('span',{},`${cl}/${L.length} cleared`));}
+function go(v){view=v;render();window.scrollTo({top:0});}
+function render(){renderScore();if(view.v==='map')renderMap();else if(view.v==='island')renderIsland(WORLDS.find(w=>w.id===view.w));else renderLevel(WORLDS.find(w=>w.id===view.w),view.l);}
+
+function blob(cx,cy,r,seed){let p='';const N=14;for(let k=0;k<=N;k++){const a=k/N*Math.PI*2,rr=r*(0.82+0.18*Math.sin(a*3+seed)+0.08*Math.cos(a*5+seed*2));const x=cx+rr*Math.cos(a)*1.25,y=cy+rr*Math.sin(a)*0.8;p+=(k?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}return p+'Z';}
+const PORTRAIT=[[115,105],[285,285],[115,465],[285,645],[115,825],[285,1005]];
+function renderMap(){
+  const tall=window.innerWidth<640;
+  const VW=tall?400:1000,VH=tall?1130:700,R=tall?56:70;
+  const P=WORLDS.map((w,i)=>tall?PORTRAIT[i]:[w.x,w.y]);
+  const svg=sv('svg',{viewBox:`0 0 ${VW} ${VH}`,role:'img','aria-label':'Map of six islands'});
+  for(let y=40;y<VH;y+=48)svg.append(sv('path',{d:`M0,${y} `+[...Array(Math.ceil(VW/50)+1)].map((_,k)=>`Q${k*50+25},${y+(k%2?6:-6)} ${k*50+50},${y}`).join(' '),class:'wave',opacity:.6}));
+  svg.append(sv('path',{d:'M'+P.map(p=>p.join(',')).join(' L'),class:'route'}));
+  WORLDS.forEach((W,i)=>{const [x,y]=P[i],done=W.levels.filter(l=>starsOf(l.id)>0).length,st=W.levels.reduce((a,l)=>a+starsOf(l.id),0);
+    const g=sv('g',{class:'isl',tabindex:0,role:'button','aria-label':`${W.name}, ${W.ch}, ${done} of ${W.levels.length} levels`});
+    g.append(sv('path',{d:blob(x,y,R+8,i*1.7+1),class:'ring',transform:`translate(0,6)`}),sv('path',{d:blob(x,y,R,i*1.7+1),class:'land',style:`fill:var(--i-${W.c}-s)`}),
+      sv('path',{d:blob(x,y-4,R*0.57,i*2.3+3),style:`fill:var(--i-${W.c})`,opacity:.9}),
+      sv('text',{x,y:y+R+30,'text-anchor':'middle',class:'isl-name'},W.name),sv('text',{x,y:y+R+48,'text-anchor':'middle',class:'isl-sub'},W.ch),
+      sv('text',{x,y:y+5,'text-anchor':'middle',class:'isl-stars'},`${done}/${W.levels.length} · ★${st}`));
+    const open=()=>go({v:'island',w:W.id});g.addEventListener('click',open);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});svg.append(g);});
+  let ni=WORLDS.findIndex(W=>W.levels.some(l=>!starsOf(l.id)));if(ni<0)ni=WORLDS.length-1;const [nx,ny]=P[ni];
+  svg.append(sv('g',{transform:`translate(${tall?(nx<200?nx+R+6:nx-R-40):nx-96},${ny-60})`},sv('path',{d:'M0,14 L30,14 L24,24 L6,24 Z',class:'ship'}),sv('path',{d:'M15,14 L15,-6 L28,8 Z',class:'ship'})));
+  const resetBox=h('div',{class:'reset'});
+  const ask=()=>resetBox.replaceChildren(h('span',{},'Erase all stars? · Стереть весь прогресс?'),h('button',{class:'btn',onclick:()=>{prog={};save();render();}},'Yes, erase'),h('button',{class:'btn',onclick:idle},'Cancel'));
+  const idle=()=>resetBox.replaceChildren(h('button',{class:'btn',onclick:ask},'Reset progress'));
+  idle();
+  app.replaceChildren(h('div',{class:'sea'},svg),
+    h('div',{class:'legend-list'},WORLDS.map(W=>h('button',{class:'btn',style:`--ic:var(--i-${W.c})`,onclick:()=>go({v:'island',w:W.id})},h('span',{class:'t'},W.name),h('span',{class:'ru'},W.ch+' · '+W.ru)))),
+    h('p',{class:'tip ru'},'Острова открыты все; уровни внутри острова — по порядку. Сердечки: 3 на уровень. Звёзды: 3 — без ошибок. Прогресс хранится на этом устройстве. Твои слабые места с мидтерма — боссы Recursion Reef (Ex1) и Diagonal Deep (Ex3). Skeleton Shipyard — режим письма: заполняешь пропуски в скелетах Ex1/Ex2/Ex3, без сердечек.'),
+    resetBox);
+}
+let _rz=null,_wasTall=window.innerWidth<640;
+window.addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(()=>{const t=window.innerWidth<640;if(t!==_wasTall){_wasTall=t;if(view.v==='map')renderMap();}},150);});
+function renderIsland(W){
+  const band=h('div',{class:'band',style:`--ic:var(--i-${W.c});--ics:var(--i-${W.c}-s)`},h('div',{class:'ch'},W.ch),h('h2',{},W.name),h('p',{class:'ru',style:'margin-top:4px'},W.ru),
+    W.write?h('p',{style:'margin:8px 0 0;font-size:14px'},'Write mode: no hearts. Fill every gap of the exam skeleton, press Check, compare with the model. Answers in a different but equivalent form: you judge them yourself.',h('span',{class:'ru',style:'display:block'},'Без сердечек. Заполни пропуски, сверь с образцом; если форма другая, но смысл тот же — отметь сама.')):null);
+  const trail=h('ol',{class:'trail',style:`--ic:var(--i-${W.c});--ics:var(--i-${W.c}-s)`},W.levels.map((L,i)=>{const ok=unlocked(W,i);
+    return h('li',{},h('button',{class:'node'+(L.boss?' boss':''),disabled:!ok,onclick:()=>go({v:'level',w:W.id,l:L.id})},h('span',{class:'num'},L.boss?'♛':i+1),
+      h('span',{},h('span',{class:'tt'},L.title,L.boss&&(W.id==='str'||W.id==='inf')?h('span',{class:'tag'},'midterm trap'):null,W.write?h('span',{class:'tag write'},'write'):null),h('span',{class:'meta',style:'display:block'},L.ru+(ok?'':' · locked: clear the level before'))),starStr(starsOf(L.id))));}));
+  app.replaceChildren(h('div',{class:'row',style:'margin-bottom:12px'},h('button',{class:'btn',onclick:()=>go({v:'map'})},'← Map')),band,trail);
+}
+function renderLevel(W,lid){
+  const idx=W.levels.findIndex(l=>l.id===lid),L=W.levels[idx];let hearts=3,mistakes=0,over=false;
+  const st=`--ic:var(--i-${W.c});--ics:var(--i-${W.c}-s)`;
+  const heartsEl=h('div',{class:'hearts','aria-live':'polite'});
+  const fb=h('div',{class:'feedback','aria-live':'polite'});
+  const play=h('div',{}),endBox=h('div',{hidden:true}),cardEl=h('div',{class:'card'},play,fb);
+  function drawHearts(){heartsEl.replaceChildren(...[0,1,2].map(k=>h('span',{class:k<hearts?'':'lost'},'♥')));heartsEl.setAttribute('aria-label',hearts+' hearts left');}
+  const api={stars:null,summary:null,
+    mistake(msg){if(over)return;mistakes++;hearts--;drawHearts();try{navigator.vibrate&&navigator.vibrate(60);}catch(e){}fb.className='feedback bad';fb.replaceChildren(h('b',{},'−1 ♥  '),msg);if(hearts<=0)fail();},
+    info(msg){if(over)return;fb.className='feedback info';fb.replaceChildren(msg);},
+    clear(){if(over)return;fb.className='feedback';fb.replaceChildren();}
+  };
+  function fail(){over=true;cardEl.hidden=true;endBox.hidden=false;endBox.replaceChildren(h('div',{class:'card result'},h('p',{class:'big'},'Out of hearts'),h('p',{class:'ru'},'Сердечки кончились. Это нормально: попробуй ещё раз, теперь ты знаешь ловушки.'),h('div',{class:'lesson'},h('b',{},'Remember: '),L.lesson),h('div',{class:'row',style:'margin-top:14px'},h('button',{class:'btn primary',onclick:()=>go({v:'level',w:W.id,l:L.id})},'Try again'),h('button',{class:'btn',onclick:()=>go({v:'island',w:W.id})},'Back to the island'))));}
+  function win(){if(over)return;over=true;cardEl.hidden=true;endBox.hidden=false;const s=api.stars??(mistakes===0?3:mistakes===1?2:1);prog[L.id]=Math.max(starsOf(L.id),s);save();renderScore();
+    const nxt=W.levels[idx+1];const wi=WORLDS.indexOf(W),nextW=WORLDS[wi+1];
+    fb.className='feedback';fb.replaceChildren();
+    endBox.replaceChildren(h('div',{class:'card result pop'},h('p',{class:'big'},L.boss?'Boss defeated!':L.type==='cloze'?'Skeleton checked':'Level cleared'),starStr(s),h('p',{class:'ru'},api.summary?api.summary:s===3?'Без единой ошибки.':`Ошибок: ${mistakes}.`),
+      h('div',{class:'lesson'},h('b',{},'Take away: '),L.lesson),
+      h('div',{class:'row',style:'margin-top:14px'},nxt?h('button',{class:'btn primary',onclick:()=>go({v:'level',w:W.id,l:nxt.id})},'Next level →'):nextW?h('button',{class:'btn primary',onclick:()=>go({v:'island',w:nextW.id})},`Sail to ${nextW.name} →`):null,
+        h('button',{class:'btn',onclick:()=>go({v:'island',w:W.id})},'Island'),h('button',{class:'btn',onclick:()=>go({v:'level',w:W.id,l:L.id})},'Replay'))));}
+  drawHearts();heartsEl.hidden=L.type==='cloze';
+  app.replaceChildren(h('div',{class:'row',style:'margin-bottom:12px'},h('button',{class:'btn',onclick:()=>go({v:'island',w:W.id})},'← '+W.name)),
+    h('div',{class:'lvbar'},h('div',{},h('div',{class:'stage-tag'},`${W.name} · ${L.boss?'boss':'level '+(idx+1)}`),h('h2',{},L.title)),heartsEl),
+    h('div',{class:'brief',style:st},h('p',{},L.brief),h('p',{class:'ru'},L.briefRu)),
+    cardEl,endBox);
+  C[L.type](play,L,api,win);
+}
+function start(data){if(data&&data.view)view=data.view;try{window.claude?.hot?.snapshot?.(()=>({view}));}catch(e){}render();}
+if(window.claude?.hot?.ready)window.claude.hot.ready(start);else start(window.claude?.hot?.data??{});
+window.__quest={WORLDS,C,DATA,ritualRun,rogues,go};
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+}
+</script>
+</body>
+</html>

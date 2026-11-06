@@ -26,6 +26,7 @@
   --good:#13804a; --good-soft:#dcf1e4; --bad:#c2372c; --bad-soft:#f9e1de; --gold:#c98f0a; --heart:#d93a52;
   --i-ind:#e9785f; --i-ind-s:#fbe3dc; --i-mac:#dda722; --i-mac-s:#f8edc9; --i-rit:#ec8636; --i-rit-s:#fbe4cf;
   --i-str:#4b9fd4; --i-str-s:#dbeefa; --i-inf:#8a72d0; --i-inf-s:#e9e3f8; --i-skl:#2a9a8a; --i-skl-s:#d6f0eb;
+  --i-prf:#d4609a; --i-prf-s:#f9e0ec; --i-wop:#4f9f45; --i-wop-s:#dff0da; --i-lgc:#8a9a1e; --i-lgc-s:#eef2d0; --i-set:#a8743f; --i-set-s:#f3e6d6;
   --sq-a:#d9e3fa; --sq-b:#f6eac6; --water:#4f8fdc; --glass:#eef3f9;
   --f-disp:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -38,6 +39,7 @@
     --good:#58cf8c; --good-soft:#143224; --bad:#ff7d72; --bad-soft:#3b1d1c; --gold:#f3c34f; --heart:#ff6f86;
     --i-ind:#f08f78; --i-ind-s:#3a2420; --i-mac:#eec04e; --i-mac-s:#352c14; --i-rit:#f6a15a; --i-rit-s:#3a2716;
     --i-str:#6cb8ea; --i-str-s:#14303f; --i-inf:#a593ea; --i-inf-s:#272240; --i-skl:#4cc3b2; --i-skl-s:#12302c;
+    --i-prf:#ef8dbb; --i-prf-s:#3a1e2c; --i-wop:#79c46c; --i-wop-s:#183018; --i-lgc:#b9c94a; --i-lgc-s:#2a2f12; --i-set:#d19c66; --i-set-s:#33261a;
     --sq-a:#25304d; --sq-b:#3a321e; --water:#3f80cc; --glass:#1f2633;
     color-scheme:dark;
   }
@@ -48,6 +50,7 @@
   --good:#58cf8c; --good-soft:#143224; --bad:#ff7d72; --bad-soft:#3b1d1c; --gold:#f3c34f; --heart:#ff6f86;
   --i-ind:#f08f78; --i-ind-s:#3a2420; --i-mac:#eec04e; --i-mac-s:#352c14; --i-rit:#f6a15a; --i-rit-s:#3a2716;
   --i-str:#6cb8ea; --i-str-s:#14303f; --i-inf:#a593ea; --i-inf-s:#272240; --i-skl:#4cc3b2; --i-skl-s:#12302c;
+  --i-prf:#ef8dbb; --i-prf-s:#3a1e2c; --i-wop:#79c46c; --i-wop-s:#183018; --i-lgc:#b9c94a; --i-lgc-s:#2a2f12; --i-set:#d19c66; --i-set-s:#33261a;
   --sq-a:#25304d; --sq-b:#3a321e; --water:#3f80cc; --glass:#1f2633;
   color-scheme:dark;
 }
@@ -213,6 +216,143 @@ select.gap{font-family:var(--f-body)}
 .modelproof{margin-top:12px;padding:12px 14px;border-radius:10px;border:1.5px solid var(--good);background:var(--paper)}
 .modelproof p{margin:0 0 4px;font-family:var(--f-mono);font-size:13.5px}
 .tag.write{background:var(--i-skl-s);color:var(--i-skl)}
+/* truth tables, counter-models, Venn */
+table.tt{border-collapse:separate;border-spacing:3px;font-family:var(--f-mono);font-size:13px;margin:4px 0}
+table.tt th{font-size:12px;font-weight:600;color:var(--pencil);padding:2px 6px;vertical-align:bottom;text-align:center;max-width:9em}
+table.tt td{text-align:center;padding:0}
+table.tt .tv{font-weight:700;color:var(--ink);min-width:26px}
+table.tt th.tv{color:var(--ink)}
+table.tt .tg{color:var(--pencil);background:var(--sea);border-radius:6px;min-width:34px;height:32px}
+.ttc{font:inherit;font-family:var(--f-mono);font-weight:700;font-size:14px;width:38px;height:32px;border:1.5px dashed var(--accent);border-radius:7px;background:var(--accent-soft);color:var(--ink);cursor:pointer;touch-action:manipulation}
+.ttc[data-v="T"],.ttc[data-v="F"]{border-style:solid;background:var(--paper)}
+.ttc[data-v="F"]{color:var(--pencil)}
+.ttc.bad{border-color:var(--bad);background:var(--bad-soft)}
+.ttc.ok{border-color:var(--good);background:var(--good-soft)}
+.ttc:disabled{cursor:default}
+.cmsel{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:10px}
+.cmsel label{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.cmt td:last-child{width:3em;text-align:center;font-weight:700}
+.tvT{color:var(--good)} .tvF{color:var(--bad)}
+.vsvg{display:block;width:100%;max-width:440px;height:auto;cursor:pointer;touch-action:manipulation}
+.vdom{fill:var(--paper);stroke:var(--pencil);stroke-width:1.5}
+.vfill{fill:var(--accent);opacity:.42}
+.vfill.bad{fill:var(--bad);opacity:.5}
+.vcir{fill:none;stroke:var(--ink);stroke-width:2}
+.vlab{font-family:var(--f-disp);font-weight:800;font-size:20px;fill:var(--ink)}
+.vnum{font-family:var(--f-mono);font-size:12px;fill:var(--pencil);pointer-events:none}
+.vnum.bad{fill:var(--bad);font-weight:700;font-size:14px}
+.chips2{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:10px}
+.btn.chip2{font-size:13px;padding:6px 9px}
+.zone{font-family:var(--f-mono);font-size:13px;letter-spacing:.12em;fill:var(--pencil);font-weight:600}
+.legend-h{margin:16px 0 0}
+/* toys & lighthouse */
+.toy{margin-top:12px;padding:14px clamp(10px,2vw,16px);border:1.5px solid var(--rule);border-radius:12px;background:var(--paper);min-width:0}
+.toy p{margin:0 0 6px}
+.tfc{display:inline-block;min-width:1.9em;text-align:center;font-family:var(--f-mono);font-weight:700;border-radius:6px;padding:0 5px;margin-left:4px;font-size:13px}
+.tfc.t{background:var(--good-soft);color:var(--good)} .tfc.f{background:var(--bad-soft);color:var(--bad)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg .btn{font-size:13.5px;padding:6px 10px}
+.stp{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--rule);border-radius:10px;padding:3px 6px;background:var(--paper)}
+.stp .btn.mini{margin:0;min-width:30px;text-align:center}
+.btn.sw{font-family:var(--f-mono)}
+.lamps{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));margin:10px 0}
+.lamp{border:2px solid var(--rule);border-radius:10px;padding:7px 10px;display:grid;gap:2px}
+.lamp.t{border-color:var(--good)} .lamp.f{border-color:var(--bad)}
+.story{font-weight:700;margin:8px 0}
+tr.cur td{background:var(--accent-soft)}
+tr.unseen td{color:var(--pencil)}
+tr.click{cursor:pointer}
+tr.okrow td:first-child{color:var(--good)} tr.badrow td:first-child{color:var(--bad)}
+.why.bad{background:var(--bad-soft)}
+.th{font-family:var(--f-disp);font-weight:800;font-size:clamp(20px,3vw,24px);margin:6px 0 4px;line-height:1.15}
+.ids{font-family:var(--f-mono);font-size:12.5px;color:var(--ic,var(--accent));margin:0 0 8px;font-weight:600}
+.tp{margin:0 0 8px}
+.try{margin-top:12px;padding:10px 14px;border-left:5px solid var(--ic,var(--accent));background:var(--ics,var(--accent-soft));border-radius:8px}
+.try ul{margin:4px 0 0;padding-left:20px}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot2{width:14px;height:14px;border-radius:50%;border:2px solid var(--pencil);background:transparent;padding:0;cursor:pointer}
+.dot2.on{background:var(--ic,var(--accent));border-color:var(--ic,var(--accent))}
+.pic{margin:10px 0;padding:12px 14px;border:1.5px solid var(--ic,var(--rule));border-radius:12px;background:var(--paper)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}
+.fc{border:1.5px solid var(--rule);border-radius:8px;padding:3px 9px;font-size:13.5px;background:var(--paper)}
+.fc.k{border-color:var(--ic,var(--accent));background:var(--ics,var(--accent-soft));font-weight:700}
+.flow .ar{color:var(--pencil)}
+.mname{font-family:var(--f-mono);font-size:12.5px;min-width:118px;color:var(--pencil);font-weight:600}
+.steps{margin:0;padding-left:22px;display:grid;gap:6px}
+.steps li{padding-left:4px}
+.stag{display:inline-block;margin-left:8px;font-family:var(--f-mono);font-size:11.5px;padding:1px 7px;border-radius:99px;background:var(--ics,var(--accent-soft));color:var(--ink);border:1px solid var(--ic,var(--accent))}
+.tag.theory{background:var(--accent-soft);color:var(--accent)}
+.lab{margin-top:14px;border:2px dashed var(--ic,var(--accent));border-radius:14px;background:var(--paper);padding:10px 14px}
+.lab summary{cursor:pointer;font-weight:700;font-family:var(--f-disp);font-size:16px}
+.labin{margin-top:10px}
+.tower{display:inline-flex;flex-wrap:wrap;gap:2px;max-width:220px}
+.blk{width:11px;height:11px;border-radius:3px}
+.blk.b{background:var(--i-str)} .blk.a{background:var(--i-rit)}
+.strip{display:flex;flex-wrap:wrap;gap:4px}
+.cellN{min-width:32px;height:30px;font-family:var(--f-mono);font-size:12px;border-radius:7px;border:1.5px solid var(--rule);background:var(--paper);color:var(--ink);cursor:pointer;padding:0 4px}
+.cellN.g{background:var(--good-soft);border-color:var(--good)} .cellN.r{background:var(--bad-soft);border-color:var(--bad)}
+.cellN.m{outline:3px solid var(--gold);outline-offset:1px;font-weight:700}
+.cellN.sel{box-shadow:0 0 0 3px var(--accent)}
+.nline{display:block;width:100%;max-width:640px;height:auto}
+.axis{stroke:var(--pencil);stroke-width:1.5}
+.nd{fill:var(--pencil)} .nd.on{fill:var(--accent)} .nd.hollow{fill:var(--paper);stroke:var(--ink);stroke-width:1.5} .nd.minz{fill:var(--good)}
+.ptr{fill:var(--accent)}
+.fl{display:flex;align-items:center;gap:8px;margin-top:8px}
+.gap.fin{flex:1;min-width:0;font-size:15px;padding:6px 10px;border-style:solid}
+.ftree{display:block;width:100%;height:auto;margin:6px 0}
+.tedge{stroke:var(--pencil);stroke-width:1.6}
+.tn circle{stroke-width:2} .tn text{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink)}
+.tn.t circle{fill:var(--good-soft);stroke:var(--good)} .tn.f circle{fill:var(--bad-soft);stroke:var(--bad)}
+.scroll.tall{max-height:360px;overflow:auto;border:1px solid var(--rule);border-radius:8px}
+.tt2 td,.tt2 th{text-align:center;padding:3px 6px}
+.qwrap{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;margin-top:10px}
+.qgrid{display:grid;gap:4px;align-items:center}
+.qh{font-family:var(--f-mono);font-size:12px;color:var(--pencil);text-align:center;padding:2px 4px;border-radius:6px}
+.qh.good{background:var(--good-soft);color:var(--good);font-weight:700} .qh.bad{background:var(--bad-soft);color:var(--bad);font-weight:700}
+.qc{width:44px;height:44px;border:1.5px solid var(--rule);border-radius:8px;background:var(--paper);cursor:pointer;padding:0}
+.qc.on{background:var(--accent);border-color:var(--accent)}
+.stmts{display:grid;gap:6px;flex:1;min-width:230px}
+.stmt{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 10px;border:1.5px solid var(--rule);border-radius:9px;cursor:pointer;background:var(--paper);font:inherit;color:inherit;text-align:left}
+.stmt.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.vpair{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:700px){.vpair{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.vsvg.static{cursor:default}
+.small{font-size:12.5px}
+.arrwrap{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;margin-top:8px}
+.arrsvg{width:100%;max-width:320px;height:auto}
+.adot{cursor:pointer} .adot circle{fill:var(--paper);stroke:var(--ink);stroke-width:1.8} .adot text{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink);pointer-events:none}
+.adot.sel circle{fill:var(--accent-soft);stroke:var(--accent);stroke-width:3} .adot.bad circle{stroke:var(--bad);stroke-width:3;fill:var(--bad-soft)}
+.badges{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));flex:1;min-width:220px}
+.badge{border:2px solid var(--rule);border-radius:9px;padding:6px 10px;font-size:13.5px}
+.badge.t{border-color:var(--good)} .badge.f{border-color:var(--bad)}
+.words{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.word{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--rule);border-radius:7px;background:var(--paper)}
+.lt{width:24px;height:24px;display:grid;place-items:center;border-radius:5px;font-family:var(--f-mono);font-size:12.5px;font-weight:700;color:var(--ink);border:2px solid var(--rule)}
+.lt.bit{background:var(--paper)} .lt.bit.on{background:var(--accent-soft);border-color:var(--accent)}
+.domsvg{display:block;width:100%;height:auto}
+.dom rect{fill:var(--paper);stroke:var(--ink);stroke-width:1.6}
+.dom{cursor:pointer;transition:transform .35s ease-in}
+.dom.base rect{fill:var(--accent-soft);stroke:var(--accent);stroke-width:2.5}
+.dom.brk rect{stroke:var(--bad);stroke-dasharray:4 3}
+.dom.down{transform:rotate(72deg)}
+@media (prefers-reduced-motion: reduce){.dom{transition:none}}
+.sqsvg{width:100%;height:auto}
+.boardsvg{width:100%;max-width:330px;height:auto}
+.sq.nb{stroke:var(--accent);stroke-width:3;cursor:pointer}
+.trail{fill:var(--ink);opacity:.35}
+.jugsvg{width:100%;max-width:260px;height:auto}
+.nbx{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--ic,var(--accent));border-radius:9px;padding:4px 6px;margin:2px;background:var(--paper);font-family:var(--f-mono)}
+.nbx.lam{border-style:dashed;color:var(--pencil)}
+.trace{display:grid;gap:2px}
+.trace p{margin:0;font-size:13px}
+.rm{display:inline-flex;flex-direction:column;border:2px solid var(--ic,var(--accent));border-radius:10px;padding:4px 6px;margin:2px;background:var(--paper)}
+.rmh{font-size:12px;color:var(--pencil)}
+.rmb{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.rmu{display:inline-flex;flex-direction:column;align-items:flex-start}
+.diagsvg{display:block;width:100%;max-width:360px;height:auto}
+.pairsvg{display:block;width:100%;max-width:300px;height:auto}
+.pc{fill:var(--paper);stroke:var(--rule);stroke-width:1.5;cursor:pointer} .pc.on{fill:var(--good-soft);stroke:var(--good)} .pc.sel{stroke:var(--accent);stroke-width:3}
+.walk{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round;opacity:.8;pointer-events:none}
 @keyframes pop{0%{transform:scale(.96)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
 .pop{animation:pop .28s ease-out}
 @media (prefers-reduced-motion: reduce){.pop{animation:none}}
@@ -228,7 +368,7 @@ body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
   <header class="top">
     <div class="brand">
       <h1>Proof Archipelago</h1>
-      <p>Midterm 2 quest · chapters 5–8 · six islands, 34 levels · <span class="ru">квест по главам 5–8 + режим письма</span></p>
+      <p>Course quest · chapters 1–8 · <span id="counts">11 islands</span> · <span class="ru">квест по главам 1–8 + режим письма</span></p>
     </div>
     <div class="score" id="score" aria-live="polite"></div>
   </header>
@@ -237,6 +377,7 @@ body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
 
 <script>
 /* ================= helpers ================= */
+for(const P of [Element.prototype,DocumentFragment.prototype])for(const m of ['append','prepend','replaceChildren']){const o=P[m];P[m]=function(...a){return o.apply(this,a.flat(9).filter(x=>x!=null&&x!==false));};}
 const $=(q,r=document)=>r.querySelector(q), $$=(q,r=document)=>[...r.querySelectorAll(q)];
 function h(tag,attrs,...kids){const e=document.createElement(tag);for(const[k,v]of Object.entries(attrs||{})){if(v==null||v===false)continue;if(k==='class')e.className=v;else if(k==='html')e.innerHTML=v;else if(k.startsWith('on')&&typeof v==='function')e.addEventListener(k.slice(2),v);else e.setAttribute(k,v===true?'':v);}for(const c of kids.flat(9)){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
 const SVGNS='http://www.w3.org/2000/svg';
@@ -677,6 +818,439 @@ WORLDS.push({id:'skl',name:'Skeleton Shipyard',ru:'Верфь скелетов',
 </script>
 
 <script>
+/* ================= content · midterm 1 (ch. 1–4) ================= */
+const TV=b=>b?'T':'F';
+const IMP=(a,b)=>!a||b, IFF=(a,b)=>a===b, XOR=(a,b)=>a!==b;
+/* counter-model lab: predicates on the domain ℕ (checked on 0..30; every menu predicate depends only on parity or on x < 5) */
+const DOM=[...Array(31).keys()];
+const AL=p=>DOM.every(x=>p(x)),EX=p=>DOM.some(x=>p(x));
+const UP=[['x is even',x=>x%2===0],['x is odd',x=>x%2===1],['x = 0',x=>x===0],['x > 0',x=>x>0],['x < 5',x=>x<5],['x ≥ 5',x=>x>=5],['always true',()=>true],['always false',()=>false]];
+/* binary predicates P(x, y) on ℕ with their values of [∀x ∃y. P, ∃y ∀x. P] */
+const BP=[['x < y',[true,false]],['x = y',[true,false]],['y ≤ x',[true,true]],['y = x + 1',[true,false]],['x = y + 1',[false,false]],['x + y is even',[true,false]],['always true',[true,true]],['always false',[false,false]]];
+const CLS=['valid','satisfiable, not valid','unsatisfiable'];
+const WT=['true','false'];
+const ARROWS=['bijection','injective, not surjective','surjective, not injective','total function, neither inj. nor surj.','a function, but not total','not a function'];
+
+const MT1=[
+/* ---------- Ch. 1 ---------- */
+{id:'prf',name:'Proof Cove',ru:'Бухта доказательств',ch:'Ch. 1 · Proofs',c:'prf',zone:1,levels:[
+  {id:'prf1',title:'Proposition check',ru:'Высказывание или нет',type:'mc',
+   brief:'A proposition is a statement that is either true or false. For each sentence: true, false, or not a proposition at all?',briefRu:'Истинно, ложно или вообще не высказывание?',
+   lesson:'P ⇒ Q is false only when P is true and Q is false. A false hypothesis makes any implication true. Questions, requests and the liar sentence are not propositions.',
+   opts:['true','false','not a proposition'],
+   qs:[
+    {q:'If 1 = 2, then the Moon is made of cheese.',a:0,why:'The hypothesis is false, so the implication is true. No causal link is needed.'},
+    {q:'If 2 is even, then 3 is even.',a:1,why:'True hypothesis, false conclusion: T ⇒ F is the only false row.'},
+    {q:'If 3 is even, then 2 is even.',a:0,why:'F ⇒ T is true.'},
+    {q:'2 + 2 = 4 or 1 = 2.',a:0,why:'In mathematics “or” is inclusive: at least one side is true.'},
+    {q:'Is 17 prime?',a:2,why:'A question is neither true nor false.'},
+    {q:'This statement is false.',a:2,why:'The liar paradox: if it is true it is false, and the other way round.'},
+    {q:'For every n ∈ ℕ, n² + n + 41 is prime.',a:1,why:'True for n = 0, …, 39, but 40² + 40 + 41 = 41². Many checks are not a proof.'},
+    {q:'Please prove this lemma.',a:2,why:'A request, not a statement.'},
+   ]},
+  {id:'prf2',title:'Logic traps',ru:'Ловушки: обратное, отрицание, ошибки',type:'mc',
+   brief:'Converse, contrapositive, negation, and two classic broken proofs.',briefRu:'Обратное, контрапозиция, отрицание и «доказательства» с ошибкой.',
+   lesson:'P ⇒ Q ≡ ¬Q ⇒ ¬P (contrapositive). The converse Q ⇒ P and the inverse ¬P ⇒ ¬Q are NOT equivalent to it. ¬(P ⇒ Q) ≡ P ∧ ¬Q.',
+   qs:[
+    {q:'Which statement is equivalent to P ⇒ Q?',opts:['¬Q ⇒ ¬P (contrapositive)','Q ⇒ P (converse)','¬P ⇒ ¬Q (inverse)','P ∧ ¬Q'],a:0,why:'Negate both and swap. The converse and the inverse are equivalent to each other, not to P ⇒ Q.'},
+    {q:'The negation of P ⇒ Q is …',opts:['P ∧ ¬Q','¬P ⇒ ¬Q','¬P ∧ Q','Q ⇒ P'],a:0,why:'P ⇒ Q fails exactly when P is true and Q is false.'},
+    {q:'“If it rains, the street is wet. The street is wet. So it rained.”',opts:['Not valid: affirming the consequent','Valid: modus ponens','Valid: contraposition'],a:0,why:'From P ⇒ Q and Q you cannot get P: a sprinkler also wets the street.'},
+    {q:'“If 4 divides n, then n is even. 4 does not divide n. So n is not even.”',opts:['Not valid: denying the antecedent; n = 2 is a counterexample','Valid: contraposition','Valid: modus ponens'],a:0,why:'From P ⇒ Q and ¬P nothing follows about Q.'},
+    {q:'The contrapositive of “if n² is even, then n is even” is …',opts:['if n is odd, then n² is odd','if n is even, then n² is even','if n² is odd, then n is odd','n² is even and n is odd'],a:0,why:'¬Q ⇒ ¬P with Q = “n is even”, P = “n² is even”.'},
+    {q:'Let a = b. Then a² = ab, so a² − b² = ab − b², so (a − b)(a + b) = b(a − b), so a + b = b, so 2 = 1. Where is the bug?',opts:['Dividing by a − b, which is 0','Squaring','Factoring a² − b²','Starting with a = b'],a:0,why:'From (a − b)·X = (a − b)·Y you may not cancel a − b when it is 0.'},
+    {q:'“Proof” of an inequality: start from the claim, transform it, reach 0 ≤ (a − b)², which is true. Done?',opts:['No: that is the wrong direction; it proves nothing unless every step is reversible','Yes: it is a proof by contradiction','Yes: 0 ≤ (a − b)² is always true'],a:0,why:'Every step must go FROM what you know. Write the chain backwards, or justify each link as an iff.'},
+    {q:'“P iff Q” means …',opts:['(P ⇒ Q) and (Q ⇒ P)','P ⇒ Q only','P and Q are both true','P or Q'],a:0,why:'An iff proof has two directions, or a chain of reversible links.'},
+   ]},
+  {id:'prf3',title:'Pick the method',ru:'Выбери метод',type:'mc',
+   brief:'Which proof method fits each claim best?',briefRu:'Какой метод подходит лучше всего?',
+   lesson:'direct: assume P, deduce Q · contrapositive: assume ¬Q, deduce ¬P (handy when it removes a “not”) · cases: exhaustive cases · contradiction: assume ¬claim, derive something false · iff: both directions.',
+   opts:['direct','contrapositive','cases','contradiction','iff: two directions'],
+   qs:[
+    {q:'If 0 ≤ x ≤ 2, then 1 + 4x − x³ ≥ 0.',a:0,why:'Assume 0 ≤ x ≤ 2 and factor: 4x − x³ = x(2 + x)(2 − x) ≥ 0, so the expression is at least 1.'},
+    {q:'If a and b are odd integers, then ab is odd.',a:0,why:'a = 2k + 1, b = 2l + 1, so ab = 2(2kl + k + l) + 1.'},
+    {q:'For an integer n: if n² + 2n is odd, then n is odd.',a:1,why:'Assume n is even, n = 2k: then n² + 2n = 2(2k² + 2k) is even. Starting from “odd” would be harder.'},
+    {q:'n³ − n is divisible by 3 for every integer n.',a:2,why:'n = 3k, 3k + 1 or 3k + 2: in each case one of n − 1, n, n + 1 is divisible by 3.'},
+    {q:'max(r, s) + min(r, s) = r + s for all reals r, s.',a:2,why:'Cases r > s, r = s, r < s.'},
+    {q:'√2 is irrational.',a:3,why:'Assume √2 = a/b in lowest terms and show that a and b are both even.'},
+    {q:'log₄ 6 is irrational.',a:3,why:'Assume log₄ 6 = m/n: then 4ᵐ = 6ⁿ, but 3 divides 6ⁿ and not 4ᵐ.'},
+    {q:'For an integer n: n is even iff n² is even.',a:4,why:'(⇒) direct: n = 2k gives n² = 2(2k²). (⇐) by contrapositive: n odd ⇒ n² odd.'},
+    {q:'If a, b are integers, then a² − 4b ≠ 2.',a:3,why:'Assume a² − 4b = 2: a² is even, so a = 2k, so 2k² = 2b + 1 — even equals odd.'},
+   ]},
+  {id:'prf4',title:'Rational or irrational?',ru:'Рационально или нет?',type:'mc',
+   brief:'Classify each number. For a logarithm, write log_b a = m/n and look at bᵐ = aⁿ.',briefRu:'Для логарифма: log_b a = m/n ⇒ bᵐ = aⁿ, сравни простые множители.',
+   lesson:'log_b a = m/n ⟺ bᵐ = aⁿ. A prime that divides one side but not the other gives irrational. Careful with a non-prime base: log₄ 8 = 3/2 although 8 is not a power of 4.',
+   opts:['an integer','rational, not an integer','irrational'],
+   qs:[
+    {q:'log₅ 125',a:0,why:'5³ = 125.'},
+    {q:'log₂₅ 125',a:1,why:'25^(3/2) = 5³ = 125, so it is 3/2. (Midterm 2024, 4.1)'},
+    {q:'log₂₉ 125',a:2,why:'29ᵐ = 125ⁿ = 5³ⁿ is impossible: 29 divides the left side, not the right.'},
+    {q:'log₄ 8',a:1,why:'4^(3/2) = 2³ = 8. The trap: “8 is not a power of 4” does not make it irrational.'},
+    {q:'log₉ 27',a:1,why:'9^(3/2) = 3³ = 27. (Final 2024, 5.1)'},
+    {q:'log₉ 26',a:2,why:'9ᵐ = 26ⁿ: 2 divides the right side (n ≥ 1), not the left.'},
+    {q:'log₂ 3',a:2,why:'2ᵐ = 3ⁿ: the left side is even, the right side is odd.'},
+    {q:'log₂ 10',a:2,why:'2ᵐ = 10ⁿ = 2ⁿ5ⁿ: 5 divides the right side, not the left.'},
+    {q:'√(9/4)',a:1,why:'It is 3/2.'},
+   ]},
+  {id:'prf5',title:'Boss: √2 is irrational',ru:'Босс: √2 иррационален',type:'order',boss:true,
+   brief:'Build the proof by contradiction. Click the lines in order; after a line with a step, pick its reason. Some lines are traps.',
+   briefRu:'Собери доказательство от противного. Есть ловушки.',
+   lesson:'Assume the negation · lowest terms · a² = 2b² · a even · b even · contradiction with lowest terms. The same skeleton proves √5, √6 (use the prime 2) — and for logarithms use bᵐ = aⁿ.',
+   lines:[
+    {t:'Proof. By contradiction, assume √2 is rational.'},
+    {t:'Then √2 = a/b with integers a, b, b ≠ 0, and the fraction is in lowest terms.',r:'definition of rational'},
+    {t:'Squaring both sides: a² = 2b², so a² is even.',r:'square both sides'},
+    {t:'Hence a is even: a = 2k for some integer k.',r:'n² even ⇒ n even'},
+    {t:'Then 4k² = 2b², so b² = 2k².',r:'substitute a = 2k'},
+    {t:'So b² is even, hence b is even.',r:'n² even ⇒ n even'},
+    {t:'So a and b are both even, which contradicts lowest terms. Hence √2 is irrational. ∎'},
+   ],
+   distractors:[
+    {t:'Assume √2 is irrational.',why:'That is the claim itself. By contradiction you assume its NEGATION: √2 is rational.'},
+    {t:'From a² = 2b² we get a = 2b.',why:'Taking roots gives a = √2·b, not 2b. Use parity instead.'},
+    {t:'Check 1/1, 3/2, 7/5, 17/12: none of them squares to 2, so √2 is irrational.',why:'Finitely many checks are not a proof.'},
+   ],
+   reasons:['definition of rational','square both sides','n² even ⇒ n even','substitute a = 2k','by the WOP','by cases']},
+]},
+/* ---------- Ch. 2 ---------- */
+{id:'wop',name:'WOP Wharf',ru:'Причал WOP',ch:'Ch. 2 · Well Ordering',c:'wop',zone:1,levels:[
+  {id:'wop1',title:'Well ordered or not?',ru:'Вполне упорядочено?',type:'mc',
+   brief:'A set is well ordered if EVERY nonempty subset of it has a least element. Sort each set.',briefRu:'Вполне упорядочено = у КАЖДОГО непустого подмножества есть минимум.',
+   lesson:'Well ordered: ℕ (the WOP), integers with a lower bound, finite sets, {n/(n + 1)}. Not well ordered: anything with an infinite decreasing sequence r₀ > r₁ > r₂ > … inside. Having a minimum is not enough.',
+   opts:['well ordered','not well ordered'],
+   qs:[
+    {q:'ℕ',a:0,why:'That is exactly the Well Ordering Principle.'},
+    {q:'ℤ',a:1,why:'−1 > −2 > −3 > … has no least element.'},
+    {q:'{n ∈ ℤ | n ≥ −7}',a:0,why:'Integers with a lower bound are well ordered: shift by 7 and you are in ℕ.'},
+    {q:'{1/n | n ∈ ℤ⁺}',a:1,why:'1 > 1/2 > 1/3 > … has no least element.'},
+    {q:'ℚ≥0 — careful, it has a minimum, 0',a:1,why:'Its subset {1/n | n ∈ ℤ⁺} has no minimum. EVERY nonempty subset needs one.'},
+    {q:'{n/(n + 1) | n ∈ ℕ} = {0, 1/2, 2/3, …}',a:0,why:'n/(n + 1) grows with n, so the least index gives the least element (Lemma 2.4.5; Midterm 2024, 4.2).'},
+    {q:'{n² − 10n | n ∈ ℕ}',a:0,why:'Integers with a lower bound: n² − 10n = (n − 5)² − 25 ≥ −25.'},
+    {q:'{(n + 2)/(n + 1) | n ∈ ℕ}',a:1,why:'2 > 3/2 > 4/3 > … is an infinite decreasing sequence inside it.'},
+    {q:'{x ∈ ℚ | x > √17}',a:1,why:'Rationals above √17 come arbitrarily close to √17: no least element. (Final 2024, 5.2)'},
+    {q:'the empty set ∅',a:0,why:'Vacuously: it has no nonempty subset at all.'},
+   ]},
+  {id:'wop2',title:'The least counterexample',ru:'Наименьший контрпример',type:'mc',
+   brief:'The WOP template: C = the counterexamples, least m, m ≠ 0, m − 1 is fine, so m is fine — contradiction.',briefRu:'Шаблон WOP: множество контрпримеров, наименьший m, противоречие.',
+   lesson:'C ::= {c ∈ ℕ | P(c) is false} · assume C ≠ ∅ · least m by the WOP · m ≠ 0 (compute both sides) · m − 1 ∉ C · show P(m) · contradiction · C = ∅.',
+   qs:[
+    {q:'You prove “P(n) for every n ∈ ℕ” by the WOP. C is …',opts:['{c ∈ ℕ | P(c) is false}','{c ∈ ℕ | P(c) is true}','{c ∈ ℕ | P(c) ⇒ P(c + 1)}','ℕ − {0}'],a:0,why:'C is the set of counterexamples. The proof shows that it is empty.'},
+    {q:'Claim: 2ⁿ ≥ n + 1 for every n ∈ ℕ. The set of counterexamples is …',opts:['{c ∈ ℕ | 2ᶜ < c + 1}','{c ∈ ℕ | 2ᶜ ≤ c + 1}','{c ∈ ℕ | 2ᶜ ≥ c + 1}'],a:0,why:'Negate ≥ exactly: not (2ᶜ ≥ c + 1) is 2ᶜ < c + 1.'},
+    {q:'You assumed C ≠ ∅ and let m be its least element. What do you know?',opts:['P(k) is true for every k < m in ℕ','P(m) is true','m = 0','P(m + 1) is false'],a:0,why:'Every smaller k is outside C — otherwise m would not be the least.'},
+    {q:'Why show m ≠ 0 before you use m − 1?',opts:['So that m − 1 ∈ ℕ: for m = 0 there is no m − 1','Because 0 is never a counterexample','It is only a matter of style'],a:0,why:'For m = 0 the step talks about −1, which is not in ℕ. So check n = 0 directly: compute BOTH sides.'},
+    {q:'Bogus proof “every Fibonacci number is even”: least counterexample m, and F(m) = F(m − 1) + F(m − 2) is even + even. Where does it break?',opts:['At m = 1: the step needs F(−1), which does not exist (and F(1) = 1 is odd)','At m = 0','Nowhere'],a:0,why:'The base must cover every m where the step would leave ℕ: here m = 0 and m = 1.'},
+    {q:'Ex1 says “prove using the Well Ordering Principle”. You hand in a correct proof by ordinary induction. Points?',opts:['0: without the WOP the answer gets no points','Full points: induction and the WOP are equivalent','Half of the points'],a:0,why:'The method is part of the task in midterm 1, Ex1.'},
+    {q:'A man says: “Today is not the first day on which I make this statement.” Knights always tell the truth, knaves always lie. He is …',opts:['a knave','a knight','impossible to decide'],a:0,why:'The days on which he says it form a nonempty set of naturals, so by the WOP there is a first one. On that day the statement is false — a knight could never say it.'},
+   ]},
+  {id:'wop3',title:'Numbers in the proof',ru:'Числа в доказательстве',type:'input',
+   brief:'Quick computations you need inside WOP proofs. Type a number.',briefRu:'Быстрые вычисления для WOP. Введи число.',
+   miss:'Not it. Compute it on paper, step by step.',
+   lesson:'Compute BOTH sides at the base. The step that uses m − 3 needs 3 base values; the claim “for n ≥ 4” has its base at 4.',
+   qs:[
+    {q:'The smallest counterexample m to “n² + n + 41 is prime for every n ∈ ℕ”?',a:40,why:'40² + 40 + 41 = 1681 = 41². For n = 0, …, 39 the values are prime.'},
+    {q:'In Σₖ₌₀ⁿ k·2ᵏ = (n − 1)2ⁿ⁺¹ + 2: the right side at n = 0?',a:0,why:'(0 − 1)·2¹ + 2 = 0, and the left side is 0·2⁰ = 0. Both sides agree, so 0 ∉ C.'},
+    {q:'Compute Σₖ₌₀³ k·2ᵏ.',a:34,why:'0 + 2 + 8 + 24 = 34 = (3 − 1)·2⁴ + 2. A check, not a proof.'},
+    {q:'The least element of {n² − 10n | n ∈ ℕ}?',a:-25,why:'n² − 10n = (n − 5)² − 25, smallest at n = 5.'},
+    {q:'Postage: every n ≥ 8 is 3a + 5b with a, b ∈ ℕ. The WOP step uses m − 3. How many base values must you check?',a:3,why:'8 = 3 + 5, 9 = 3·3, 10 = 5 + 5. For m ≥ 11, m − 3 ≥ 8 is not a counterexample.'},
+    {q:'n² ≤ 2ⁿ for every integer n ≥ 4. Which value do you check first as the base?',a:4,why:'4² = 16 ≤ 16 = 2⁴. Then m ≥ 5, so m − 1 ≥ 4 is still in range.'},
+   ]},
+  {id:'wop4',title:'Boss: Ex1 2024',ru:'Босс: Ex1 мидтерма 2024',type:'order',boss:true,tag:'midterm 2024',
+   brief:'Prove Σₖ₌₀ⁿ k·2ᵏ = (n − 1)2ⁿ⁺¹ + 2 for every n ∈ ℕ — by the Well Ordering Principle. Lines in order, reasons for the steps, avoid the traps.',
+   briefRu:'Ex1 2024 через WOP. Без WOP — 0 баллов.',
+   lesson:'C = counterexamples (≠) · least m · m ≠ 0 with both sides computed · m − 1 ∉ C gives the formula for m − 1 · add m·2ᵐ · algebra to the formula for m · contradiction · C = ∅.',
+   lines:[
+    {t:'Proof. Let C ::= {c ∈ ℕ | Σₖ₌₀ᶜ k·2ᵏ ≠ (c − 1)2ᶜ⁺¹ + 2}, the set of counterexamples.'},
+    {t:'By contradiction, assume C ≠ ∅. Then C has a least element m.',r:'WOP'},
+    {t:'m ≠ 0: for n = 0 the left side is 0·2⁰ = 0 and the right side is (−1)·2 + 2 = 0.',r:'compute both sides'},
+    {t:'So m ≥ 1, m − 1 ∈ ℕ and m − 1 ∉ C, that is Σₖ₌₀ᵐ⁻¹ k·2ᵏ = (m − 2)2ᵐ + 2.',r:'m is the least element of C'},
+    {t:'Σₖ₌₀ᵐ k·2ᵏ = (m − 2)2ᵐ + 2 + m·2ᵐ',r:'add the term m·2ᵐ'},
+    {t:'= (2m − 2)2ᵐ + 2 = (m − 1)2ᵐ⁺¹ + 2, so m ∉ C — a contradiction.',r:'algebra'},
+    {t:'Hence C = ∅, and the identity holds for every n ∈ ℕ. ∎'},
+   ],
+   distractors:[
+    {t:'Assume P(m) holds and prove P(m + 1).',why:'That is the induction step. Ex1 asks for the WOP: least counterexample and contradiction.'},
+    {t:'Let C ::= {c ∈ ℕ | Σₖ₌₀ᶜ k·2ᵏ = (c − 1)2ᶜ⁺¹ + 2}.',why:'C must collect the COUNTERexamples: ≠, not =.'},
+    {t:'Since m ∈ C, also m − 1 ∈ C.',why:'Backwards: m is the LEAST element of C, so m − 1 is NOT in C.'},
+    {t:'By the WOP, C has a largest element m.',why:'The WOP gives a least element. A set of naturals may have no largest one.'},
+   ],
+   reasons:['WOP','compute both sides','m is the least element of C','add the term m·2ᵐ','algebra','by the IH']},
+]},
+/* ---------- Ch. 3 ---------- */
+{id:'lgc',name:'Truth Table Tide',ru:'Прилив таблиц истинности',ch:'Ch. 3 · Logical formulas',c:'lgc',zone:1,levels:[
+  {id:'lgc1',title:'Fill the table',ru:'Заполни таблицу',type:'ttable',
+   brief:'Fill the empty cells, check the table, then read off what it says.',briefRu:'Заполни клетки, проверь, сделай вывод по последнему столбцу.',
+   lesson:'X → Y is F only in the row T → F. Last column all T: valid · some T: satisfiable · no T: unsatisfiable. Equal columns: equivalent formulas.',
+   rounds:[
+    {f:'Compare ¬P ∨ Q with P → Q',vars:['P','Q'],cols:[{t:'¬P',f:(P,Q)=>!P},{t:'¬P ∨ Q',f:(P,Q)=>!P||Q},{t:'P → Q',f:(P,Q)=>IMP(P,Q)}],
+     q:{q:'Compare the columns ¬P ∨ Q and P → Q:',opts:['the same in every row: the formulas are equivalent','they differ in one row','they differ in two rows'],a:0,why:'P → Q ≡ ¬P ∨ Q. This is the law you use to turn → into ∨ in a DNF.'}},
+    {f:'Peirce’s law: ((P → Q) → P) → P',vars:['P','Q'],cols:[{t:'P → Q',f:(P,Q)=>IMP(P,Q)},{t:'(P → Q) → P',f:(P,Q)=>IMP(IMP(P,Q),P)},{t:'whole',f:(P,Q)=>IMP(IMP(IMP(P,Q),P),P)}]},
+    {f:'(P ↔ Q) ∧ (P ⊕ Q)',vars:['P','Q'],cols:[{t:'P ↔ Q',f:(P,Q)=>IFF(P,Q)},{t:'P ⊕ Q',f:(P,Q)=>XOR(P,Q)},{t:'whole',f:(P,Q)=>IFF(P,Q)&&XOR(P,Q)}]},
+   ]},
+  {id:'lgc2',title:'V, S or N?',ru:'Общезначима, выполнима, невыполнима?',type:'mc',
+   brief:'Valid = true under every assignment · satisfiable = under some · unsatisfiable = under none. Work it out on paper if needed.',briefRu:'V — всегда T, S — иногда, N — никогда.',
+   lesson:'For “not valid” one falsifying assignment is enough. For “valid” you need every case: a table or cases on a variable. P is valid ⟺ ¬P is unsatisfiable.',
+   opts:CLS,
+   qs:[
+    {q:'(P → Q) ∨ (Q → P)',a:0,why:'If Q is true, P → Q is true; if Q is false, Q → P is true.'},
+    {q:'(P → Q) → P',a:1,why:'P = T makes it true; P = Q = F gives T → F = F.'},
+    {q:'((P → Q) → Q) → P',a:1,why:'P = T makes it true; P = F, Q = T gives (T → T) → F = F.'},
+    {q:'((P → Q) ∧ ¬Q) → ¬P',a:0,why:'Modus tollens: if Q is false and P → Q holds, P must be false.'},
+    {q:'((P → Q) ∧ Q) → P',a:1,why:'P = F, Q = T: (T ∧ T) → F = F. Affirming the consequent is not valid.'},
+    {q:'P → (Q → P)',a:0,why:'If P is true, Q → P is true. If P is false, the implication is true.'},
+    {q:'(P ∨ Q) → (P ⊕ Q)',a:1,why:'P = Q = T gives T → F = F; P = T, Q = F gives T.'},
+    {q:'P ∧ ¬P',a:2,why:'Never true.'},
+   ]},
+  {id:'lgc3',title:'Laws and negations',ru:'Законы и отрицания',type:'mc',
+   brief:'Equivalences, precedence, De Morgan for quantifiers, normal forms, SAT.',briefRu:'Эквивалентности, приоритет, де Морган, DNF, SAT.',
+   lesson:'P → Q ≡ ¬P ∨ Q · ¬(P → Q) ≡ P ∧ ¬Q · De Morgan swaps ∧ and ∨ · ¬∀x ≡ ∃x¬ · precedence ¬, ∧, ∨, ⊕, →, ↔ · DNF: one and-clause per T row.',
+   qs:[
+    {q:'P → Q ≡ ?',opts:['¬P ∨ Q','P ∨ ¬Q','¬P ∧ Q','Q → P'],a:0,why:'False only when P = T and Q = F, exactly like ¬P ∨ Q.'},
+    {q:'¬(P → Q) ≡ ?',opts:['P ∧ ¬Q','¬P → ¬Q','¬P ∧ Q','¬P ∨ ¬Q'],a:0,why:'The only false row of P → Q.'},
+    {q:'¬(A ∨ B) ≡ ?',opts:['¬A ∧ ¬B','¬A ∨ ¬B','A ∧ B','¬A ∨ B'],a:0,why:'De Morgan: negating swaps ∨ and ∧.'},
+    {q:'(P ∧ Q) → R ≡ ?',opts:['P → (Q → R)','(P → Q) → R','(P → R) ∧ (Q → R)'],a:0,why:'SE 2.5. The third one is (P ∨ Q) → R.'},
+    {q:'Insert all parentheses: ¬P ∨ Q ∧ R → S ↔ T',opts:['(((¬P) ∨ (Q ∧ R)) → S) ↔ T','¬(P ∨ Q) ∧ (R → (S ↔ T))','((¬P ∨ Q) ∧ R) → (S ↔ T)'],a:0,why:'Precedence from strongest: ¬, ∧, ∨, ⊕, →, ↔.'},
+    {q:'P ⊕ Q ⊕ R is true exactly when …',opts:['an odd number of P, Q, R are true','exactly one of them is true','at least one is true'],a:0,why:'With all three true: (T ⊕ T) ⊕ T = F ⊕ T = T, so “exactly one” is wrong.'},
+    {q:'The negation of ∀x ∃y.(x < y ∧ P(y)) is …',opts:['∃x ∀y.(x ≥ y ∨ ¬P(y))','∃x ∀y.(x ≥ y ∧ ¬P(y))','∀x ∃y.(x ≥ y ∨ ¬P(y))'],a:0,why:'Flip every quantifier, then negate the body with De Morgan.'},
+    {q:'The full DNF of P ↔ Q is …',opts:['(P ∧ Q) ∨ (¬P ∧ ¬Q)','(P ∨ Q) ∧ (¬P ∨ ¬Q)','(P ∧ ¬Q) ∨ (¬P ∧ Q)'],a:0,why:'One and-clause per T row: TT and FF. The other two describe P ⊕ Q.'},
+    {q:'Course convention: the DNF of an unsatisfiable formula is …',opts:['F','T','it does not exist'],a:0,why:'There are no T rows, so no clauses: the empty disjunction is F.'},
+    {q:'If SAT has a polynomial-time algorithm, then …',opts:['P = NP','SAT ∉ NP','nothing follows'],a:0,why:'Every NP problem reduces to SAT in polynomial time. This is still an open problem.'},
+   ]},
+  {id:'lgc4',title:'English → logic',ru:'Перевод на язык логики',type:'mc',
+   brief:'Pick the formula that says exactly the same thing.',briefRu:'Выбери формулу с тем же смыслом.',
+   lesson:'“Q if P” = P → Q · “Q only if P” = Q → P · “All X are Y” = ∀x.(X → Y) · “Some X is Y” = ∃x.(X ∧ Y) · ∃∀ ⇒ ∀∃, not back.',
+   qs:[
+    {q:'“You may enter only if you have a ticket.” (E: enter, T: ticket)',opts:['E → T','T → E','E ↔ T','E ∧ T'],a:0,why:'“Q only if P” is Q → P: entering requires a ticket.'},
+    {q:'“You may enter if you have a ticket.”',opts:['T → E','E → T','E ∨ T'],a:0,why:'“Q if P” is P → Q: a ticket is enough.'},
+    {q:'“A ticket is necessary but not sufficient for entering.”',opts:['(E → T) ∧ ¬(T → E)','(T → E) ∧ ¬(E → T)','¬(E ↔ T)'],a:0,why:'Necessary: E → T. Not sufficient: not (T → E).'},
+    {q:'“All X are Y.”',opts:['∀x.(X(x) → Y(x))','∀x.(X(x) ∧ Y(x))','∃x.(X(x) → Y(x))'],a:0,why:'With ∧ it would say that everything is both X and Y.'},
+    {q:'“Some X is Y.”',opts:['∃x.(X(x) ∧ Y(x))','∃x.(X(x) → Y(x))','∀x.(X(x) → Y(x))'],a:0,why:'With → any x that is not X makes it true, so it says almost nothing.'},
+    {q:'“No X is Y.”',opts:['∀x.(X(x) → ¬Y(x))','∀x.(¬X(x) → Y(x))','∃x.(X(x) ∧ ¬Y(x))'],a:0,why:'Every X fails to be Y.'},
+    {q:'“Everyone has some dream.” (dreams(p, d))',opts:['∀p ∃d. dreams(p, d)','∃d ∀p. dreams(p, d)'],a:0,why:'∃d ∀p says that one dream is shared by all. The order of quantifiers matters.'},
+    {q:'“If you can solve any exercise, you pass.”',opts:['(∃x. solve(x)) → pass','(∀x. solve(x)) → pass','∀x.(solve(x) ∧ pass)'],a:0,why:'Here “any” means “some”: solving one exercise is enough.'},
+    {q:'“No lecture was attended by all students.” (A(s, l): s attended l)',opts:['∀l ∃s. ¬A(s, l)','∃l ∀s. ¬A(s, l)','∀l ∀s. ¬A(s, l)'],a:0,why:'¬∃l ∀s. A(s, l), then push ¬ inside: flip each quantifier, negate the body.'},
+   ]},
+  {id:'lgc5',title:'Counter-model lab',ru:'Лаборатория контрмоделей',type:'cmodel',
+   brief:'Domain ℕ. Choose what P and Q mean, then evaluate. Goal: make the whole formula FALSE — that is a counter-model. If no choice can do it, the formula is valid: say so.',
+   briefRu:'Подбери смысл P и Q так, чтобы формула стала ложной. Если это невозможно — она общезначима.',
+   lesson:'Counter-model for α → β: make α true and β false. Simple predicates on ℕ (even/odd, x = 0, x < y) are almost always enough. ∀ does not distribute over ∨, ∃ not over ∧; ∃y∀x ⇒ ∀x∃y is valid, the converse is not.',
+   rounds:[
+    {f:'∀x.(P(x) ∨ Q(x))  →  (∀x.P(x)) ∨ (∀x.Q(x))',kind:1,
+     parts:(P,Q)=>[['hypothesis  ∀x.(P(x) ∨ Q(x))',AL(x=>P(x)||Q(x))],['conclusion  (∀x.P(x)) ∨ (∀x.Q(x))',AL(P)||AL(Q)]],whole:v=>IMP(v[0],v[1]),
+     hint:'Let P and Q split ℕ between them, so that neither holds everywhere.',
+     why:'P = even, Q = odd: every x is even or odd (T), but neither ∀x.P nor ∀x.Q holds (F). ∀ does not distribute over ∨.'},
+    {f:'(∀x.(P(x) → Q(x)))  ∨  (∀x.(Q(x) → P(x)))',kind:1,
+     parts:(P,Q)=>[['left  ∀x.(P(x) → Q(x))',AL(x=>IMP(P(x),Q(x)))],['right  ∀x.(Q(x) → P(x))',AL(x=>IMP(Q(x),P(x)))]],whole:v=>v[0]||v[1],
+     hint:'You need one x with P but not Q, and another x with Q but not P.',
+     why:'P = even, Q = odd: x = 0 breaks P → Q and x = 1 breaks Q → P. (Midterm 2024, 4.4: “has a counter-model” is TRUE. With ∀ outside the whole disjunction it would be valid.)'},
+    {f:'∃x.(P(x) ∧ Q(x))  →  (∃x.P(x)) ∧ (∃x.Q(x))',kind:1,valid:true,
+     parts:(P,Q)=>[['hypothesis  ∃x.(P(x) ∧ Q(x))',EX(x=>P(x)&&Q(x))],['conclusion  (∃x.P(x)) ∧ (∃x.Q(x))',EX(P)&&EX(Q)]],whole:v=>IMP(v[0],v[1]),
+     why:'Valid: a witness x₀ with P(x₀) ∧ Q(x₀) is a witness for ∃x.P and for ∃x.Q at once. No interpretation can break it.'},
+    {f:'(∃x.P(x)) ∧ (∃x.Q(x))  →  ∃x.(P(x) ∧ Q(x))',kind:1,
+     parts:(P,Q)=>[['hypothesis  (∃x.P(x)) ∧ (∃x.Q(x))',EX(P)&&EX(Q)],['conclusion  ∃x.(P(x) ∧ Q(x))',EX(x=>P(x)&&Q(x))]],whole:v=>IMP(v[0],v[1]),
+     hint:'The two witnesses may be different numbers.',
+     why:'P = (x = 0), Q = (x > 0): each has a witness, but no single x has both. ∃ does not distribute over ∧ — this is the converse of the previous one.'},
+    {f:'(∀x ∃y. P(x, y))  →  (∃y ∀x. P(x, y))',kind:2,
+     parts:P=>[['hypothesis  ∀x ∃y. P(x, y)',P[0]],['conclusion  ∃y ∀x. P(x, y)',P[1]]],whole:v=>IMP(v[0],v[1]),
+     hint:'Let y depend on x — something like “y is bigger than x”.',
+     why:'P(x, y) ::= x < y: every x has a bigger y (T), but no single y is bigger than every x (F).'},
+    {f:'(∃y ∀x. P(x, y))  →  (∀x ∃y. P(x, y))',kind:2,valid:true,
+     parts:P=>[['hypothesis  ∃y ∀x. P(x, y)',P[1]],['conclusion  ∀x ∃y. P(x, y)',P[0]]],whole:v=>IMP(v[0],v[1]),
+     why:'Valid: if one y₀ works for every x, then for each x just take y = y₀. (Lecture 3, L·Z35.)'},
+   ]},
+  {id:'lgc6',title:'Boss: Ex2 2024',ru:'Босс: Ex2 мидтерма 2024',type:'stages',boss:true,tag:'midterm 2024',
+   brief:'Ex2.1: prove that (P → Q) → ((P → R) → (P → (Q ∧ R))) is valid. Ex2.2: show that ((P → Q) → (P → R)) → (P → (Q ∧ R)) is not valid.',
+   briefRu:'Ex2.1 — доказать общезначимость разбором случаев; Ex2.2 — опровергнуть одним присваиванием.',
+   lesson:'Valid: cases on a key variable (or a table), true in every case, “the cases are exhaustive”. Not valid: ONE falsifying assignment, evaluated explicitly.',
+   stages:[
+    {type:'order',tag:'Ex2.1 · valid by cases',
+     lines:[
+      {t:'Proof. By cases on P, then on Q.'},
+      {t:'Case P = F: every implication with hypothesis P is true, so the formula is T → (T → T) = T.',r:'false hypothesis ⇒ implication true'},
+      {t:'Case P = T, Q = F: P → Q = F, so the main implication has a false hypothesis and is T.',r:'false hypothesis ⇒ implication true'},
+      {t:'Case P = T, Q = T: P → R has the value of R, and P → (Q ∧ R) has the value of R; the formula is T → (R → R) = T.',r:'T → X has the value of X'},
+      {t:'The cases are exhaustive and in each the formula is true, so it is valid. ∎'},
+     ],
+     distractors:[
+      {t:'Take P = Q = R = T: the formula is true, so it is valid.',why:'One satisfying assignment only shows SATISFIABLE. Valid needs every assignment.'},
+      {t:'Case P = F: then P → Q is false.',why:'With P = F, P → Q is TRUE: a false hypothesis.'},
+     ],
+     reasons:['false hypothesis ⇒ implication true','T → X has the value of X','De Morgan','by the WOP']},
+    {type:'ttable',tag:'Ex2.2 · the table',rounds:[
+     {f:'((P → Q) → (P → R)) → (P → (Q ∧ R))',vars:['P','Q','R'],cols:[
+      {t:'P → Q',f:(P,Q,R)=>IMP(P,Q),given:true},{t:'P → R',f:(P,Q,R)=>IMP(P,R),given:true},{t:'Q ∧ R',f:(P,Q,R)=>Q&&R,given:true},
+      {t:'(P→Q) → (P→R)',f:(P,Q,R)=>IMP(IMP(P,Q),IMP(P,R))},{t:'P → (Q∧R)',f:(P,Q,R)=>IMP(P,Q&&R)},{t:'whole',f:(P,Q,R)=>IMP(IMP(IMP(P,Q),IMP(P,R)),IMP(P,Q&&R))}]}]},
+    {type:'mc',tag:'Ex2.2 · what you write',qs:[
+     {q:'Ex2.2 is worth 1 point. What do you write?',opts:['P = T, Q = F, R arbitrary: P → Q = F, so (P → Q) → (P → R) = T; Q ∧ R = F, so P → (Q ∧ R) = F; the formula is T → F = F — not valid.','“The table is too big, but it is clearly not valid.”','“It is not valid, because Ex2.1 is valid.”'],a:0,why:'One falsifying assignment, and every subformula evaluated. That is the whole answer.'}]},
+   ]},
+]},
+/* ---------- Ch. 4 ---------- */
+{id:'set',name:'Set Shoals',ru:'Мели множеств',ch:'Ch. 4 · Sets, relations, counting',c:'set',zone:1,levels:[
+  {id:'set1',title:'Element or subset?',ru:'Элемент или подмножество?',type:'mc',
+   brief:'∈ asks “is it one of the elements?”, ⊆ asks “are all its elements inside?”. True or false?',briefRu:'∈ — «это один из элементов?», ⊆ — «все его элементы внутри?».',
+   lesson:'Element ≠ singleton: 1 ≠ {1}, ∅ ≠ {∅}. ∅ is a subset of every set. pow(X) holds the subsets of X as its elements. Order and repetition do not matter in sets, but they do in sequences.',
+   opts:WT,
+   qs:[
+    {q:'∅ ∈ {∅}',a:0,why:'{∅} has exactly one element, and it is ∅.'},
+    {q:'∅ ⊆ ∅',a:0,why:'∅ is a subset of every set (vacuously).'},
+    {q:'∅ = {∅}',a:1,why:'|∅| = 0 but |{∅}| = 1.'},
+    {q:'{1} ∈ {1, 2}',a:1,why:'The elements are 1 and 2; the set {1} is not one of them. ({1} ⊆ {1, 2} is true.)'},
+    {q:'1 ∈ {{1}, {2}}',a:1,why:'The elements are the sets {1} and {2}, not the number 1.'},
+    {q:'{1} ∈ {{1}, {2}}',a:0,why:'{1} is one of the two elements.'},
+    {q:'{1, 2} ∈ pow({1, 2, 3})',a:0,why:'pow(X) holds the subsets of X, and {1, 2} ⊆ {1, 2, 3}.'},
+    {q:'{∅} ⊆ pow(X) for every set X',a:0,why:'Its only element ∅ is in pow(X), because ∅ ⊆ X.'},
+    {q:'|pow(pow(∅))| = 2',a:0,why:'pow(∅) = {∅}, so pow(pow(∅)) = {∅, {∅}}.'},
+    {q:'(1, 2) = (2, 1)',a:1,why:'In a sequence the order counts. As sets, {1, 2} = {2, 1}.'},
+    {q:'{a, a, b} = {b, a}',a:0,why:'Order and repetition do not matter in a set.'},
+   ]},
+  {id:'set2',title:'Venn painter',ru:'Раскрась диаграмму Венна',type:'venn',
+   brief:'Shade exactly the regions of the set. Tap a region in the picture or its button below; tap again to clear it. D is the domain.',briefRu:'Закрась ровно те области, что входят в множество. D — универсум.',
+   lesson:'Same picture = same set: that is what element chasing proves line by line. ∩ → and, ∪ → or, − → and not, complement → not (needs the domain D).',
+   rounds:[
+    {t:'A ∩ (B ∪ C)',f:(a,b,c)=>a&&(b||c),why:'Inside A, and inside B or C.'},
+    {t:'(A ∩ B) ∪ (A ∩ C)',f:(a,b,c)=>(a&&b)||(a&&c),why:'The same picture as A ∩ (B ∪ C): distributivity, Th 4.1.2.'},
+    {t:'A − (B ∪ C)',f:(a,b,c)=>a&&!(b||c),why:'Only the part of A outside both B and C.'},
+    {t:'(A − B) ∩ (A − C)',f:(a,b,c)=>a&&!b&&a&&!c,why:'The same picture as A − (B ∪ C): De Morgan inside.'},
+    {t:'D − (A ∩ B)',f:(a,b,c)=>!(a&&b),why:'Everything except the lens A ∩ B — the outside region too. De Morgan: it equals (D − A) ∪ (D − B).'},
+    {t:'(A − B) ∪ B',f:(a,b,c)=>(a&&!b)||b,
+     q:{q:'So is (A − B) ∪ B = A for all sets?',opts:['No: the picture is A ∪ B. Counterexample: A = ∅, B = {1}','Yes, always'],a:0,why:'With A = ∅, B = {1}: the left side is {1}, the right side is ∅. One concrete element on one side only disproves an identity.'}},
+   ]},
+  {id:'set3',title:'Arrow rules',ru:'Свойства отношений',type:'mc',
+   brief:'Fix the domain and codomain first, then check: total (≥ 1 out), function (≤ 1 out), injective (≤ 1 in), surjective (≥ 1 in).',briefRu:'Сначала области, потом стрелки: ≥1 из, ≤1 из, ≤1 в, ≥1 в.',
+   lesson:'function [≤ 1 out] · total [≥ 1 out] · injective [≤ 1 in] · surjective [≥ 1 in] · bijection: total injective surjective function. Every ✗ needs one concrete counterexample. The same formula changes properties with the domain.',
+   opts:ARROWS,
+   qs:[
+    {q:'S: ℤ → ℤ, x S y iff x = 100 − y',a:0,why:'Each x has exactly one y = 100 − x, and each y comes from exactly one x. (Midterm 2024, 4.5)'},
+    {q:'R: ℕ → ℕ, x R y iff x = 100 − y',a:4,why:'x = 101 would need y = −1 ∉ ℕ. Each x has at most one y, so it is a function — not total.'},
+    {q:'T: ℤ → ℤ, x T y iff x = 100y',a:4,why:'x = 17 is not 100y for any integer y.'},
+    {q:'f: ℤ → ℤ, f(x) = 2x + 1',a:1,why:'Only odd numbers are hit: 0 is missed. On ℝ the same formula is a bijection.'},
+    {q:'f: ℝ → ℝ, f(x) = eˣ',a:1,why:'Strictly increasing, but only positive values: −1 is missed.'},
+    {q:'f: ℕ → ℕ, f(n) = ⌊n/2⌋',a:2,why:'0 and 1 both go to 0; every m is hit, by 2m.'},
+    {q:'f: ℝ → ℝ, f(x) = x²',a:3,why:'1 and −1 both go to 1; −1 is never hit.'},
+    {q:'R: ℝ → ℝ, x R y iff y² = x',a:5,why:'x = 1 has two values, y = 1 and y = −1.'},
+    {q:'f: ℝ⁺ → ℝ⁺, f(x) = 1/x²',a:0,why:'On positive reals it is strictly decreasing and hits every y (x = 1/√y). On ℝ the same formula is not even total (x = 0).'},
+    {q:'E: ∅ → {1, 2}, the empty relation',a:1,why:'With an empty domain every relation is a total function (vacuously) and injective; but 1 and 2 are never hit.'},
+   ]},
+  {id:'set4',title:'Count it',ru:'Посчитай',type:'input',
+   brief:'How many? Type a number.',briefRu:'Сколько? Введи число.',
+   miss:'Not it. Count independent choices: k choices with n options each give nᵏ.',
+   lesson:'|pow(A)| = 2^|A| · |A × B| = |A|·|B| · total functions |B|^|A| · relations 2^(|A|·|B|) · injections n(n − 1)… · pigeonhole: m objects in b boxes put ⌈m/b⌉ in one box.',
+   qs:[
+    {q:'|A| = 3, |B| = 4. How many total functions A → B?',a:64,why:'4·4·4 = 4³: one value for each of the 3 elements.'},
+    {q:'Same sets. How many relations A → B?',a:4096,why:'A relation is its graph, a subset of A × B: 2^(3·4) = 2¹² = 4096.'},
+    {q:'Same sets. How many total injective functions A → B?',a:24,why:'4·3·2: each next element has one option fewer.'},
+    {q:'How many subsets of {1, …, 10} contain 1?',a:512,why:'1 is in; choose freely among 2, …, 10: 2⁹ = 512.'},
+    {q:'A = {1, 2, 3}, B = {2, 3, 4}. |pow(A × B)| = ?',a:512,why:'|A × B| = 9, so 2⁹ = 512.'},
+    {q:'How many total functions ∅ → {1, 2}?',a:1,why:'Exactly one, the empty function: |B|⁰ = 1. (Ex3 2024, part 2)'},
+    {q:'At least how many integers guarantee that two of them have the same remainder mod 4?',a:5,why:'Pigeonhole: 5 objects in 4 boxes put ⌈5/4⌉ = 2 in one box. Four integers can all differ (0, 1, 2, 3).'},
+   ]},
+  {id:'set5',title:'Boss: element chasing',ru:'Босс: погоня за элементом',type:'stages',boss:true,tag:'midterm 2024',
+   brief:'Prove A − (B ∪ C) = (A − B) ∩ (A − C) by a chain of iffs, then answer the Ex3 questions.',briefRu:'Цепочка «⟺» с названными законами, потом вопросы Ex3.',
+   lesson:'For every x: x ∈ LHS ⟺ … ⟺ x ∈ RHS · unfold the operations into ∧ ∨ ¬ · name the propositional law · fold back · “every link is an iff”. Examples disprove identities, they never prove them.',
+   stages:[
+    {type:'order',tag:'Step 1 · the chain',
+     lines:[
+      {t:'We show that for every x: x ∈ A − (B ∪ C) iff x ∈ (A − B) ∩ (A − C).'},
+      {t:'x ∈ A − (B ∪ C) ⟺ x ∈ A ∧ ¬(x ∈ B ∨ x ∈ C)',r:'def. of − and ∪'},
+      {t:'⟺ x ∈ A ∧ (x ∉ B ∧ x ∉ C)',r:'De Morgan'},
+      {t:'⟺ (x ∈ A ∧ x ∉ B) ∧ (x ∈ A ∧ x ∉ C)',r:'idempotence, assoc., comm. of ∧'},
+      {t:'⟺ x ∈ (A − B) ∩ (A − C)',r:'def. of − and ∩'},
+      {t:'Every link is an iff, so A − (B ∪ C) = (A − B) ∩ (A − C). ∎'},
+     ],
+     distractors:[
+      {t:'Take A = {1, 2}, B = {1}, C = {2}: both sides are ∅, so the identity holds.',why:'An example is not a proof. Examples can only DISPROVE an identity.'},
+      {t:'⟺ x ∈ A ∧ (x ∉ B ∨ x ∉ C)',why:'De Morgan turns ¬(X ∨ Y) into ¬X ∧ ¬Y, not ∨.'},
+      {t:'A − (B ∪ C) = (A ∧ ¬B) ∧ (A ∧ ¬C)',why:'Type error: ∧ and ¬ are for propositions. You intersect SETS; write x ∈ … on every line.'},
+     ],
+     reasons:['def. of − and ∪','De Morgan','idempotence, assoc., comm. of ∧','def. of − and ∩','distributivity']},
+    {type:'mc',tag:'Step 2 · Ex3 and two traps',qs:[
+     {q:'Ex3 2024: |A| = k, |B| = n. Why is the number of total functions A → B equal to n · n ⋯ n = nᵏ?',opts:['A total function picks exactly one value f(aᵢ) ∈ B for each of the k elements: k independent choices with n options each, and different choices give different functions','Because every element of B is hit exactly once','Because |A × B| = k·n'],a:0,why:'Equivalently, f ↦ (f(a₁), …, f(aₖ)) is a bijection from B^A to Bᵏ.'},
+     {q:'Ex3 2024, part 2: and if A = ∅?',opts:['|B^A| = 1: the empty relation is a total function (vacuously)','|B^A| = 0: there is nothing to map','It is undefined'],a:0,why:'|B|⁰ = 1, and indeed there is exactly one function: the empty one.'},
+     {q:'(A ∪ B) × (C ∪ D) = (A × C) ∪ (B × D) for all sets?',opts:['False: A = {1}, B = {2}, C = {3}, D = {4}; (1, 4) is only on the left','True: × distributes over ∪'],a:0,why:'On the left the two coordinates are chosen independently. (Problem 4.15)'},
+     {q:'Midterm 2024, 4.6: “There is a finite set A with |A| = |pow(A)|.”',opts:['False: |pow(A)| = 2ⁿ > n','True: take A = ∅'],a:0,why:'|pow(∅)| = 1 ≠ 0, and n < 2ⁿ for every n.'}]},
+   ]},
+]},
+/* ---------- Write mode · midterm 1 ---------- */
+{id:'dck',name:'Skeleton Dock',ru:'Док скелетов',ch:'Write mode · midterm 1',c:'skl',zone:1,write:true,levels:[
+  {id:'dck1',title:'Ex1 · WOP · Σ (2k − 1) = n²',ru:'WOP: сумма нечётных',type:'cloze',keys:'MT1',
+   brief:'The same sum as in the induction skeleton — now by the WOP. Fill the gaps; ASCII works too: != for ≠, ^2 for ², emptyset for ∅.',briefRu:'Та же сумма, теперь через WOP. ASCII: != , ^2 , emptyset.',
+   lesson:'C with ≠ · nonempty · WOP · least m · base: both sides at 0 · m − 1 ∉ C · add the last term · m satisfies the formula · contradiction · C = ∅.',
+   lines:['Proof. Let C ::= {c ∈ ℕ | Σₖ₌₁ᶜ (2k − 1) {neq} c²}, the set of counterexamples.',
+    'By contradiction, assume C is {ne}. By the {wop}, C has a {least} element m.',
+    'm ≠ 0: for n = 0 the left side is {l0} (empty sum) and the right side is {r0}.',
+    'So m ≥ 1, hence m − 1 ∈ ℕ, and since m − 1 < m, m − 1 {notin} C: Σₖ₌₁ᵐ⁻¹ (2k − 1) = {ih}.',
+    'Adding 2m − 1: Σₖ₌₁ᵐ (2k − 1) = (m − 1)² + (2m − 1) = {s2}.',
+    'So m {sat} — a contradiction. Hence C = {em}, and the identity holds for every n ∈ ℕ. ∎'],
+   gaps:{neq:{a:['≠']},ne:{o:['nonempty','empty'],a:'nonempty'},wop:{a:['WOP','Well Ordering Principle','well-ordering principle']},least:{o:['least','largest'],a:'least'},
+    l0:{a:['0']},r0:{a:['0','0²']},notin:{o:['∉','∈'],a:'∉'},ih:{a:['(m−1)²']},s2:{a:['m²']},
+    sat:{o:['satisfies the formula, so m ∉ C','is in C','is the largest counterexample'],a:'satisfies the formula, so m ∉ C'},em:{a:['∅']}}},
+  {id:'dck2',title:'Ex1 · WOP · Σ k·2ᵏ (2024)',ru:'Ex1 2024 письменно',type:'cloze',keys:'MT1',
+   brief:'The real Ex1 of 2024: Σₖ₌₀ⁿ k·2ᵏ = (n − 1)2ⁿ⁺¹ + 2. Type ^m for ᵐ.',briefRu:'Настоящий Ex1 2024. ^m даёт ᵐ.',
+   lesson:'Formula for m − 1: replace n by m − 1 everywhere: (m − 2)2ᵐ + 2. Then add m·2ᵐ and collect: (2m − 2)2ᵐ = (m − 1)2ᵐ⁺¹.',
+   lines:['Proof. Let C ::= {c ∈ ℕ | Σₖ₌₀ᶜ k·2ᵏ ≠ (c − 1)2ᶜ⁺¹ + 2}. By contradiction, assume C ≠ ∅; by the WOP, C has a least element m.',
+    'm ≠ 0: for n = 0 the left side is 0·2⁰ = {l0} and the right side is (0 − 1)·2¹ + 2 = {r0}.',
+    'So m ≥ 1 and m − 1 ∉ C, because {why}: Σₖ₌₀ᵐ⁻¹ k·2ᵏ = ({a1})2ᵐ + 2.',
+    'Adding the term {term} to both sides: Σₖ₌₀ᵐ k·2ᵏ = (m − 2)2ᵐ + 2 + m·2ᵐ',
+    '= ({a2})2ᵐ + 2 = (m − 1)·2 ^ ({e}) + 2,',
+    'which is the formula for m, so m ∉ C — a contradiction. Hence C = ∅. ∎'],
+   gaps:{l0:{a:['0']},r0:{a:['0']},why:{o:['m − 1 < m and m is the least element of C','m − 1 ∈ C','P(m) is true'],a:'m − 1 < m and m is the least element of C'},
+    a1:{a:['m−2']},term:{a:['m·2ᵐ','m2ᵐ','m*2ᵐ']},a2:{a:['2m−2','2(m−1)']},e:{a:['m+1']}}},
+  {id:'dck3',title:'Contradiction · √5 is irrational',ru:'От противного: √5',type:'cloze',keys:'MT1',
+   brief:'The √2 skeleton with 5. Name the fact you use when 5 | a².',briefRu:'Скелет √2, но с 5.',
+   lesson:'For a prime p: p | a² ⇒ p | a (Euclid’s lemma). For √6 use the prime 2: a² = 6b² ⇒ a even ⇒ 2k² = 3b² ⇒ b even.',
+   lines:['Proof. By contradiction, assume √5 is {rat}. Then √5 = a/b with integers a, b, b ≠ 0, in {lt} terms.',
+    'Squaring: a² = {sq}. So 5 | a², hence 5 | a by {eu} (5 is prime). Write a = 5k.',
+    'Then 25k² = 5b², so b² = {b2}, hence 5 | b.',
+    'So 5 divides both a and b, contradicting {con}. Hence √5 is {irr}. ∎'],
+   gaps:{rat:{a:['rational']},lt:{a:['lowest']},sq:{a:['5b²']},eu:{o:['Euclid’s lemma','the WOP','unique factorization of 5'],a:'Euclid’s lemma'},b2:{a:['5k²']},
+    con:{o:['lowest terms','b ≠ 0','√5 > 2'],a:'lowest terms'},irr:{a:['irrational']}}},
+  {id:'dck4',title:'Ex2 · valid by cases (2024 Ex2.1)',ru:'Ex2.1: общезначимость разбором случаев',type:'cloze',
+   brief:'(P → Q) → ((P → R) → (P → (Q ∧ R))) is valid. Fill in the case proof.',briefRu:'Разбор случаев по P, потом по Q.',
+   lesson:'Pick the variable that kills the most implications (here P). Say why each case is T, then “the cases are exhaustive”.',
+   lines:['Proof. By cases on {v1}, then on Q.',
+    'Case P = F: every implication with hypothesis P is {t1}, so the formula is T → (T → T) = T.',
+    'Case P = T, Q = F: P → Q = {pq}, so the main implication has a {fh} hypothesis, and the formula is T.',
+    'Case P = T, Q = T: P → R has the value of {r1}, and P → (Q ∧ R) has the value of R; the formula is T → (R → R) = T.',
+    'The cases are {exh} and in each the formula is true, so it is {val}. ∎'],
+   gaps:{v1:{a:['P']},t1:{o:['true','false'],a:'true'},pq:{o:['T','F'],a:'F'},fh:{o:['false','true'],a:'false'},r1:{a:['R']},
+    exh:{o:['exhaustive','disjoint','finite'],a:'exhaustive'},val:{o:['valid','satisfiable','unsatisfiable'],a:'valid'}}},
+  {id:'dck5',title:'Ex2 · not valid (2024 Ex2.2)',ru:'Ex2.2: одно опровергающее присваивание',type:'cloze',
+   brief:'((P → Q) → (P → R)) → (P → (Q ∧ R)) is not valid. Write the 1-point answer.',briefRu:'Ответ на 1 балл: одно присваивание, всё вычислено.',
+   lesson:'Make the conclusion false (P = T and Q ∧ R = F), then make the hypothesis true (Q = F kills P → Q). Evaluate every subformula.',
+   lines:['Take P = {p}, Q = {q}, R arbitrary.',
+    'Then P → Q = {pq}, so (P → Q) → (P → R) = {h}.',
+    'And Q ∧ R = F, so P → (Q ∧ R) = {c}.',
+    'The formula is T → F = {w}: this assignment {fals} it, so it is not valid. ∎'],
+   gaps:{p:{o:['T','F'],a:'T'},q:{o:['T','F'],a:'F'},pq:{o:['T','F'],a:'F'},h:{o:['T','F'],a:'T'},c:{o:['T','F'],a:'F'},w:{o:['T','F'],a:'F'},fals:{a:['falsifies']}}},
+  {id:'dck6',title:'Ex3 · |B^A| = |B|^|A| (2024)',ru:'Ex3 2024: число функций',type:'cloze',keys:'MT1',
+   brief:'B^A = the total functions A → B. Part 1 (2 pts) for k, n ≥ 1; part 2 (1 pt) for A = ∅. Type ^k for ᵏ.',briefRu:'Часть 1 — независимые выборы; часть 2 — пустая функция.',
+   lesson:'Total function = exactly one arrow out of each element = k independent choices with n options = nᵏ. If A = ∅, the empty relation is the one total function: n⁰ = 1.',
+   lines:['Let A = {a₁, …, aₖ} and |B| = n, with k, n ≥ 1.',
+    'A total function f: A → B has exactly {one} arrow out of each aᵢ, so for each aᵢ one value f(aᵢ) ∈ B is chosen.',
+    'So f is a collection of {k} {ind} choices, each among {n} options, and different choices give {diff} functions.',
+    'Hence |B^A| = n · n ⋯ n = {nk} = |B|^|A|.',
+    'If A = ∅: the only relation A → B is the {empt} relation, and it is a {tf} (vacuously). So |B^A| = {one2} = |B|⁰. ∎'],
+   gaps:{one:{o:['one','at least one','at most one'],a:'one'},k:{a:['k']},ind:{o:['independent','disjoint','increasing'],a:'independent'},n:{a:['n']},
+    diff:{o:['different','equal'],a:'different'},nk:{a:['nᵏ']},empt:{a:['empty']},tf:{o:['total function','partial function only','bijection'],a:'total function'},one2:{a:['1']}}},
+  {id:'dck7',title:'Element chasing · A ∩ (B − C)',ru:'Погоня за элементом',type:'cloze',keys:'MT1',
+   brief:'Prove A ∩ (B − C) = (A ∩ B) − C. ASCII: iff for ⟺, cap for ∩, notin for ∉.',briefRu:'Цепочка «⟺» с названным законом.',
+   lesson:'Unfold (∩ → ∧, − → ∧ ¬), regroup with a named law, fold back. Only iff links, then “the sets are equal”.',
+   lines:['We show that for every x: x ∈ A ∩ (B − C) {iff} x ∈ (A ∩ B) − C.',
+    'x ∈ A ∩ (B − C) ⟺ x ∈ A ∧ (x ∈ B ∧ {nc})   [def. of ∩ and −]',
+    '⟺ (x ∈ A ∧ x ∈ B) ∧ x ∉ C   [{law}]',
+    '⟺ x ∈ {ab} ∧ x ∉ C   [def. of ∩]',
+    '⟺ x ∈ (A ∩ B) − C   [def. of −].',
+    'Every link is an iff, so the two sets are {eq}. ∎'],
+   gaps:{iff:{a:['iff','⟺']},nc:{a:['x ∉ C']},law:{o:['associativity of ∧','De Morgan','distributivity'],a:'associativity of ∧'},ab:{a:['A ∩ B']},eq:{a:['equal']}}},
+]},
+];
+WORLDS.unshift(...MT1);
+WORLDS.forEach(W=>{if(!W.zone)W.zone=2;});
+/* map layout: midterm 1 along the top, midterm 2 below */
+const POS={prf:[120,150],wop:[320,262],lgc:[520,150],set:[720,262],dck:[885,150],ind:[830,520],mac:[530,600],rit:[200,520],str:[250,830],inf:[560,800],skl:[860,860]};
+WORLDS.forEach(W=>{if(POS[W.id])[W.x,W.y]=POS[W.id];});
+{const sk=WORLDS.find(W=>W.id==='skl');if(sk)sk.ch='Write mode · midterm 2';}
+</script>
+
+<script>
 /* ================= components ================= */
 const C={};
 
@@ -715,7 +1289,7 @@ C.input=function(box,L,api,done){
     const why=h('div',{class:'why',hidden:true});
     const next=h('button',{class:'btn primary',hidden:true,onclick:()=>{i++;if(i<L.qs.length)show();else done();}},i<L.qs.length-1?'Next →':'Finish');
     const check=h('button',{class:'btn primary',onclick:go},'Check');
-    function go(){if(inp.value==='')return;if(Number(inp.value)===q.a){inp.disabled=true;check.disabled=true;why.hidden=false;why.replaceChildren(h('b',{},'Yes. '),q.why);next.hidden=false;next.focus();api.clear();}else{api.mistake(`${inp.value} is not it. Write out the first few places and count.`);inp.select();}}
+    function go(){if(inp.value==='')return;if(Number(inp.value)===q.a){inp.disabled=true;check.disabled=true;why.hidden=false;why.replaceChildren(h('b',{},'Yes. '),q.why);next.hidden=false;next.focus();api.clear();}else{api.mistake(L.miss?`${inp.value}: ${L.miss}`:`${inp.value} is not it. Write out the first few places and count.`);inp.select();}}
     inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
     box.replaceChildren(h('div',{class:'stage-tag'},`Question ${i+1} of ${L.qs.length}`),h('p',{class:'q'},q.q),h('div',{class:'row',style:'margin-top:10px'},inp,check),why,h('div',{class:'row',style:'margin-top:12px'},next));
     inp.focus();
@@ -899,7 +1473,9 @@ function nrm(x){
   return String(x).toLowerCase()
     .replace(/[’′‘`]/g,"'").replace(/″/g,"''")
     .replace(/lambda/g,'λ').replace(/forall/g,'∀').replace(/emptyset|\{\}/g,'∅')
-    .replace(/<=>|<->|\biff\b/g,'⟺').replace(/=>|->/g,'⇒').replace(/!=|=\/=/g,'≠')
+    .replace(/<=>|<->|\biff\b/g,'⟺').replace(/=>|->|→/g,'⇒').replace(/!=|=\/=/g,'≠')
+    .replace(/\bnot\s*in\b|!in\b/g,'∉').replace(/\bcap\b/g,'∩').replace(/\bcup\b/g,'∪')
+    .replace(/\^([23kmn])/g,(_,c)=>({'2':'²','3':'³','k':'ᵏ','m':'ᵐ','n':'ⁿ'})[c])
     .replace(/</g,'⟨').replace(/>/g,'⟩')
     .replace(/\^2/g,'²').replace(/[−–—]/g,'-')
     .replace(/\bin\b/g,'∈').replace(/\band\b/g,'∧').replace(/&/g,'∧')
@@ -909,9 +1485,10 @@ function nrm(x){
     .replace(/^(∀[a-z]+(?:∈[a-z*]+)?)[·,:]/,'$1');
 }
 const KEYS=['⟨','⟩','λ','·','∀','∈','∉','∅','≠','⟺','⇒','∧','∘','*','′','²','|','#'];
+const KEYSETS={MT1:['≠','∈','∉','∅','∩','∪','−','²','ᵏ','ᵐ','·','⟺','∧','∨','¬','→','Σ']};
 C.cloze=function(box,L,api,done){
   let last=null;const gapEls={};const keys=Object.keys(L.gaps);
-  const bar=h('div',{class:'keys',role:'toolbar','aria-label':'Symbols'},KEYS.map(k=>h('button',{class:'btn key',type:'button','aria-label':'insert '+k,onmousedown:e=>e.preventDefault(),onclick:()=>{
+  const bar=h('div',{class:'keys',role:'toolbar','aria-label':'Symbols'},(KEYSETS[L.keys]||KEYS).map(k=>h('button',{class:'btn key',type:'button','aria-label':'insert '+k,onmousedown:e=>e.preventDefault(),onclick:()=>{
     const el=last;if(!el||el.tagName!=='INPUT'||el.readOnly)return api.info('Tap a gap first, then a symbol.');
     const a=el.selectionStart??el.value.length,b=el.selectionEnd??el.value.length;el.value=el.value.slice(0,a)+k+el.value.slice(b);el.focus();el.setSelectionRange(a+k.length,a+k.length);}},k)));
   const lines=L.lines.map(t=>{const p=h('p',{class:'cl'});t.split(/\{(\w+)\}/).forEach((part,i)=>{
@@ -987,6 +1564,750 @@ C.diag=function(box,L,api,done){
   function check(){for(let i=0;i<R;i++){if(d[i]==null)return api.info(`Fill place ${i} of d.`);if(d[i]===rows[i][i])return api.mistake(`d agrees with s${i} at place ${i} (both ${d[i]}). Flip it.`);}api.info('d differs from every row sᵢ at place i, so d is not in the list.');setTimeout(done,600);}
   render();
 };
+
+/* ---- truth table builder ---- */
+C.ttable=function(box,L,api,done){
+  let k=0;
+  function round(){
+    const R=L.rounds[k],n=R.vars.length,N=1<<n;
+    const rows=[...Array(N)].map((_,i)=>R.vars.map((_,j)=>!((i>>(n-1-j))&1)));
+    const val=rows.map(v=>R.cols.map(c=>!!c.f(...v)));
+    const st=rows.map((_,i)=>R.cols.map((c,j)=>c.given?val[i][j]:null));
+    const rowName=v=>R.vars.map((x,j)=>x+' = '+TV(v[j])).join(', ');
+    let locked=false;const cells=[];
+    const paint=(b,i,j)=>{const s=st[i][j];b.textContent=s===null?'·':TV(s);b.dataset.v=s===null?'':TV(s);};
+    const tb=h('table',{class:'tt'},
+      h('thead',{},h('tr',{},R.vars.map(v=>h('th',{class:'tv'},v)),R.cols.map(c=>h('th',{class:c.given?'tg':''},c.t)))),
+      h('tbody',{},rows.map((v,i)=>h('tr',{},v.map(b=>h('td',{class:'tv'},TV(b))),R.cols.map((c,j)=>{
+        if(c.given)return h('td',{class:'tg'},TV(val[i][j]));
+        const b=h('button',{class:'ttc',type:'button','aria-label':`row ${i+1}, column ${c.t}`,onclick:()=>{if(locked)return;st[i][j]=st[i][j]===null?true:st[i][j]===true?false:null;paint(b,i,j);b.classList.remove('bad');}},'·');
+        cells.push({b,i,j});return h('td',{},b);})))));
+    const check=h('button',{class:'btn primary',onclick:run},'Check the table');
+    const after=h('div',{});
+    box.replaceChildren(h('div',{class:'stage-tag'},`Table ${k+1} of ${L.rounds.length}`),h('p',{class:'q mono'},R.f),
+      h('p',{class:'ru'},'Тап по клетке: · → T → F → ·'+(R.cols.some(c=>c.given)?'. Серые столбцы уже заполнены.':'')),h('div',{class:'scroll'},tb),h('div',{class:'row',style:'margin-top:10px'},check),after);
+    function run(){
+      const empty=cells.filter(c=>st[c.i][c.j]===null).length;
+      if(empty)return api.info(`${empty} cell(s) are still empty.`);
+      const bad=cells.filter(c=>st[c.i][c.j]!==val[c.i][c.j]);
+      if(bad.length){bad.forEach(c=>c.b.classList.add('bad'));return api.mistake(`${bad.length} cell(s) are wrong — marked in red. X → Y is F only in the row T → F; work column by column, left to right.`);}
+      locked=true;check.disabled=true;cells.forEach(c=>{c.b.disabled=true;c.b.classList.add('ok');});api.clear();ask();
+    }
+    function ask(){
+      const last=val.map(r=>r[r.length-1]),cls=last.every(x=>x)?0:last.some(x=>x)?1:2;
+      const fr=rows.filter((_,i)=>!last[i]).map(rowName);
+      const q=R.q||{q:'So the formula is …',opts:CLS,a:cls,
+        why:cls===0?'Every row of the last column is T.':cls===2?'No row of the last column is T.':`It is T in some rows and F in ${fr.length>1?'the rows':'the row'} ${fr.join(' · ')}. One F row is exactly the counter-example you write for “not valid”.`};
+      const why=h('div',{class:'why',hidden:true});
+      const last1=k===L.rounds.length-1;
+      const next=h('button',{class:'btn primary',hidden:true,onclick:()=>{k++;if(k<L.rounds.length)round();else done();}},last1?'Finish':'Next table →');
+      const btns=q.opts.map((o,idx)=>h('button',{class:'btn',onclick:e=>{
+        if(idx===q.a){btns.forEach(b=>b.disabled=true);e.currentTarget.className='btn ok';why.hidden=false;why.replaceChildren(h('b',{},'Why: '),q.why);next.hidden=false;next.focus();api.clear();}
+        else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake(R.q?'Compare the two columns row by row.':idx===0?'There is an F in the last column.':idx===2?'There is a T in the last column.':cls===0?'Is there any F in the last column?':'Is there any T in the last column?');}}},o));
+      after.replaceChildren(h('p',{class:'q',style:'margin-top:14px'},q.q),h('div',{class:'opts'},btns),why,h('div',{class:'row',style:'margin-top:12px'},next));
+    }
+  }
+  round();
+};
+
+/* ---- counter-model lab ---- */
+C.cmodel=function(box,L,api,done){
+  let k=0,miss=0,wrong=0;
+  function round(){
+    const R=L.rounds[k],bin=R.kind===2,menu=bin?BP:UP;
+    const mk=lab=>h('select',{class:'gap','aria-label':lab},h('option',{value:''},'choose …'),menu.map((p,i)=>h('option',{value:String(i)},p[0])));
+    const sP=mk(bin?'P(x, y)':'P(x)'),sQ=bin?null:mk('Q(x)');
+    const out=h('div',{style:'margin-top:10px'}),fin=h('div',{});let solved=false;
+    const ev=h('button',{class:'btn primary',onclick:evaluate},'Evaluate');
+    const val=h('button',{class:'btn',onclick:claim},'No counter-model exists: it is valid');
+    const hint=R.hint?h('button',{class:'btn',onclick:()=>{miss++;hint.disabled=true;api.info('Hint: '+R.hint);}},'Hint'):null;
+    box.replaceChildren(h('div',{class:'stage-tag'},`Formula ${k+1} of ${L.rounds.length} · domain ℕ`),h('p',{class:'q mono',style:'font-size:15.5px'},R.f),
+      h('div',{class:'cmsel'},h('label',{},h('span',{class:'mono'},bin?'P(x, y) ::= ':'P(x) ::= '),sP),sQ?h('label',{},h('span',{class:'mono'},'Q(x) ::= '),sQ):null),
+      h('div',{class:'row',style:'margin-top:10px'},ev,val,hint),out,fin);
+    function evaluate(){
+      if(solved)return;
+      if(sP.value===''||(sQ&&sQ.value===''))return api.info(bin?'Choose P first.':'Choose P and Q first.');
+      const P=menu[+sP.value][1],Q=sQ?menu[+sQ.value][1]:null;
+      const parts=R.parts(P,Q),w=R.whole(parts.map(p=>p[1]));
+      out.replaceChildren(h('table',{class:'t mono cmt'},h('tbody',{},parts.map(p=>h('tr',{},h('td',{},p[0]),h('td',{class:p[1]?'tvT':'tvF'},TV(p[1])))),
+        h('tr',{},h('td',{},h('b',{},'whole formula')),h('td',{class:w?'tvT':'tvF'},h('b',{},TV(w)))))));
+      if(!w){solved=true;[ev,val,hint].forEach(b=>b&&(b.disabled=true));sP.disabled=true;if(sQ)sQ.disabled=true;api.info('Counter-model found: this interpretation makes the formula false, so it is not valid.');finish();}
+      else{if(!R.valid)miss++;api.info('The formula is TRUE under this interpretation. Try another one — or decide that none exists.');}
+    }
+    function claim(){
+      if(solved)return;
+      if(R.valid){solved=true;[ev,val,hint].forEach(b=>b&&(b.disabled=true));sP.disabled=true;if(sQ)sQ.disabled=true;api.clear();finish();}
+      else{wrong++;api.mistake('It is not valid: a counter-model exists. Keep searching'+(R.hint?' — the hint helps.':'.'));}
+    }
+    function finish(){
+      const lastR=k===L.rounds.length-1;
+      fin.replaceChildren(h('div',{class:'why'},h('b',{},R.valid?'Valid. ':'Why: '),R.why),
+        h('div',{class:'row',style:'margin-top:12px'},h('button',{class:'btn primary',onclick:()=>{k++;if(k<L.rounds.length){api.clear();round();}else{api.stars=miss<=2&&!wrong?3:miss<=6&&wrong<=1?2:1;api.summary=`Unsuccessful tries: ${miss} · wrong “valid” claims: ${wrong}`;done();}}},lastR?'Finish':'Next formula →')));
+    }
+  }
+  round();
+};
+
+/* ---- Venn painter ---- */
+C.venn=function(box,L,api,done){
+  let k=0,uid=0;
+  const CIR=[[150,130],[250,130],[200,215]],RR=80;
+  const REG=[[1,0,0,105,110,'A only'],[0,1,0,295,110,'B only'],[0,0,1,200,270,'C only'],[1,1,0,200,95,'A ∩ B, not C'],[1,0,1,145,200,'A ∩ C, not B'],[0,1,1,255,200,'B ∩ C, not A'],[1,1,1,200,160,'A ∩ B ∩ C'],[0,0,0,44,300,'outside A, B, C']];
+  function round(){
+    const R=L.rounds[k],p='vn'+String(L.id).replace(/\W/g,'')+'x'+(uid++);
+    const sh=REG.map(()=>false),truth=REG.map(r=>!!R.f(!!r[0],!!r[1],!!r[2]));let locked=false;const bad=new Set();
+    const svg=sv('svg',{viewBox:'0 0 400 340',role:'img','aria-label':'Venn diagram: sets A, B, C inside the domain D',class:'vsvg'});
+    const chips=REG.map((r,ri)=>h('button',{class:'btn chip2',type:'button','aria-pressed':'false',onclick:()=>toggle(ri)},`${ri+1} · ${r[5]}`));
+    function draw(){
+      const defs=sv('defs',{});
+      CIR.forEach(([x,y],i)=>defs.append(sv('clipPath',{id:`${p}c${i}`},sv('circle',{cx:x,cy:y,r:RR})),
+        sv('mask',{id:`${p}m${i}`,maskUnits:'userSpaceOnUse',x:0,y:0,width:400,height:340},sv('rect',{x:0,y:0,width:400,height:340,fill:'#fff'}),sv('circle',{cx:x,cy:y,r:RR,fill:'#000'}))));
+      const kids=[defs,sv('rect',{x:16,y:16,width:368,height:308,rx:14,class:'vdom'})];
+      REG.forEach((r,ri)=>{if(!sh[ri])return;let el=sv('rect',{x:16,y:16,width:368,height:308,rx:14,class:'vfill'+(bad.has(ri)?' bad':'')});
+        for(let i=0;i<3;i++)el=sv('g',r[i]?{'clip-path':`url(#${p}c${i})`}:{mask:`url(#${p}m${i})`},el);kids.push(el);});
+      CIR.forEach(([x,y])=>kids.push(sv('circle',{cx:x,cy:y,r:RR,class:'vcir'})));
+      kids.push(sv('text',{x:76,y:54,class:'vlab'},'A'),sv('text',{x:310,y:54,class:'vlab'},'B'),sv('text',{x:268,y:306,class:'vlab'},'C'),sv('text',{x:30,y:42,class:'svg-m'},'D'));
+      REG.forEach((r,ri)=>kids.push(sv('text',{x:r[3],y:r[4]+4,'text-anchor':'middle',class:'vnum'+(bad.has(ri)?' bad':'')},String(ri+1))));
+      svg.replaceChildren(...kids);
+      chips.forEach((c,ri)=>{c.className='btn chip2'+(sh[ri]?' sel':'')+(bad.has(ri)?' no':'');c.setAttribute('aria-pressed',String(sh[ri]));c.disabled=locked;});
+    }
+    function toggle(ri){if(locked||ri<0)return;sh[ri]=!sh[ri];bad.delete(ri);draw();}
+    svg.addEventListener('click',e=>{if(locked)return;const m=svg.getScreenCTM();if(!m)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const q=pt.matrixTransform(m.inverse());
+      if(q.x<16||q.x>384||q.y<16||q.y>324)return;const bits=CIR.map(([x,y])=>(q.x-x)**2+(q.y-y)**2<=RR*RR?1:0);toggle(REG.findIndex(r=>r[0]===bits[0]&&r[1]===bits[1]&&r[2]===bits[2]));});
+    const check=h('button',{class:'btn primary',onclick:run},'Check');
+    const after=h('div',{});
+    box.replaceChildren(h('div',{class:'stage-tag'},`Picture ${k+1} of ${L.rounds.length}`),h('p',{class:'q mono',style:'font-size:18px'},R.t),svg,h('div',{class:'chips2'},chips),h('div',{class:'row',style:'margin-top:10px'},check),after);
+    draw();
+    function run(){
+      if(!sh.some(x=>x))return api.info('Shade at least one region first.');
+      bad.clear();REG.forEach((_,ri)=>{if(sh[ri]!==truth[ri])bad.add(ri);});
+      if(bad.size){draw();return api.mistake(`${bad.size} region(s) wrong — their numbers are red. Test one point of each region: is it in the set?`);}
+      locked=true;check.disabled=true;draw();api.clear();
+      const lastR=k===L.rounds.length-1;
+      const next=h('button',{class:'btn primary',onclick:()=>{k++;if(k<L.rounds.length)round();else done();}},lastR?'Finish':'Next picture →');
+      if(!R.q){after.replaceChildren(h('div',{class:'why'},h('b',{},'Right. '),R.why),h('div',{class:'row',style:'margin-top:12px'},next));next.focus();return;}
+      next.hidden=true;const why=h('div',{class:'why',hidden:true});
+      const btns=R.q.opts.map((o,idx)=>h('button',{class:'btn',onclick:e=>{if(idx===R.q.a){btns.forEach(b=>b.disabled=true);e.currentTarget.className='btn ok';why.hidden=false;why.replaceChildren(h('b',{},'Why: '),R.q.why);next.hidden=false;next.focus();api.clear();}else{e.currentTarget.className='btn no';e.currentTarget.disabled=true;api.mistake('Compare your picture with A itself.');}}},o));
+      after.replaceChildren(h('p',{class:'q',style:'margin-top:14px'},R.q.q),h('div',{class:'opts'},btns),why,h('div',{class:'row',style:'margin-top:12px'},next));
+    }
+  }
+  round();
+};
+</script>
+
+<script>
+/* ================= toys: poke the idea and watch it change ================= */
+const TOYS={};
+let TOYUID=0;
+const tfc=b=>h('span',{class:'tfc '+(b?'t':'f')},TV(b));
+const seg=(opts,cur,on)=>h('div',{class:'seg',role:'group'},opts.map(([v,lab])=>h('button',{class:'btn'+(v===cur?' sel':''),type:'button','aria-pressed':String(v===cur),onclick:()=>on(v)},lab)));
+const stepper=(lab,val,lo,hi,on)=>h('span',{class:'stp'},h('span',{class:'mono'},lab),h('button',{class:'btn mini',type:'button','aria-label':lab+' minus',disabled:val<=lo,onclick:()=>on(val-1)},'−'),h('b',{class:'mono'},String(val)),h('button',{class:'btn mini',type:'button','aria-label':lab+' plus',disabled:val>=hi,onclick:()=>on(val+1)},'+'));
+const isPrime=n=>{if(n<2)return false;for(let d=2;d*d<=n;d++)if(n%d===0)return false;return true;};
+const SUPD='⁰¹²³⁴⁵⁶⁷⁸⁹',SUBD='₀₁₂₃₄₅₆₇₈₉',sup=n=>String(n).split('').map(c=>SUPD[+c]??c).join(''),sub=n=>String(n).split('').map(c=>SUBD[+c]??c).join(''),lg=(b,a)=>`log${sub(b)} ${a}`;
+const factor=n=>{const f={};let d=2;while(n>1&&d*d<=n){while(n%d===0){f[d]=(f[d]||0)+1;n/=d;}d++;}if(n>1)f[n]=(f[n]||0)+1;return f;};
+const factStr=n=>{const f=factor(n);const SUP='⁰¹²³⁴⁵⁶⁷⁸⁹';const sup=k=>k===1?'':String(k).split('').map(c=>SUP[+c]).join('');return Object.keys(f).map(p=>p+sup(f[p])).join(' · ')||String(n);};
+
+/* ---- ch. 1 · implication as a promise ---- */
+TOYS.impl={name:'Promise machine',run(box){
+  let P=true,Q=true;const seen=new Set();
+  const ROWS=[[true,true],[true,false],[false,true],[false,false]];
+  const STM=[['P ⇒ Q','the promise',(p,q)=>IMP(p,q)],['¬Q ⇒ ¬P','contrapositive',(p,q)=>IMP(!q,!p)],['Q ⇒ P','converse',(p,q)=>IMP(q,p)],['¬P ⇒ ¬Q','inverse',(p,q)=>IMP(!p,!q)],['P ∧ ¬Q','negation',(p,q)=>p&&!q]];
+  const STORY={TT:'It rains and you bring the umbrella: promise kept.',TF:'It rains and there is no umbrella: the ONLY way to break the promise.',FT:'No rain, umbrella anyway: nobody can say the promise was broken.',FF:'No rain, no umbrella: the promise was never tested — it stands.'};
+  function draw(){
+    seen.add(TV(P)+TV(Q));const all=seen.size===4;
+    const tbl=h('table',{class:'t mono'},h('thead',{},h('tr',{},h('th',{},'P'),h('th',{},'Q'),STM.map(s=>h('th',{},s[0])))),
+      h('tbody',{},ROWS.map(([p,q])=>{const key=TV(p)+TV(q),vis=seen.has(key);return h('tr',{class:(p===P&&q===Q?'cur':'')+(vis?'':' unseen')},h('td',{},TV(p)),h('td',{},TV(q)),STM.map(s=>h('td',{},vis?tfc(s[2](p,q)):'?')));})));
+    box.replaceChildren(
+      h('p',{class:'ru'},'P = «идёт дождь», Q = «беру зонт». P ⇒ Q = обещание «если дождь — беру зонт».'),
+      h('div',{class:'row'},h('button',{class:'btn sw',onclick:()=>{P=!P;draw();}},'P · rain ',tfc(P)),h('button',{class:'btn sw',onclick:()=>{Q=!Q;draw();}},'Q · umbrella ',tfc(Q))),
+      h('p',{class:'story'},STORY[TV(P)+TV(Q)]),
+      h('div',{class:'lamps'},STM.map(s=>h('div',{class:'lamp '+(s[2](P,Q)?'t':'f')},h('span',{class:'mono'},s[0]),h('span',{class:'ru'},s[1]),tfc(s[2](P,Q))))),
+      h('div',{class:'scroll'},tbl),
+      h('p',{class:all?'why':'ru',style:'margin-top:8px'},all?'All 4 rows seen. The contrapositive matches P ⇒ Q in every row: they are equivalent. The converse and the inverse differ from it in rows TF and FT — they match EACH OTHER. The negation P ∧ ¬Q is T only in the broken row.':`Seen ${seen.size} of 4 rows — flip the switches to uncover the table.`));
+  }
+  draw();}};
+
+/* ---- ch. 1 · prime balance for logarithms ---- */
+TOYS.logbal={name:'Prime balance',run(box){
+  let b=4,a=8,m=1,n=1;
+  const PRE=[[4,8],[4,6],[20,50],[9,27],[25,125],[29,125],[2,3],[8,4]];
+  const num=(v,on,lab)=>{const i=h('input',{type:'number',min:2,max:999,value:v,'aria-label':lab,style:'width:5.5em'});i.addEventListener('change',()=>{const x=Math.max(2,Math.min(999,Math.round(+i.value||2)));on(x);});return i;};
+  function draw(){
+    const fb=factor(b),fa=factor(a),ps=[...new Set([...Object.keys(fb),...Object.keys(fa)].map(Number))].sort((x,y)=>x-y);
+    const eb=p=>fb[p]||0,ea=p=>fa[p]||0;
+    let verdict;const lone=ps.find(p=>!eb(p)||!ea(p));
+    if(lone!==undefined)verdict=`The prime ${lone} appears in ${eb(lone)?b:a} but not in ${eb(lone)?a:b}. For m, n ≥ 1 it divides ${eb(lone)?'bᵐ':'aⁿ'} and never ${eb(lone)?'aⁿ':'bᵐ'}: no setting balances. ${lg(b,a)} is irrational.`;
+    else{const [x0,y0]=[ea(ps[0]),eb(ps[0])];const bad=ps.find(p=>ea(p)*y0!==eb(p)*x0);
+      if(bad===undefined){const g=gcd(x0,y0),u=x0/g,v=y0/g;verdict=`Every prime asks for the same ratio m/n = ${u}/${v}. So ${b}${sup(u)} = ${a}${sup(v)} and ${lg(b,a)} = ${v===1?u:u+'/'+v} — rational${v===1?', even an integer':''}.`;}
+      else{const r=p=>{const g=gcd(ea(p),eb(p));return `${ea(p)/g}/${eb(p)/g}`;};verdict=`The prime ${ps[0]} needs m/n = ${r(ps[0])}, the prime ${bad} needs m/n = ${r(bad)}. One fraction cannot be both: ${lg(b,a)} is irrational.`;}}
+    const balanced=ps.every(p=>eb(p)*m===ea(p)*n);
+    const tower=(k,cls)=>k>24?h('span',{class:'mono'},`${k} blocks`):h('span',{class:'tower'},[...Array(k)].map(()=>h('span',{class:'blk '+cls})));
+    box.replaceChildren(
+      h('p',{class:'ru'},'log_b a = m/n ⟺ bᵐ = aⁿ. Каждое простое должно встретиться слева и справа одинаково часто.'),
+      h('div',{class:'row'},h('label',{class:'row'},h('span',{class:'mono'},'base b'),num(b,x=>{b=x;draw();},'base b')),h('label',{class:'row'},h('span',{class:'mono'},'a'),num(a,x=>{a=x;draw();},'a'))),
+      h('div',{class:'row',style:'margin-top:8px'},h('span',{class:'ru'},'presets:'),PRE.map(([x,y])=>h('button',{class:'btn mini',onclick:()=>{b=x;a=y;m=1;n=1;draw();}},lg(x,y)))),
+      h('p',{class:'mono',style:'margin:10px 0 4px'},`b = ${b} = ${factStr(b)}    a = ${a} = ${factStr(a)}`),
+      h('div',{class:'row'},stepper('m',m,1,12,v=>{m=v;draw();}),stepper('n',n,1,12,v=>{n=v;draw();})),
+      h('table',{class:'t',style:'margin-top:8px'},h('thead',{},h('tr',{},h('th',{},'prime'),h('th',{},`in bᵐ = ${b}${sup(m)}`),h('th',{},`in aⁿ = ${a}${sup(n)}`))),
+        h('tbody',{},ps.map(p=>h('tr',{class:eb(p)*m===ea(p)*n?'okrow':'badrow'},h('td',{class:'mono'},p),h('td',{},tower(eb(p)*m,'b')),h('td',{},tower(ea(p)*n,'a')))))),
+      h('p',{class:'story'},balanced?`Balanced: ${b}${sup(m)} = ${a}${sup(n)}, so ${lg(b,a)} = ${m}/${n}.`:'Not balanced for this m, n.'),
+      h('div',{class:'why'},h('b',{},'Verdict: '),verdict));
+  }
+  draw();}};
+
+/* ---- ch. 1 · counterexample hunter ---- */
+TOYS.hunt={name:'Counterexample hunter',run(box){
+  const CL=[{t:'n² + n + 41 is prime',f:n=>n*n+n+41,N:45},{t:'n² − n + 41 is prime',f:n=>n*n-n+41,N:45},{t:'n² − 79n + 1601 is prime',f:n=>n*n-79*n+1601,N:84}];
+  let ci=0,n=0,upto=-1;
+  function draw(){
+    const C=CL[ci],v=C.f(n),pr=isPrime(v);const firstBad=[...Array(C.N+1).keys()].find(k=>!isPrime(C.f(k)));
+    box.replaceChildren(
+      seg(CL.map((c,i)=>[i,c.t]),ci,i=>{ci=i;n=0;upto=-1;draw();}),
+      h('div',{class:'row',style:'margin-top:10px'},stepper('n',n,0,C.N,k=>{n=k;upto=Math.max(upto,k);draw();}),h('button',{class:'btn',onclick:()=>{upto=Math.min(C.N,upto+1);n=upto;draw();}},'check next'),h('button',{class:'btn',onclick:()=>{upto=firstBad;n=firstBad;draw();}},'run until it fails')),
+      h('p',{class:'story'},`n = ${n}: ${v} ${pr?'is prime ✓':'= '+factStr(v)+' is NOT prime ✗'}`),
+      h('div',{class:'strip'},[...Array(C.N+1).keys()].map(k=>h('button',{class:'cellN'+(k<=upto?(isPrime(C.f(k))?' g':' r'):'')+(k===n?' sel':''),'aria-label':'n = '+k,onclick:()=>{n=k;upto=Math.max(upto,k);draw();}},k))),
+      upto>=firstBad?h('div',{class:'why',style:'margin-top:8px'},h('b',{},'Caught: '),`${firstBad} checks passed, then n = ${firstBad} gives ${C.f(firstBad)} = ${factStr(C.f(firstBad))}. Any number of passed checks proves nothing about every n; one counterexample disproves the claim.`):h('p',{class:'ru',style:'margin-top:8px'},`Проверено ${upto+1}. Всё ещё «работает»… но доказательство ли это?`));
+  }
+  draw();}};
+
+/* ---- ch. 2 · walk down a set ---- */
+TOYS.descent={name:'Walk down',run(box){
+  const fr=(p,q)=>q===1?String(p):`${p}/${q}`;
+  const SETS=[
+    {t:'ℕ',wo:true,start:9,val:i=>i,lab:i=>String(i),down:i=>i>0?i-1:null,lo:-1,hi:10},
+    {t:'{n ∈ ℤ | n ≥ −7}',wo:true,start:4,val:i=>i,lab:i=>String(i),down:i=>i>-7?i-1:null,lo:-8,hi:5},
+    {t:'ℤ',wo:false,start:4,val:i=>i,lab:i=>String(i),down:i=>i-1,lo:-12,hi:5,slide:true},
+    {t:'{n/(n + 1) | n ∈ ℕ}',wo:true,start:8,val:i=>i/(i+1),lab:i=>fr(i,i+1),down:i=>i>0?i-1:null,lo:-0.08,hi:1.08,limit:[1,'1 ∉ set']},
+    {t:'{1/n | n ∈ ℤ⁺}',wo:false,start:1,val:i=>1/i,lab:i=>fr(1,i),down:i=>i+1,lo:-0.08,hi:1.08,limit:[0,'0 ∉ set']},
+    {t:'ℚ≥0 — walking inside its subset {1/n}',wo:false,start:1,val:i=>1/i,lab:i=>fr(1,i),down:i=>i+1,lo:-0.08,hi:1.08,zero:true},
+    {t:'{(n + 2)/(n + 1) | n ∈ ℕ}',wo:false,start:0,val:i=>(i+2)/(i+1),lab:i=>fr(i+2,i+1),down:i=>i+1,lo:0.9,hi:2.1,limit:[1,'1 ∉ set']},
+  ];
+  let si=0,cur=SETS[0].start,path=[cur],stuck=false;
+  const reset=()=>{cur=SETS[si].start;path=[cur];stuck=false;};
+  function step(k){const S=SETS[si];for(let j=0;j<k;j++){const d=S.down(cur);if(d===null){stuck=true;break;}cur=d;path.push(cur);}draw();}
+  function draw(){
+    const S=SETS[si],W=420,H=90;let lo=S.lo,hi=S.hi;if(S.slide){lo=Math.min(S.lo,S.val(cur)-6);hi=lo+17;}
+    const X=v=>20+(v-lo)/(hi-lo)*(W-40);
+    const svg=sv('svg',{viewBox:`0 0 ${W} ${H}`,class:'nline',role:'img','aria-label':'number line'});
+    svg.append(sv('line',{x1:10,y1:50,x2:W-10,y2:50,class:'axis'}));
+    const idx=[];for(let i=-60;i<400;i++){const v=S.val(i);if(Number.isFinite(v)&&v>=lo&&v<=hi)idx.push(i);}
+    const inSet=i=>{if(S.t==='ℕ')return i>=0;if(S.t.startsWith('{n ∈ ℤ'))return i>=-7;if(S.t==='ℤ')return true;if(S.t.startsWith('{n/(n'))return i>=0;if(S.t.startsWith('{(n'))return i>=0;return i>=1;};
+    idx.filter(inSet).forEach(i=>svg.append(sv('circle',{cx:X(S.val(i)),cy:50,r:path.includes(i)?6:4,class:'nd'+(path.includes(i)?' on':'')})));
+    if(S.limit)svg.append(sv('circle',{cx:X(S.limit[0]),cy:50,r:6,class:'nd hollow'}),sv('text',{x:X(S.limit[0]),y:80,'text-anchor':'middle',class:'svg-m'},S.limit[1]));
+    if(S.zero)svg.append(sv('circle',{cx:X(0),cy:50,r:6,class:'nd minz'}),sv('text',{x:X(0),y:80,'text-anchor':'middle',class:'svg-m'},'0 = min ℚ≥0, but not in the walk'));
+    svg.append(sv('path',{d:`M${X(S.val(cur))-7},18 L${X(S.val(cur))+7},18 L${X(S.val(cur))},32 Z`,class:'ptr'}),sv('text',{x:X(S.val(cur)),y:12,'text-anchor':'middle',class:'svg-b'},S.lab(cur)));
+    const chain=path.length>9?[...path.slice(0,3).map(S.lab),'…',...path.slice(-4).map(S.lab)]:path.map(S.lab);
+    const msg=stuck?h('div',{class:'why'},h('b',{},'Floor reached. '),`Nothing in ${S.t} is smaller than ${S.lab(cur)}. However you walk down here, you stop after finitely many steps — that is what “well ordered” means.`)
+      :!S.wo&&path.length>12?h('div',{class:'why bad'},h('b',{},'It never stops. '),`There is always a smaller element: ${chain.join(' > ')} > … is an infinite decreasing sequence, so ${S.t.split(' —')[0]} is NOT well ordered.`+(S.zero?' ℚ≥0 has a minimum, 0, but this SUBSET has none — and every nonempty subset must have one.':'')):h('p',{class:'ru'},`Шагов вниз: ${path.length-1}.`);
+    box.replaceChildren(seg(SETS.map((x,i)=>[i,x.t]),si,i=>{si=i;reset();draw();}),
+      h('div',{class:'scroll'},svg),h('p',{class:'mono',style:'margin:4px 0'},chain.join(' > ')),
+      h('div',{class:'row'},h('button',{class:'btn primary',disabled:stuck,onclick:()=>step(1)},'Step down'),h('button',{class:'btn',disabled:stuck,onclick:()=>step(10)},'10 steps'),h('button',{class:'btn',onclick:()=>{reset();draw();}},'Reset')),msg);
+  }
+  draw();}};
+
+/* ---- ch. 2 · the least red cell ---- */
+TOYS.wopstrip={name:'Least red cell',run(box){
+  const fib=n=>{let a=0,b=1;for(let i=0;i<n;i++)[a,b]=[b,a+b];return a;};
+  const fact=n=>{let r=1;for(let i=2;i<=n;i++)r*=i;return r;};
+  const sum=(n,f)=>{let s=0;for(let k=0;k<=n;k++)s+=f(k);return s;};
+  const CL=[
+    {t:'0 + 1 + … + n = n(n + 1)/2',N:12,L:n=>sum(n,k=>k),R:n=>n*(n+1)/2,rel:'=',step:'(m − 1)m/2 + m = m(m + 1)/2: green at m − 1 always gives green at m. So a least red cell cannot exist.'},
+    {t:'Σₖ₌₀ⁿ k·2ᵏ = (n − 1)2ⁿ⁺¹ + 2',N:10,L:n=>sum(n,k=>k*2**k),R:n=>(n-1)*2**(n+1)+2,rel:'=',step:'(m − 2)2ᵐ + 2 + m·2ᵐ = (m − 1)2ᵐ⁺¹ + 2: the step never fails, so there is no least red cell — C = ∅.'},
+    {t:'3 divides n³ + 2n',N:12,L:n=>n**3+2*n,R:null,test:n=>(n**3+2*n)%3===0,step:'m³ + 2m = [(m − 1)³ + 2(m − 1)] + 3(m² − m + 1): green + a multiple of 3 stays green.'},
+    {t:'2ⁿ ≥ n²',N:12,L:n=>2**n,R:n=>n*n,rel:'≥',step:'Going from m − 1 to m the left side doubles, the right side grows by 2m − 1. At m = 3 doubling is not enough: 2·4 = 8 < 9 = 3². From m = 5 on it works again.'},
+    {t:'n! ≥ 2ⁿ',N:10,L:fact,R:n=>2**n,rel:'≥',step:'The left side is multiplied by m, the right side by 2. For m = 1 the factor 1 < 2 breaks it at once: the claim needs its base at n = 4.'},
+    {t:'F(n) is even (Fibonacci)',N:12,L:fib,R:null,test:n=>fib(n)%2===0,step:'The bogus step F(m) = F(m − 1) + F(m − 2) needs m ≥ 2. The least red cell is m = 1, where the step would use F(−1): the base had to cover 0 AND 1.'},
+    {t:'n² + n + 41 is prime',N:45,L:n=>n*n+n+41,R:null,test:n=>isPrime(n*n+n+41),step:'There is no step that turns “prime at m − 1” into “prime at m” — and at m = 40 the value is 41².'},
+  ];
+  let ci=0,sel=null;
+  function draw(){
+    const C=CL[ci],P=n=>C.test?C.test(n):C.rel==='='?C.L(n)===C.R(n):C.L(n)>=C.R(n);
+    const reds=[...Array(C.N+1).keys()].filter(n=>!P(n)),m=reds.length?reds[0]:null;
+    const show=n=>C.R?`left ${C.L(n)} ${P(n)?(C.rel==='='?'=':'≥'):(C.rel==='='?'≠':'<')} right ${C.R(n)}`:`value ${C.L(n)}`;
+    const det=sel===null?h('p',{class:'ru'},'Тапни клетку, чтобы увидеть обе стороны.'):h('p',{class:'mono'},`n = ${sel}: ${show(sel)} → P(${sel}) is ${TV(P(sel))}`+(sel>0?` · P(${sel-1}) is ${TV(P(sel-1))}`:''));
+    box.replaceChildren(seg(CL.map((c,i)=>[i,c.t]),ci,i=>{ci=i;sel=null;draw();}),
+      h('div',{class:'strip',style:'margin-top:10px'},[...Array(C.N+1).keys()].map(n=>h('button',{class:'cellN '+(P(n)?'g':'r')+(n===m?' m':'')+(n===sel?' sel':''),'aria-label':`n = ${n}, ${P(n)?'holds':'fails'}`,onclick:()=>{sel=n;draw();}},n))),
+      det,
+      h('p',{class:'mono',style:'margin:6px 0'},m===null?'C = ∅ (no red cell in this window)':`C = {${reds.length>8?reds.slice(0,8).join(', ')+', …':reds.join(', ')}}   least m = ${m}`),
+      h('div',{class:'why'+(m===null?'':' bad')},h('b',{},m===null?'No red cell. ':`Least red cell m = ${m}. `),m===null?C.step:(m===0?'Already the base fails: the claim is false at 0. ':`P(${m-1}) is true (green), but the step from ${m-1} to ${m} breaks. `)+C.step));
+  }
+  draw();}};
+
+/* ---- ch. 3 · formula parser shared by the formula lab and the Venn lab ---- */
+function lexF(s,set){
+  const toks=[];let i=0;
+  const W=set?[['cap','∩'],['cup','∪']]:[['iff','↔'],['xor','⊕'],['and','∧'],['or','∨'],['not','¬'],['implies','→']];
+  const SYM=set?[['∩','∩'],['&','∩'],['∪','∪'],['|','∪'],['−','−'],['-','−'],['\\','−'],["'",'′'],['′','′'],['ᶜ','′']]
+    :[['<->','↔'],['<=>','↔'],['->','→'],['=>','→'],['/\\','∧'],['\\/','∨'],['¬','¬'],['~','¬'],['!','¬'],['∧','∧'],['&','∧'],['∨','∨'],['|','∨'],['⊕','⊕'],['^','⊕'],['→','→'],['⇒','→'],['↔','↔'],['⟺','↔'],['⇔','↔']];
+  while(i<s.length){const c=s[i];if(/\s/.test(c)){i++;continue;}
+    const w=W.find(([a])=>s.slice(i,i+a.length)===a&&!/[a-zA-Z]/.test(s[i+a.length]||''));if(w){toks.push(w[1]);i+=w[0].length;continue;}
+    const y=SYM.find(([a])=>s.slice(i,i+a.length)===a);if(y){toks.push(y[1]);i+=y[0].length;continue;}
+    if(c==='('||c===')'){toks.push(c);i++;continue;}
+    if(set?/[ABCD]/.test(c):/[A-Z]/.test(c)){toks.push({v:c});i++;continue;}
+    throw new Error(set?`I do not understand “${c}”. Use A, B, C, D and ∩ ∪ − ′ (or & | - ').`:`I do not understand “${c}”. Variables are capital letters; connectives ¬ ∧ ∨ ⊕ → ↔ (or ~ & | ^ -> <->).`);}
+  return toks;
+}
+function parseF(s,set){
+  const t=lexF(s,set);let p=0;const peek=()=>t[p];
+  const BIN=set?[['∪','−'],['∩']]:[['↔'],['→'],['⊕'],['∨'],['∧']];
+  const nm=x=>typeof x==='string'?x:x.v;
+  function lvl(i){if(i===BIN.length)return un();let left=lvl(i+1);
+    while(p<t.length&&BIN[i].includes(peek())){const op=t[p++];if(op==='→')return {op,a:left,b:lvl(i)};left={op,a:left,b:lvl(i+1)};}
+    return left;}
+  function un(){const x=peek();let e;
+    if(x==='¬'){p++;return {op:'¬',a:un()};}
+    if(x==='('){p++;e=lvl(0);if(peek()!==')')throw new Error('a “)” is missing');p++;}
+    else if(x&&x.v){p++;e={v:x.v};}
+    else throw new Error(x?`unexpected “${nm(x)}”`:'the formula ends too early');
+    while(set&&peek()==='′'){p++;e={op:'′',a:e};}
+    return e;}
+  if(!t.length)throw new Error('type a formula');
+  const e=lvl(0);if(p<t.length)throw new Error(`unexpected “${nm(t[p])}”`);return e;
+}
+function evF(e,env){if(e.v)return e.v==='D'?true:!!env[e.v];const a=evF(e.a,env);
+  switch(e.op){case '¬':case '′':return !a;case '∧':case '∩':return a&&evF(e.b,env);case '∨':case '∪':return a||evF(e.b,env);case '⊕':return a!==evF(e.b,env);
+    case '→':return !a||evF(e.b,env);case '↔':return a===evF(e.b,env);case '−':return a&&!evF(e.b,env);}}
+function strF(e,top=true){if(e.v)return e.v;if(e.op==='¬')return '¬'+strF(e.a,false);if(e.op==='′')return strF(e.a,false)+'′';const s=strF(e.a,false)+' '+e.op+' '+strF(e.b,false);return top?s:'('+s+')';}
+function varsF(e,acc=new Set()){if(e.v){if(e.v!=='D')acc.add(e.v);}else{varsF(e.a,acc);if(e.b)varsF(e.b,acc);}return [...acc].sort();}
+function subsF(e,acc=[]){if(!e.v){subsF(e.a,acc);if(e.b)subsF(e.b,acc);const s=strF(e);if(!acc.some(x=>x.s===s))acc.push({s,e});}return acc;}
+function treeSVG(e,env,cls){
+  let leaf=0;const nodes=[];
+  (function lay(n,d){if(n.v){n._x=leaf++;n._d=d;}else{lay(n.a,d+1);if(n.b)lay(n.b,d+1);n._x=n.b?(n.a._x+n.b._x)/2:n.a._x;n._d=d;}nodes.push(n);})(e,0);
+  const depth=Math.max(...nodes.map(n=>n._d)),W=Math.max(1,leaf)*58+20,H=(depth+1)*56+16;
+  const X=n=>20+n._x*58+9,Y=n=>24+n._d*56;
+  const s=sv('svg',{viewBox:`0 0 ${W} ${H}`,class:'ftree',style:`max-width:${W}px`,role:'img','aria-label':'formula tree'});
+  nodes.forEach(n=>{if(!n.v){s.append(sv('line',{x1:X(n),y1:Y(n),x2:X(n.a),y2:Y(n.a),class:'tedge'}));if(n.b)s.append(sv('line',{x1:X(n),y1:Y(n),x2:X(n.b),y2:Y(n.b),class:'tedge'}));}});
+  nodes.forEach(n=>{const v=evF(n,env);s.append(sv('g',{class:'tn '+(v?'t':'f')},sv('circle',{cx:X(n),cy:Y(n),r:17}),sv('text',{x:X(n),y:Y(n)+5,'text-anchor':'middle'},n.v||n.op)));});
+  return s;
+}
+
+/* ---- ch. 3 · formula lab ---- */
+TOYS.formula={name:'Formula lab',run(box,opt){
+  const PRE=[['P → Q','¬P ∨ Q','P → Q vs ¬P ∨ Q'],['((P → Q) → P) → P','','Peirce'],['(P → Q) → ((P → R) → (P → (Q ∧ R)))','','Ex2.1 2024'],['((P → Q) → (P → R)) → (P → (Q ∧ R))','','Ex2.2 2024'],
+    ['¬P ∨ Q ∧ R → S ↔ T','','precedence'],['(P ∧ Q) → R','P → (Q → R)','(P∧Q)→R vs P→(Q→R)'],['(P ∧ Q) → R','(P → Q) → R','(P∧Q)→R vs (P→Q)→R'],['P ⊕ Q ⊕ R','','P ⊕ Q ⊕ R'],['(P → Q) ∧ (Q → R) → (P → R)','','syllogism']];
+  const pr=PRE[opt&&opt.preset||0];let f1=pr[0],f2=pr[1];const env={};
+  const in1=h('input',{type:'text',class:'gap fin',value:f1,'aria-label':'formula phi',spellcheck:'false',autocomplete:'off'});
+  const in2=h('input',{type:'text',class:'gap fin',value:f2,'aria-label':'formula psi to compare',spellcheck:'false',autocomplete:'off',placeholder:'optional: a second formula'});
+  const out=h('div',{});
+  [in1,in2].forEach(x=>x.addEventListener('input',()=>{f1=in1.value;f2=in2.value;draw();}));
+  box.replaceChildren(h('p',{class:'ru'},'Переменные — заглавные буквы; связки ¬ ∧ ∨ ⊕ → ↔ или ~ & | ^ -> <->.'),
+    h('div',{class:'row'},h('span',{class:'ru'},'presets:'),PRE.map(x=>h('button',{class:'btn mini',onclick:()=>{in1.value=f1=x[0];in2.value=f2=x[1];draw();}},x[2]))),
+    h('label',{class:'fl'},h('span',{class:'mono'},'φ ='),in1),h('label',{class:'fl'},h('span',{class:'mono'},'ψ ='),in2),out);
+  function draw(){
+    let e1,e2=null;const err=m=>out.replaceChildren(h('div',{class:'feedback info',style:'display:block'},m));
+    try{e1=parseF(f1);}catch(x){return err('φ: '+x.message);}
+    if(f2.trim()){try{e2=parseF(f2);}catch(x){return err('ψ: '+x.message);}}
+    const vs=[...new Set([...varsF(e1),...(e2?varsF(e2):[])])].sort();
+    if(vs.length>5)return err('At most 5 variables, please.');
+    vs.forEach(v=>{if(!(v in env))env[v]=true;});
+    const n=vs.length,N=1<<n,rows=[...Array(N)].map((_,i)=>Object.fromEntries(vs.map((v,j)=>[v,!((i>>(n-1-j))&1)])));
+    const c1=rows.map(r=>evF(e1,r)),c2=e2?rows.map(r=>evF(e2,r)):null;
+    const cls=c=>c.every(x=>x)?'valid':c.some(x=>x)?'satisfiable, not valid':'unsatisfiable';
+    const subs=subsF(e1).slice(0,-1),shown=subs.length<=5?subs:[];
+    const isCur=r=>vs.every(v=>r[v]===env[v]);
+    const asg=r=>vs.map(v=>v+' = '+TV(r[v])).join(', ');
+    const dnf=c=>{const tr=rows.filter((_,i)=>c[i]);if(!tr.length)return 'F (no T row)';if(tr.length>6)return `${tr.length} and-clauses, one per T row`;return tr.map(r=>'('+vs.map(v=>r[v]?v:'¬'+v).join(' ∧ ')+')').join(' ∨ ');};
+    const diff=e2?rows.filter((_,i)=>c1[i]!==c2[i]):[];
+    out.replaceChildren(
+      h('p',{class:'mono',style:'margin:8px 0 2px'},'parsed as:  '+strF(e1)),
+      h('div',{class:'row',style:'margin:6px 0'},vs.map(v=>h('button',{class:'btn sw',onclick:()=>{env[v]=!env[v];draw();}},v+' ',tfc(env[v])))),
+      h('div',{class:'scroll'},treeSVG(e1,env)),
+      h('div',{class:'scroll'+(N>8?' tall':'')},h('table',{class:'t mono tt2'},h('thead',{},h('tr',{},vs.map(v=>h('th',{},v)),shown.map(x=>h('th',{},x.s)),h('th',{},'φ'),e2?h('th',{},'ψ'):null)),
+        h('tbody',{},rows.map((r,i)=>h('tr',{class:(isCur(r)?'cur ':'')+'click',onclick:()=>{vs.forEach(v=>env[v]=r[v]);draw();}},vs.map(v=>h('td',{},TV(r[v]))),shown.map(x=>h('td',{},TV(evF(x.e,r)))),h('td',{},tfc(c1[i])),e2?h('td',{},tfc(c2[i])):null))))),
+      h('p',{class:'ru'},'Тап по строке = выставить эти значения в дереве.'),
+      h('div',{class:'why'},h('b',{},`φ is ${cls(c1)}. `),cls(c1)==='satisfiable, not valid'?`A falsifying row: ${asg(rows[c1.indexOf(false)])}. `:'',
+        h('span',{class:'mono',style:'display:block;margin-top:4px'},'full DNF: '+dnf(c1)),
+        e2?h('div',{style:'margin-top:6px'},h('b',{},diff.length?`φ and ψ are NOT equivalent: they differ in ${diff.length} row(s), e.g. ${asg(diff[0])}.`:'φ ≡ ψ: the same value in every row, so φ ↔ ψ is valid.')):null));
+  }
+  draw();}};
+
+/* ---- ch. 3 · quantifier grid ---- */
+TOYS.quant={name:'Quantifier grid',run(box){
+  const N=4,R4=[...Array(N).keys()];let G=R4.map(x=>R4.map(y=>x===y)),focus=0;const done=new Set();
+  const col=y=>G.map(r=>r[y]);
+  const ST=[
+    ['∀x ∃y. P(x, y)','every row has a filled cell',()=>G.every(r=>r.some(Boolean)),{rowBad:x=>!G[x].some(Boolean)}],
+    ['∃y ∀x. P(x, y)','some column is completely filled',()=>R4.some(y=>col(y).every(Boolean)),{colGood:y=>col(y).every(Boolean)}],
+    ['∃x ∀y. P(x, y)','some row is completely filled',()=>G.some(r=>r.every(Boolean)),{rowGood:x=>G[x].every(Boolean)}],
+    ['∀y ∃x. P(x, y)','every column has a filled cell',()=>R4.every(y=>col(y).some(Boolean)),{colBad:y=>!col(y).some(Boolean)}],
+    ['∃x ∃y. P(x, y)','at least one filled cell',()=>G.some(r=>r.some(Boolean)),{}],
+    ['∀x ∀y. P(x, y)','every cell is filled',()=>G.every(r=>r.every(Boolean)),{}],
+    ['¬∀x ∃y. P ≡ ∃x ∀y. ¬P','some row is completely EMPTY',()=>G.some(r=>!r.some(Boolean)),{rowGood:x=>!G[x].some(Boolean)}]];
+  const GOALS=[['make ∀x ∃y true but ∃y ∀x false',()=>ST[0][2]()&&!ST[1][2]()],['make ∃y ∀x true',()=>ST[1][2]()],['make ∃y ∀x true but ∀x ∃y false',()=>ST[1][2]()&&!ST[0][2]()]];
+  const PRE=[['x = y (diagonal)',(x,y)=>x===y],['column y = 2 full',(x,y)=>y===2],['row x = 1 empty',(x,y)=>x!==1&&(x+y)%2===0],['all',()=>true],['none',()=>false]];
+  function draw(){
+    GOALS.forEach((g,i)=>{if(g[1]())done.add(i);});const F=ST[focus][3];
+    const hc=(cls,good,bad)=>'qh'+(good?' good':'')+(bad?' bad':'');
+    const grid=h('div',{class:'qgrid',style:`grid-template-columns:auto repeat(${N},44px)`},h('span',{}),
+      R4.map(y=>h('span',{class:hc('',F.colGood&&F.colGood(y),F.colBad&&F.colBad(y))},'y='+y)),
+      R4.map(x=>[h('span',{class:hc('',F.rowGood&&F.rowGood(x),F.rowBad&&F.rowBad(x))},'x='+x),
+        R4.map(y=>h('button',{class:'qc'+(G[x][y]?' on':''),type:'button','aria-label':`P(${x}, ${y})`,'aria-pressed':String(G[x][y]),onclick:()=>{G[x][y]=!G[x][y];draw();}}))]));
+    box.replaceChildren(h('p',{class:'ru'},'Клетка (x, y) закрашена ⟺ P(x, y) истинно. Строка — x, столбец — y, домен {0, 1, 2, 3}. Тапни утверждение — подсветятся свидетели.'),
+      h('div',{class:'row'},h('span',{class:'ru'},'presets:'),PRE.map(([t,f])=>h('button',{class:'btn mini',onclick:()=>{G=R4.map(x=>R4.map(y=>f(x,y)));draw();}},t))),
+      h('div',{class:'qwrap'},grid,h('div',{class:'stmts'},ST.map((s,i)=>h('button',{class:'stmt'+(i===focus?' sel':''),type:'button',onclick:()=>{focus=i;draw();}},h('span',{},h('span',{class:'mono'},s[0]),h('span',{class:'ru',style:'display:block'},s[1])),tfc(s[2]()))))),
+      h('div',{class:'try'},h('b',{},'Goals'),h('ul',{},GOALS.map((g,i)=>h('li',{},(done.has(i)?'✓ ':'○ ')+g[0]+(i===2?' — try, then explain why it never works':''))))),
+      ST[1][2]()?h('div',{class:'why'},'A full column puts a filled cell into EVERY row. So ∃y ∀x forces ∀x ∃y: (∃y ∀x. P) → (∀x ∃y. P) is valid. The diagonal shows that the converse is not.')
+        :ST[0][2]()?h('div',{class:'why'},'Every row has its own witness y, but no single y works for all rows: ∀x ∃y is true while ∃y ∀x is false. The witness may depend on x.'):null);
+  }
+  draw();}};
+
+/* ---- ch. 4 · Venn lab ---- */
+const VREG=[[1,0,0,105,110],[0,1,0,295,110],[0,0,1,200,270],[1,1,0,200,95],[1,0,1,145,200],[0,1,1,255,200],[1,1,1,200,160],[0,0,0,44,300]];
+function vennSVG(sh,diff,lab){
+  const p='vt'+(TOYUID++),CIR=[[150,130],[250,130],[200,215]],RR=80;
+  const s=sv('svg',{viewBox:'0 0 400 340',class:'vsvg static',role:'img','aria-label':lab||'Venn diagram'});
+  const defs=sv('defs',{});CIR.forEach(([x,y],i)=>defs.append(sv('clipPath',{id:`${p}c${i}`},sv('circle',{cx:x,cy:y,r:RR})),sv('mask',{id:`${p}m${i}`,maskUnits:'userSpaceOnUse',x:0,y:0,width:400,height:340},sv('rect',{x:0,y:0,width:400,height:340,fill:'#fff'}),sv('circle',{cx:x,cy:y,r:RR,fill:'#000'}))));
+  s.append(defs,sv('rect',{x:16,y:16,width:368,height:308,rx:14,class:'vdom'}));
+  VREG.forEach((r,ri)=>{if(!sh[ri])return;let el=sv('rect',{x:16,y:16,width:368,height:308,rx:14,class:'vfill'+(diff&&diff[ri]?' bad':'')});for(let i=0;i<3;i++)el=sv('g',r[i]?{'clip-path':`url(#${p}c${i})`}:{mask:`url(#${p}m${i})`},el);s.append(el);});
+  CIR.forEach(([x,y])=>s.append(sv('circle',{cx:x,cy:y,r:RR,class:'vcir'})));
+  s.append(sv('text',{x:76,y:54,class:'vlab'},'A'),sv('text',{x:310,y:54,class:'vlab'},'B'),sv('text',{x:268,y:306,class:'vlab'},'C'),sv('text',{x:30,y:42,class:'svg-m'},'D'));
+  VREG.forEach((r,ri)=>s.append(sv('text',{x:r[3],y:r[4]+4,'text-anchor':'middle',class:'vnum'+(diff&&diff[ri]?' bad':'')},String(ri+1))));
+  return s;
+}
+function logicOfSet(e){if(e.v)return 'x ∈ '+e.v;const w=x=>x.v||x.op==='′'?logicOfSet(x):'('+logicOfSet(x)+')';
+  switch(e.op){case '∩':return w(e.a)+' ∧ '+w(e.b);case '∪':return w(e.a)+' ∨ '+w(e.b);case '−':return w(e.a)+' ∧ ¬'+w(e.b);case '′':return '¬'+w(e.a);}}
+TOYS.vennlab={name:'Venn lab',run(box,opt){
+  const PRE=[['A ∩ (B ∪ C)','(A ∩ B) ∪ (A ∩ C)','distributivity'],["(A ∩ B)′","A′ ∪ B′",'De Morgan'],['A − (B ∪ C)','(A − B) ∩ (A − C)','A·Z19'],['A ∩ (B − C)','(A ∩ B) − C','A·Z20'],['(A − B) ∪ B','A','A·Z21 (a)'],['A − (B − C)','(A − B) − C','A·Z21 (b)']];
+  const pr=PRE[opt&&opt.preset||0];let f1=pr[0],f2=pr[1];
+  const in1=h('input',{type:'text',class:'gap fin',value:f1,'aria-label':'left set',spellcheck:'false',autocomplete:'off'}),in2=h('input',{type:'text',class:'gap fin',value:f2,'aria-label':'right set',spellcheck:'false',autocomplete:'off'});
+  const out=h('div',{});[in1,in2].forEach(x=>x.addEventListener('input',()=>{f1=in1.value;f2=in2.value;draw();}));
+  box.replaceChildren(h('p',{class:'ru'},'Множества A, B, C, домен D; операции ∩ ∪ − и дополнение ′ (можно & | - \').'),
+    h('div',{class:'row'},h('span',{class:'ru'},'presets:'),PRE.map(x=>h('button',{class:'btn mini',onclick:()=>{in1.value=f1=x[0];in2.value=f2=x[1];draw();}},x[2]))),
+    h('label',{class:'fl'},h('span',{class:'mono'},'left ='),in1),h('label',{class:'fl'},h('span',{class:'mono'},'right ='),in2),out);
+  function draw(){
+    let e1,e2;const err=m=>out.replaceChildren(h('div',{class:'feedback info',style:'display:block'},m));
+    try{e1=parseF(f1,true);}catch(x){return err('left: '+x.message);}try{e2=parseF(f2,true);}catch(x){return err('right: '+x.message);}
+    const env=r=>({A:!!r[0],B:!!r[1],C:!!r[2]});
+    const s1=VREG.map(r=>evF(e1,env(r))),s2=VREG.map(r=>evF(e2,env(r))),diff=s1.map((x,i)=>x!==s2[i]),bad=diff.indexOf(true);
+    let verdict;
+    if(bad<0)verdict=h('div',{class:'why'},h('b',{},'Same picture. '),'The identity holds for ALL sets: for every x, “x ∈ left” and “x ∈ right” are equivalent propositions. Element chasing writes this chain down with named laws.');
+    else{const r=VREG[bad],S=k=>r[k]?'{1}':'∅';verdict=h('div',{class:'why bad'},h('b',{},`Different in region ${bad+1}. `),`Put one element there: A = ${S(0)}, B = ${S(1)}, C = ${S(2)}. Then 1 ${s1[bad]?'∈':'∉'} left but 1 ${s2[bad]?'∈':'∉'} right — a concrete counterexample, so the identity is false.`);}
+    out.replaceChildren(h('div',{class:'vpair'},h('div',{},h('p',{class:'mono'},strF(e1)),vennSVG(s1,diff,'left set'),h('p',{class:'mono small'},'x ∈ left ⟺ '+logicOfSet(e1))),
+      h('div',{},h('p',{class:'mono'},strF(e2)),vennSVG(s2,diff,'right set'),h('p',{class:'mono small'},'x ∈ right ⟺ '+logicOfSet(e2)))),verdict);
+  }
+  draw();}};
+
+/* ---- ch. 4 · arrow builder ---- */
+TOYS.arrows={name:'Arrow builder',run(box){
+  let nA=3,nB=3,E=new Set(['0-0','1-1','2-2']),sel=null,inv=false;const AN=['1','2','3','4'],BN=['x','y','z','w'];
+  function draw(){
+    const L=inv?nB:nA,R=inv?nA:nB,LN=inv?BN:AN,RN=inv?AN:BN;
+    const edges=[...E].map(k=>k.split('-').map(Number)).filter(([a,b])=>a<nA&&b<nB).map(([a,b])=>inv?[b,a]:[a,b]);
+    const out=[...Array(L)].map((_,i)=>edges.filter(e=>e[0]===i).length),inn=[...Array(R)].map((_,j)=>edges.filter(e=>e[1]===j).length);
+    const props=[['function','≤ 1 arrow OUT of each left point',out.map((c,i)=>c>1?LN[i]:null),'L'],['total','≥ 1 arrow OUT of each left point',out.map((c,i)=>c<1?LN[i]:null),'L'],
+      ['injective','≤ 1 arrow INTO each right point',inn.map((c,j)=>c>1?RN[j]:null),'R'],['surjective','≥ 1 arrow INTO each right point',inn.map((c,j)=>c<1?RN[j]:null),'R']].map(p=>[p[0],p[1],p[2].filter(Boolean),p[3]]);
+    const ok=p=>!p[2].length,bij=props.every(ok);
+    const badL=new Set(props.filter(p=>p[3]==='L').flatMap(p=>p[2])),badR=new Set(props.filter(p=>p[3]==='R').flatMap(p=>p[2]));
+    const M=Math.max(L,R,1),Hh=40+M*50,W=320,uid='ar'+(TOYUID++);
+    const ly=i=>40+i*50+(M-L)*25,ry=j=>40+j*50+(M-R)*25;
+    const s=sv('svg',{viewBox:`0 0 ${W} ${Hh}`,class:'arrsvg',role:'img','aria-label':'arrow diagram builder'});
+    s.append(sv('defs',{},sv('marker',{id:uid,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'},sv('path',{d:'M0,0 L10,5 L0,10 z',class:'mk'}))));
+    s.append(sv('text',{x:50,y:18,'text-anchor':'middle',class:'svg-m'},inv?'B (now on the left)':'A'),sv('text',{x:270,y:18,'text-anchor':'middle',class:'svg-m'},inv?'A':'B'));
+    edges.forEach(([a,b])=>s.append(sv('line',{x1:66,y1:ly(a),x2:252,y2:ry(b),class:'arr','marker-end':`url(#${uid})`})));
+    const dot=(cx,cy,lab,cls,on)=>{const g=sv('g',{class:'adot '+cls,tabindex:0,role:'button','aria-label':lab},sv('circle',{cx,cy,r:15}),sv('text',{x:cx,y:cy+5,'text-anchor':'middle'},lab));g.addEventListener('click',on);g.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();on();}});return g;};
+    for(let i=0;i<L;i++)s.append(dot(50,ly(i),LN[i],(sel===i?'sel ':'')+(badL.has(LN[i])?'bad':''),()=>{sel=sel===i?null:i;draw();}));
+    for(let j=0;j<R;j++)s.append(dot(270,ry(j),RN[j],badR.has(RN[j])?'bad':'',()=>{if(sel===null)return;const [a,b]=inv?[j,sel]:[sel,j];const k=a+'-'+b;E.has(k)?E.delete(k):E.add(k);draw();}));
+    const hint=L===0?'The left set is empty: there is no left point to check, so every relation is a total function (vacuously), and injective.'
+      :L>R?`${L} left points, ${R} right points: a total injective function is impossible — two left points must share a right point (pigeonhole).`
+      :L<R?`${L} left points, ${R} right points: a surjective function is impossible — a function has at most ${L} arrows, too few to hit ${R} points.`
+      :`${L} left and ${R} right points: for a total function here, injective ⟺ surjective (pigeonhole).`;
+    box.replaceChildren(h('p',{class:'ru'},'Тапни точку слева, потом точку справа — стрелка появится или исчезнет. Красным — где свойство ломается.'),
+      h('div',{class:'row'},stepper('|A|',nA,0,4,v=>{nA=v;sel=null;draw();}),stepper('|B|',nB,0,4,v=>{nB=v;sel=null;draw();}),h('button',{class:'btn'+(inv?' sel':''),onclick:()=>{inv=!inv;sel=null;draw();}},inv?'showing R⁻¹ · flip back':'flip all arrows (R⁻¹)')),
+      h('div',{class:'row',style:'margin-top:6px'},h('span',{class:'ru'},'presets:'),[['bijection',()=>{nA=nB=3;E=new Set(['0-1','1-2','2-0']);}],['constant',()=>{nA=nB=3;E=new Set(['0-0','1-0','2-0']);}],['not a function',()=>{nA=nB=3;E=new Set(['0-0','0-1','2-2']);}],['empty',()=>{E=new Set();}],['random',()=>{E=new Set();for(let a=0;a<nA;a++)for(let b=0;b<nB;b++)if(Math.random()<.35)E.add(a+'-'+b);}]].map(([t,f])=>h('button',{class:'btn mini',onclick:()=>{f();sel=null;inv=false;draw();}},t))),
+      h('div',{class:'arrwrap'},s,h('div',{class:'badges'},props.map(p=>h('div',{class:'badge '+(ok(p)?'t':'f')},h('b',{},(ok(p)?'✓ ':'✗ ')+p[0]),h('span',{class:'ru',style:'display:block'},p[1]),ok(p)?null:h('span',{class:'mono',style:'display:block'},'fails at '+p[2].join(', ')))),
+        h('div',{class:'badge '+(bij?'t':'f')},h('b',{},(bij?'✓ ':'✗ ')+'bijection'),h('span',{class:'ru',style:'display:block'},'all four at once')))),
+      h('p',{class:'story'},hint),
+      inv?h('div',{class:'why'},'Flipping turns OUT into IN: R⁻¹ is a function exactly when R is injective, and R⁻¹ is total exactly when R is surjective (A·Th2).'):null);
+  }
+  draw();}};
+
+/* ---- ch. 4 · functions as words ---- */
+TOYS.funcs={name:'Functions as words',run(box){
+  let k=3,n=3,mode='all';const BN=['x','y','z','w'],BC=['ind','str','wop','mac'];
+  const ff=(n,k)=>{let r=1;for(let i=0;i<k;i++)r*=n-i;return r;};
+  function draw(){
+    let items,formula;
+    if(mode==='sub'){items=[...Array(1<<k)].map((_,i)=>[...Array(k)].map((_,j)=>(i>>(k-1-j))&1));formula=`subsets of A = bit strings of length ${k}: 2${sup(k)} = ${1<<k}`;}
+    else{const all=[];const rec=w=>{if(w.length===k){all.push(w);return;}for(let j=0;j<n;j++)rec([...w,j]);};rec([]);
+      items=mode==='all'?all:mode==='inj'?all.filter(w=>new Set(w).size===w.length):all.filter(w=>new Set(w).size===n);
+      formula=mode==='all'?`${n}${sup(k)} = ${n**k} total functions (k positions, ${n} letters each)`:mode==='inj'?(k>n?`k > n: 0 — some letter must repeat (pigeonhole)`:`${[...Array(k)].map((_,i)=>n-i).join(' · ')||'1'} = ${ff(n,k)} injective (each position has one letter fewer)`):`${items.length} surjective (every letter used)${k<n?' — impossible when k < n':''}`;}
+    const cap=81,shown=items.slice(0,cap);
+    const word=w=>mode==='sub'?h('span',{class:'word'},w.length?w.map((b,j)=>h('span',{class:'lt bit'+(b?' on':'')},b)):h('span',{class:'mono'},'ε'),h('span',{class:'mono small'},' {'+w.map((b,j)=>b?String(j+1):null).filter(Boolean).join(', ')+'}'))
+      :h('span',{class:'word'},w.length?w.map(j=>h('span',{class:'lt',style:`background:var(--i-${BC[j]}-s);border-color:var(--i-${BC[j]})`},BN[j])):h('span',{class:'mono'},'( ) the empty function'));
+    box.replaceChildren(h('p',{class:'ru'},'Функция A → B — это слово: на позиции i стоит f(i). A = {1, …, k}, B = {x, y, z, w} (первые n).'),
+      h('div',{class:'row'},stepper('k = |A|',k,0,4,v=>{k=v;draw();}),mode==='sub'?null:stepper('n = |B|',n,1,4,v=>{n=v;draw();})),
+      h('div',{style:'margin-top:8px'},seg([['all','all total functions'],['inj','injective only'],['sur','surjective only'],['sub','subsets of A']],mode,v=>{mode=v;draw();})),
+      h('p',{class:'story'},formula),
+      mode!=='sub'&&k>0?h('p',{class:'mono small'},'positions: '+[...Array(k)].map((_,i)=>`f(${i+1})`).join(' ')):null,
+      h('div',{class:'words'},shown.map(word),items.length>cap?h('span',{class:'mono'},`… and ${items.length-cap} more`):null),
+      k===0?h('div',{class:'why'},mode==='sub'?'A = ∅ has exactly one subset, ∅ itself: 2⁰ = 1.':'A = ∅: exactly one word, the empty one — the empty relation is a total function (vacuously). n⁰ = 1: Ex3 2024, part 2.'):null,
+      mode==='all'&&k>0?h('p',{class:'ru'},`Отношений A → B: 2${sup(k*n)} = ${2**(k*n)} — каждая пара из A × B либо есть, либо нет.`):null);
+  }
+  draw();}};
+
+/* ---- ch. 5 · dominoes ---- */
+TOYS.dominoes={name:'Dominoes',run(box){
+  const MODES=[{t:'ordinary: P(n) ⇒ P(n + 1)',back:[1],start:0},{t:'stamps: P(n − 4) ⇒ P(n)',back:[4],start:12},{t:'two back: P(n − 2), P(n − 1) ⇒ P(n)',back:[1,2],start:0}];
+  let N=16;let mi=0,base=new Set([0]),broken=null,pushed=false,anim=false;
+  function fall(){N=box.clientWidth&&box.clientWidth<520?12:16;const M=MODES[mi],f=new Set(),order=[];for(let i=M.start;i<M.start+N;i++){const ok=base.has(i)||(i!==broken&&M.back.every(d=>i-d>=M.start&&f.has(i-d)));if(ok){f.add(i);order.push(i);}}return {f,order};}
+  function draw(){
+    const M=MODES[mi],{f,order}=fall();const W=N*38+20,s=sv('svg',{viewBox:`0 0 ${W} 120`,class:'domsvg',role:'img','aria-label':'dominoes'});
+    s.append(sv('line',{x1:6,y1:96,x2:W-6,y2:96,class:'axis'}));
+    for(let k=0;k<N;k++){const i=M.start+k,x=18+k*38,falls=pushed&&f.has(i),down=falls&&!anim;
+      const g=sv('g',{class:'dom'+(base.has(i)?' base':'')+(down?' down':'')+(i===broken?' brk':''),'data-f':falls?'1':null,tabindex:0,role:'button','aria-label':`domino ${i}${base.has(i)?', base case':''}`,style:`transition-delay:${falls?order.indexOf(i)*70:0}ms;transform-origin:${x+14}px 96px`},
+        sv('rect',{x:x,y:40,width:14,height:56,rx:3}),sv('text',{x:x+7,y:114,'text-anchor':'middle',class:'svg-m'},String(i)));
+      const tog=()=>{base.has(i)?base.delete(i):base.add(i);pushed=false;draw();};g.addEventListener('click',tog);g.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();tog();}});s.append(g);}
+    const standing=[...Array(N)].map((_,k)=>M.start+k).filter(i=>!f.has(i));
+    const msg=!pushed?h('p',{class:'ru'},'Тап по домино = отметить его как базовый случай (толкаем рукой). Потом «Push!».')
+      :standing.length?h('div',{class:'why bad'},h('b',{},`Still standing: ${standing.slice(0,8).join(', ')}${standing.length>8?', …':''}. `),broken!==null&&standing[0]===broken?`The step into ${broken} is broken, so nothing after it can be reached — this is the horses bug: one failing step ruins everything.`:`Each domino needs ${M.back.map(d=>'n − '+d).join(' and ')} to fall first. ${M.back.length>1||M.back[0]>1?`So you need ${Math.max(...M.back)} base cases in a row: ${[...Array(Math.max(...M.back))].map((_,j)=>M.start+j).join(', ')}.`:'Push the first one.'}`)
+      :h('div',{class:'why'},h('b',{},'All fall. '),`Base: ${[...base].sort((a,b)=>a-b).join(', ')}; step: ${M.t}. That is exactly a proof by ${M.back.length>1||M.back[0]>1?'strong ':''}induction.`);
+    box.replaceChildren(seg(MODES.map((m,i)=>[i,m.t]),mi,i=>{mi=i;base=new Set([MODES[i].start]);broken=null;pushed=false;draw();}),
+      h('div',{class:'scroll',style:'margin-top:8px'},s),
+      h('div',{class:'row'},h('button',{class:'btn primary',onclick:()=>{pushed=true;anim=true;draw();anim=false;requestAnimationFrame(()=>requestAnimationFrame(()=>$$('[data-f]',box).forEach(el=>el.classList.add('down'))));}},'Push!'),
+        h('label',{class:'row'},h('span',{class:'ru'},'break the step into'),h('select',{class:'gap','aria-label':'break the step into',onchange:e=>{broken=e.target.value===''?null:+e.target.value;pushed=false;draw();}},h('option',{value:''},'none'),[...Array(N-1)].map((_,k)=>{const i=M.start+k+1;return h('option',{value:i,selected:i===broken},String(i));})))),msg);
+  }
+  draw();}};
+
+/* ---- ch. 5 · odd numbers build squares ---- */
+TOYS.oddsq={name:'Odd L-shapes',run(box){
+  let n=4;const C=['ind','mac','rit','str','inf','skl','prf','wop','lgc','set'];
+  function draw(){
+    const c=30,s=sv('svg',{viewBox:`0 0 ${n*c+4} ${n*c+4}`,style:`max-width:${n*c+4}px`,class:'sqsvg',role:'img','aria-label':`${n} by ${n} square`});
+    for(let i=0;i<n;i++)for(let j=0;j<n;j++){const k=Math.max(i,j);s.append(sv('rect',{x:2+j*c,y:2+(n-1-i)*c,width:c-2,height:c-2,rx:4,style:`fill:var(--i-${C[k%10]}-s);stroke:var(--i-${C[k%10]})`}));}
+    const odds=[...Array(n)].map((_,k)=>2*k+1);
+    box.replaceChildren(h('div',{class:'row'},stepper('n',n,1,10,v=>{n=v;draw();})),
+      h('div',{class:'row',style:'align-items:flex-start;gap:16px;margin-top:8px'},s,h('div',{},h('p',{class:'mono'},odds.join(' + ')+' = '+n*n+' = '+n+'²'),
+        h('p',{class:'tp'},`Each colour is one L-shape: layer k has 2k + 1 cells. Adding the next L turns an n × n square into an (n + 1) × (n + 1) square: n² + (2n + 1) = (n + 1)².`),
+        h('p',{class:'tp'},'That sentence IS the inductive step: P(n) plus the next term gives P(n + 1).'),
+        h('p',{class:'mono'},`and in binary: 1 + 2 + … + 2^${n-1} = ${'1'.repeat(n)}₂ = 1${'0'.repeat(n)}₂ − 1 = ${2**n-1}`))));
+  }
+  draw();}};
+
+/* ---- ch. 6 · invariant board ---- */
+TOYS.board={name:'Invariant board',run(box){
+  const MV={bishop:[[1,1],[1,-1],[-1,1],[-1,-1]],rook:[[1,0],[-1,0],[0,1],[0,-1]],knight:[[1,2],[2,1],[-1,2],[-2,1],[1,-2],[2,-1],[-1,-2],[-2,-1]]};
+  const S=7;let mv='bishop',pos=[0,0],trail=[[0,0]],paint=true;
+  function draw(){
+    const c=42,s=sv('svg',{viewBox:`0 0 ${S*c+30} ${S*c+30}`,class:'boardsvg',role:'img','aria-label':'board'});
+    const nb=MV[mv].map(([dx,dy])=>[pos[0]+dx,pos[1]+dy]).filter(([x,y])=>x>=0&&y>=0&&x<S&&y<S);
+    for(let m=0;m<S;m++)for(let n=0;n<S;n++){const X=26+m*c,Y=(S-1-n)*c+2,isN=nb.some(([x,y])=>x===m&&y===n);
+      const r=sv('rect',{x:X,y:Y,width:c-2,height:c-2,rx:4,class:'sq '+(paint?((m+n)%2?'odd':'even'):'plain')+(isN?' nb':''),tabindex:isN?0:null,role:isN?'button':null,'aria-label':isN?`move to (${m}, ${n})`:null});
+      if(isN){const go=()=>{pos=[m,n];trail.push(pos);draw();};r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});}
+      s.append(r);if(trail.some(([x,y])=>x===m&&y===n))s.append(sv('circle',{cx:X+c/2-1,cy:Y+c/2-1,r:4,class:'trail'}));}
+    for(let k=0;k<S;k++)s.append(sv('text',{x:26+k*c+c/2-1,y:S*c+20,'text-anchor':'middle',class:'svg-m'},k),sv('text',{x:12,y:(S-1-k)*c+c/2+6,'text-anchor':'middle',class:'svg-m'},k));
+    s.append(sv('circle',{cx:26+pos[0]*c+c/2-1,cy:(S-1-pos[1])*c+2+c/2-1,r:13,class:'robot-body'}));
+    const par=trail.map(([x,y])=>(x+y)%2),kept=par.every(p=>p===par[0]);
+    box.replaceChildren(seg([['bishop','diagonal (±1, ±1)'],['rook','straight (±1, 0), (0, ±1)'],['knight','knight (±1, ±2), (±2, ±1)']],mv,v=>{mv=v;pos=[0,0];trail=[[0,0]];draw();}),
+      h('div',{class:'row',style:'margin-top:6px'},h('button',{class:'btn'+(paint?' sel':''),onclick:()=>{paint=!paint;draw();}},paint?'colouring by (m + n) mod 2: on':'colouring: off'),h('button',{class:'btn',onclick:()=>{pos=[0,0];trail=[[0,0]];draw();}},'Reset')),
+      h('div',{class:'row',style:'align-items:flex-start;gap:16px;margin-top:8px'},s,h('div',{style:'flex:1;min-width:200px'},
+        h('p',{class:'mono'},`state (${pos[0]}, ${pos[1]}) · m + n = ${pos[0]+pos[1]}`),
+        h('p',{class:'mono small'},'parity so far: '+par.slice(-14).map(p=>p?'odd':'even').join(' → ')),
+        h('div',{class:'why'+(kept?'':' bad')},kept?(mv==='bishop'?'Every diagonal move changes m + n by +2, 0 or −2, so “m + n is even” never changes: an INVARIANT. The robot is stuck on one colour; (1, 0) is unreachable.':'So far the parity has not changed — keep moving.'):`The parity flips: with ${mv} moves m + n changes by an odd amount, so “m + n is even” is NOT preserved — and (1, 0) becomes reachable. An invariant depends on the moves, not on the board.`))));
+  }
+  draw();}};
+
+/* ---- ch. 6 · jugs and gcd ---- */
+TOYS.jugs2={name:'Jugs and gcd',run(box){
+  let A=5,B=3,a=0,b=0,seen=new Set([0]),reveal=false;
+  const reach=()=>{const st=new Set(['0,0']),q=[[0,0]],am=new Set([0]);while(q.length){const [x,y]=q.shift();const nx=[[A,y],[x,B],[0,y],[x,0],[x-Math.min(x,B-y),y+Math.min(x,B-y)],[x+Math.min(y,A-x),y-Math.min(y,A-x)]];
+    for(const [u,v] of nx){const k=u+','+v;if(!st.has(k)){st.add(k);q.push([u,v]);am.add(u);am.add(v);}}}return [...am].sort((x,y)=>x-y);};
+  const act=f=>{[a,b]=f();seen.add(a);seen.add(b);draw();};
+  function draw(){
+    const g=gcd(A,B),R=reach(),Hm=Math.max(A,B),W=260,H=150,sc=120/Hm;
+    const jug=(x,cap,amt,lab)=>[sv('rect',{x,y:140-cap*sc,width:70,height:cap*sc,class:'jug-glass'}),sv('rect',{x:x+2,y:140-amt*sc,width:66,height:amt*sc,class:'jug-water'}),sv('text',{x:x+35,y:140-cap*sc-6,'text-anchor':'middle',class:'svg-b'},`${amt} / ${cap} l`),sv('text',{x:x+35,y:H-0,'text-anchor':'middle',class:'svg-m'},lab)];
+    const s=sv('svg',{viewBox:`0 0 ${W} ${H+4}`,class:'jugsvg',role:'img','aria-label':`jug A ${a} of ${A}, jug B ${b} of ${B}`},jug(30,A,a,'jug A'),jug(150,B,b,'jug B'));
+    box.replaceChildren(h('div',{class:'row'},stepper('A',A,1,12,v=>{A=v;a=0;b=0;seen=new Set([0]);draw();}),stepper('B',B,1,12,v=>{B=v;a=0;b=0;seen=new Set([0]);draw();})),
+      h('div',{class:'row',style:'align-items:flex-start;gap:16px;margin-top:8px'},s,h('div',{class:'col',style:'min-width:180px'},
+        h('div',{class:'row'},h('button',{class:'btn mini',onclick:()=>act(()=>[A,b])},'fill A'),h('button',{class:'btn mini',onclick:()=>act(()=>[a,B])},'fill B'),h('button',{class:'btn mini',onclick:()=>act(()=>[0,b])},'empty A'),h('button',{class:'btn mini',onclick:()=>act(()=>[a,0])},'empty B')),
+        h('div',{class:'row'},h('button',{class:'btn mini',onclick:()=>act(()=>{const t=Math.min(a,B-b);return [a-t,b+t];})},'pour A → B'),h('button',{class:'btn mini',onclick:()=>act(()=>{const t=Math.min(b,A-a);return [a+t,b-t];})},'pour B → A')),
+        h('p',{class:'mono'},'amounts you have seen: {'+[...seen].sort((x,y)=>x-y).join(', ')+'}'),
+        h('button',{class:'btn',onclick:()=>{reveal=!reveal;draw();}},reveal?'hide all reachable amounts':'reveal all reachable amounts'),
+        reveal?h('p',{class:'mono'},`all reachable: {${R.join(', ')}}`):null)),
+      h('div',{class:'why'},h('b',{},`gcd(${A}, ${B}) = ${g}. `),`Every move makes the new amounts from old amounts and the jug sizes by + and −, so “gcd(${A}, ${B}) divides both amounts” is an invariant: only multiples of ${g} ever appear.${g===1?' With gcd 1 nothing is excluded — every amount up to the bigger jug can be reached.':''}`));
+  }
+  draw();}};
+
+/* ---- ch. 6.4 · ritual simulator ---- */
+TOYS.ritual={name:'Ritual simulator',run(box){
+  const INST={'Ex2 boss (3)':BOSS3,'Round 1 (3)':EX3,'Round 2 (4)':EX4};let key='Ex2 boss (3)',D=BOSS3,suit='men',day=null,own=null;
+  const rnd=n=>{const sh=()=>shuffle([...Array(n).keys()]);return {men:['Adam','Ben','Carl','Dan'].slice(0,n),wom:['Xena','Yara','Zoe','Wren'].slice(0,n),pm:[...Array(n)].map(sh),pw:[...Array(n)].map(sh)};};
+  function run(s){const r=s==='men'?ritualRun(D.pm,D.pw):ritualRun(D.pw,D.pm);const n=D.men.length,hus=[...Array(n)],wife=[...Array(n)];
+    r.wife.forEach((p,i)=>{if(s==='men'){wife[i]=p;hus[p]=i;}else{hus[i]=p;wife[p]=i;}});
+    return {days:r.days,wife,hus,mr:wife.map((w,m)=>D.pm[m].indexOf(w)+1),wr:hus.map((m,w)=>D.pw[w].indexOf(m)+1)};}
+  function draw(){
+    const n=D.men.length,R={men:run('men'),women:run('women')},cur=R[suit];if(day===null)day=cur.days.length-1;
+    const d=cur.days[Math.min(day,cur.days.length-1)],suitors=suit==='men'?D.men:D.wom,recv=suit==='men'?D.wom:D.men;
+    const dayBox=h('div',{class:'wcards'},recv.map((rn,j)=>{const by=(d.by[j]||[]);return h('div',{class:'wcard'},h('span',{class:'nm'},rn),h('span',{class:'ru'},'under the balcony:'),
+      h('div',{},by.length?by.map(i=>h('span',{class:'chip'+(d.keep[j]===i?' keep':' x')},suitors[i])):h('span',{class:'ru'},'nobody')));}));
+    const same=R.men.wife.every((w,m)=>w===R.women.wife[m]);
+    const sumr=x=>x.reduce((p,q)=>p+q,0);
+    const tbl=s=>h('table',{class:'t'},h('thead',{},h('tr',{},h('th',{},'couple'),h('th',{},'his rank'),h('th',{},'her rank'))),h('tbody',{},R[s].wife.map((w,m)=>h('tr',{},h('td',{},`${D.men[m]} – ${D.wom[w]}`),h('td',{class:'mono'},'#'+R[s].mr[m]),h('td',{class:'mono'},'#'+R[s].wr[w])))),
+      h('tfoot',{},h('tr',{},h('td',{},h('b',{},'sum of ranks')),h('td',{class:'mono'},sumr(R[s].mr)),h('td',{class:'mono'},sumr(R[s].wr)))));
+    const ownW=own||R.men.wife.slice(),dup=new Set(ownW).size<n,rg=dup?[]:rogues(D.pm,D.pw,ownW);
+    box.replaceChildren(h('div',{class:'row'},Object.keys(INST).map(k=>h('button',{class:'btn mini'+(k===key?' sel':''),onclick:()=>{key=k;D=INST[k];day=null;own=null;draw();}},k)),h('button',{class:'btn mini'+(key==='random'?' sel':''),onclick:()=>{key='random';D=rnd(4);day=null;own=null;draw();}},'random 4 × 4')),
+      h('div',{class:'scroll'},h('table',{class:'t',style:'margin-top:8px'},h('tbody',{},D.men.map((m,i)=>h('tr',{},h('td',{},h('b',{},m)),h('td',{class:'mono small'},listOf(D,true,i)))),D.wom.map((w,j)=>h('tr',{},h('td',{},h('b',{},w)),h('td',{class:'mono small'},listOf(D,false,j))))))),
+      h('div',{style:'margin-top:10px'},seg([['men','men serenade'],['women','women serenade']],suit,v=>{suit=v;day=null;draw();})),
+      h('div',{class:'row',style:'margin-top:8px'},stepper('day',Math.min(day,cur.days.length-1)+1,1,cur.days.length,v=>{day=v-1;draw();}),h('span',{class:'ru'},day>=cur.days.length-1?`последний день: никого не отвергли — свадьбы (дней: ${cur.days.length})`:'')),
+      dayBox,
+      h('div',{class:'vpair',style:'margin-top:10px'},h('div',{},h('p',{class:'h3'},'men serenade'),tbl('men')),h('div',{},h('p',{class:'h3'},'women serenade'),tbl('women'))),
+      h('div',{class:'why'},same?'Both rituals give the SAME matching: here there is only one stable matching.':'Compare the SAME person in both tables: every man has his best rank when the men serenade and his worst when the women do — and the other way round for every woman. The suitors get their OPTIMAL partners, the receivers their PESSIMAL ones (Th 6.4.9). Same lists, different matching.'),
+      h('p',{class:'h3',style:'margin-top:14px'},'Your own matching · ищи бунтарей'),
+      h('div',{class:'row'},D.men.map((m,i)=>h('label',{class:'row'},h('span',{},m+' –'),h('select',{class:'gap','aria-label':'wife of '+m,onchange:e=>{own=ownW.slice();own[i]=+e.target.value;draw();}},D.wom.map((w,j)=>h('option',{value:j,selected:ownW[i]===j},w)))))),
+      h('div',{class:'why'+(dup||rg.length?' bad':'')},dup?'Two men have the same wife — not a matching.':rg.length?'Rogue couples: '+rg.map(([m,w])=>`${D.men[m]} & ${D.wom[w]}`).join(', ')+' — each prefers the other to their own partner, so this matching is NOT stable.':'No rogue couple: this matching is stable.'));
+  }
+  draw();}};
+
+/* ---- ch. 7 · string unboxing ---- */
+TOYS.unbox={name:'String unboxing',run(box){
+  let s='abc',t='de';
+  const nest=x=>x===''?'λ':`⟨${x[0]}, ${nest(x.slice(1))}⟩`;
+  const boxes=x=>x===''?h('span',{class:'nbx lam'},'λ'):h('span',{class:'nbx'},h('b',{},x[0]),boxes(x.slice(1)));
+  function draw(){
+    const lenTrace=[`|${nest(s)}|`];for(let i=1;i<=s.length;i++)lenTrace.push('= '+'1 + '.repeat(i)+`|${nest(s.slice(i))}|   [def. of length]`);lenTrace.push('= '+'1 + '.repeat(s.length)+'0 = '+s.length+'   [|λ| = 0]');
+    const wrap=(i,inner)=>{let r=inner;for(let j=i-1;j>=0;j--)r=`⟨${s[j]}, ${r}⟩`;return r;};
+    const cat=[nest(s)+' · t'];for(let i=1;i<=s.length;i++)cat.push('= '+wrap(i,nest(s.slice(i))+' · t')+'   [def. of ·]');cat.push('= '+wrap(s.length,'t')+'   [λ · t = t]');cat.push(`with t = ${nest(t)}:  s · t = ${nest(s+t)}`);
+    const inp=(v,on,lab)=>{const i=h('input',{type:'text',class:'gap',value:v,maxlength:6,'aria-label':lab,style:'width:7ch',autocapitalize:'off',spellcheck:'false'});i.addEventListener('input',()=>{on(i.value.replace(/[^a-z]/gi,'').toLowerCase().slice(0,6));});return i;};
+    box.replaceChildren(h('div',{class:'row'},h('label',{class:'row'},h('span',{class:'mono'},'s ='),inp(s,v=>{s=v;draw();},'string s')),h('label',{class:'row'},h('span',{class:'mono'},'t ='),inp(t,v=>{t=v;draw();},'string t'))),
+      h('p',{class:'tp',style:'margin-top:8px'},'A string is a box: either the empty box λ, or a letter glued to a smaller string ⟨a, s′⟩.'),
+      h('div',{class:'row'},boxes(s)),h('p',{class:'mono'},`s = ${nest(s)}`),
+      h('p',{class:'h3',style:'margin-top:10px'},'length, one box at a time'),h('div',{class:'trace'},lenTrace.map(x=>h('p',{class:'mono'},x))),
+      h('p',{class:'h3',style:'margin-top:10px'},'s · t, one box at a time'),h('div',{class:'trace'},cat.map(x=>h('p',{class:'mono'},x))),
+      h('div',{class:'why'},`|s · t| = ${s.length+t.length} = ${s.length} + ${t.length} = |s| + |t|. Every recursive definition peels one box (constructor ⟨a, s′⟩) until λ (base). A structural induction proof follows exactly the same path: base λ, then ⟨a, s′⟩ with the IH for s′.`));
+  }
+  draw();}};
+
+/* ---- ch. 7 · RecMatch builder ---- */
+TOYS.recmatch={name:'RecMatch builder',run(box){
+  let s='[[]][]';
+  const parse=(i)=>{if(i>=s.length||s[i]===']')return {t:'λ',end:i};const u=parse(i+1);if(!u||s[u.end]!==']')return null;const v=parse(u.end+1);if(!v)return null;return {t:'[u]v',u,v,end:v.end};};
+  const cnt=(x,c)=>[...x].filter(y=>y===c).length;
+  const sub=(nd,i0)=>nd.t==='λ'?'':s.slice(i0,nd.end);
+  function view(nd,i0){if(nd.t==='λ')return h('span',{class:'nbx lam'},'λ');const us=i0+1,vs=nd.u.end+1;
+    const str=sub(nd,i0);return h('span',{class:'rm'},h('span',{class:'rmh mono'},`${str}  #[ = ${cnt(str,'[')}, #] = ${cnt(str,']')}`),h('span',{class:'rmb'},h('b',{},'['),h('span',{class:'rmu'},h('span',{class:'mono small'},'u'),view(nd.u,us)),h('b',{},']'),h('span',{class:'rmu'},h('span',{class:'mono small'},'v'),view(nd.v,vs))));}
+  function draw(){
+    const ok0=s.length===0||/^[\[\]]+$/.test(s);let r=ok0?parse(0):null;const inRM=r&&r.end===s.length;
+    const inp=h('input',{type:'text',class:'gap',value:s,'aria-label':'bracket string',style:'width:16ch',spellcheck:'false'});inp.addEventListener('change',()=>{s=inp.value.replace(/[^\[\]]/g,'').slice(0,14);draw();});
+    box.replaceChildren(h('div',{class:'row'},h('label',{class:'row'},h('span',{class:'mono'},'s ='),inp),['[[]][]','[][][]','[[][]]','][','[[]'].map(x=>h('button',{class:'btn mini',onclick:()=>{s=x;draw();}},x))),
+      h('p',{class:'tp',style:'margin-top:8px'},'RecMatch: λ is in it; if u and v are in it, so is [u]v. Below: how s is built — or why it cannot be.'),
+      inRM?h('div',{class:'scroll'},view(r,0)):h('div',{class:'why bad'},`“${s}” is not in RecMatch: it cannot be built from λ and [u]v.`),
+      h('div',{class:'why'+(inRM?'':' bad')},inRM?`Every box has #[ = #]. That is the structural induction: λ has 0 = 0, and [u]v adds one [ and one ] to two boxes that already balance.`
+        :cnt(s,'[')===cnt(s,']')?`Here #[ = ${cnt(s,'[')} = #], yet s ∉ RecMatch: the converse “equal counts ⇒ RecMatch” is FALSE. The claim to prove is only “s ∈ RecMatch ⇒ #[ = #]”.`:`#[ = ${cnt(s,'[')}, #] = ${cnt(s,']')}.`));
+  }
+  draw();}};
+
+/* ---- ch. 8 · diagonal machine ---- */
+TOYS.diagonal={name:'Diagonal machine',run(box){
+  const C=8;let rows=[...Array(4)].map(()=>[...Array(C)].map(()=>Math.random()<.5?1:0));
+  function draw(){
+    const R=rows.length,c=34,ox=40,oy=22,W=ox+C*c+30,Hh=oy+(R+1)*c+24;const d=[...Array(C)].map((_,i)=>i<R?1-rows[i][i]:null);
+    const s=sv('svg',{viewBox:`0 0 ${W} ${Hh}`,class:'diagsvg',role:'img','aria-label':'diagonal table'});
+    for(let j=0;j<C;j++)s.append(sv('text',{x:ox+j*c+c/2,y:oy-6,'text-anchor':'middle',class:'svg-m'},j));
+    rows.forEach((row,i)=>{s.append(sv('text',{x:ox-6,y:oy+i*c+c/2+5,'text-anchor':'end',class:'svg-b'},'s'+i));row.forEach((v,j)=>{const r=sv('rect',{x:ox+j*c,y:oy+i*c,width:c,height:c,class:'bitc'+(i===j?' dg':''),style:'cursor:pointer',tabindex:0,role:'button','aria-label':`flip s${i} place ${j}`});
+      const fl=()=>{rows[i][j]=1-rows[i][j];draw();};r.addEventListener('click',fl);r.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();fl();}});s.append(r,sv('text',{x:ox+j*c+c/2,y:oy+i*c+c/2+5,'text-anchor':'middle',class:'svg-b',style:'pointer-events:none'},v));});});
+    const yd=oy+R*c+8;s.append(sv('text',{x:ox-6,y:yd+c/2+5,'text-anchor':'end',class:'svg-b'},'d'));
+    d.forEach((v,j)=>s.append(sv('rect',{x:ox+j*c,y:yd,width:c,height:c,class:'bitc '+(v===null?'':'d')}),sv('text',{x:ox+j*c+c/2,y:yd+c/2+5,'text-anchor':'middle',class:'svg-b'},v===null?'·':v)));
+    box.replaceChildren(h('p',{class:'ru'},'Тапни любую клетку — d пересчитывается: d(i) = 1 − sᵢ(i). Синие рамки — диагональ.'),h('div',{class:'scroll'},s),
+      h('div',{class:'row'},h('button',{class:'btn primary',disabled:R>=C,onclick:()=>{rows.push(d.map(v=>v===null?(Math.random()<.5?1:0):v));draw();}},'add d to the list'),h('button',{class:'btn',onclick:()=>{rows=[...Array(4)].map(()=>[...Array(C)].map(()=>Math.random()<.5?1:0));draw();}},'new list')),
+      h('div',{class:'why'},`d differs from s0 at place 0, from s1 at place 1, …, from s${R-1} at place ${R-1}. Add d as a new row and the new d differs from it on the next diagonal place. No list catches every infinite 0/1 sequence: {0,1}^ω is uncountable.`));
+  }
+  draw();}};
+
+/* ---- ch. 8 · listing pairs ---- */
+TOYS.pairing={name:'Listing ℕ × ℕ',run(box){
+  let k=7,mode='diag',pick=null;const S=6;
+  const place=(m,n)=>(m+n)*(m+n+1)/2+m;
+  function draw(){
+    const order=[];if(mode==='diag'){for(let d=0;order.length<S*S;d++)for(let m=0;m<=d;m++){const n=d-m;if(m<S&&n<S)order.push([m,n]);}}else{for(let n=0;n<S;n++)order.push([0,n]);}
+    const c=42,s=sv('svg',{viewBox:`0 0 ${S*c+40} ${S*c+40}`,class:'pairsvg',role:'img','aria-label':'grid of pairs'});
+    for(let m=0;m<S;m++)for(let n=0;n<S;n++){const X=34+n*c,Y=6+m*c,pl=mode==='diag'?place(m,n):(m===0?n:null),on=pl!==null&&pl<=k;
+      const r=sv('rect',{x:X,y:Y,width:c-3,height:c-3,rx:5,class:'pc'+(on?' on':'')+(pick&&pick[0]===m&&pick[1]===n?' sel':''),tabindex:0,role:'button','aria-label':`pair (${m}, ${n})`});
+      const go=()=>{pick=[m,n];draw();};r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go();}});
+      s.append(r,sv('text',{x:X+c/2-1,y:Y+c/2+4,'text-anchor':'middle',class:'svg-m',style:'pointer-events:none'},pl===null?'∞':String(pl)));}
+    for(let j=0;j<S;j++)s.append(sv('text',{x:34+j*c+c/2,y:S*c+24,'text-anchor':'middle',class:'svg-m'},'n='+j),sv('text',{x:16,y:6+j*c+c/2+4,'text-anchor':'middle',class:'svg-m'},'m='+j));
+    const vis=order.filter(([m,n])=>(mode==='diag'?place(m,n):n)<=k);
+    if(vis.length>1)s.append(sv('path',{d:'M'+vis.map(([m,n])=>`${34+n*c+c/2-1},${6+m*c+c/2-1}`).join(' L'),class:'walk'}));
+    box.replaceChildren(seg([['diag','by diagonals m + n = 0, 1, 2, …'],['row','row by row (fails!)']],mode,v=>{mode=v;draw();}),
+      h('div',{class:'row',style:'margin-top:8px'},stepper('place',k,0,20,v=>{k=v;draw();})),
+      h('div',{class:'row',style:'align-items:flex-start;gap:16px;margin-top:6px'},h('div',{class:'scroll'},s),h('div',{style:'flex:1;min-width:200px'},
+        pick?h('p',{class:'mono'},mode==='diag'?`(${pick[0]}, ${pick[1]}): d = m + n = ${pick[0]+pick[1]}, place = d(d + 1)/2 + m = ${place(pick[0],pick[1])}`:pick[0]===0?`(0, ${pick[1]}) is at place ${pick[1]}`:`(${pick[0]}, ${pick[1]}) is never reached: row m = 0 alone is infinite`):h('p',{class:'ru'},'Тапни пару — увидишь её номер.'),
+        h('div',{class:'why'+(mode==='row'?' bad':'')},mode==='diag'?'Each diagonal is finite, so the walk reaches every pair after finitely many steps: ℕ × ℕ is countable. The same trick lists ℚ and finite strings.':'Row by row never finishes row m = 0, so (1, 0) gets no finite place. Countable means EVERY element gets a finite number — the order of the walk matters.'))));
+  }
+  draw();}};
+
+/* ================= lighthouses: visual theory + toys ================= */
+const flow=(name,chips)=>h('div',{class:'flow'},h('span',{class:'mname'},name),chips.map((c,i)=>[i?h('span',{class:'ar'},'→'):null,h('span',{class:'fc'+(i===0||i===chips.length-1?' k':'')},c)]));
+const steps=rows=>h('ol',{class:'steps'},rows.map(([t,tag])=>h('li',{},h('span',{},t),tag?h('span',{class:'stag'},tag):null)));
+const PICS={
+  methods:()=>h('div',{class:'pic'},flow('direct',['Assume P.','…','Therefore Q. ∎']),flow('contrapositive',['We prove ¬Q ⇒ ¬P. Assume ¬Q.','…','Therefore ¬P. ∎']),
+    flow('cases',['Case 1 | Case 2 | … (cover everything)','the claim in each case','In every case … ∎']),flow('contradiction',['Assume ¬(claim).','…','something false','Hence the claim. ∎']),flow('iff',['(⇒) …','(⇐) …','both directions ∎'])),
+  woptemplate:()=>h('div',{class:'pic'},steps([['Let C ::= {c ∈ ℕ | P(c) is false}.','the counterexamples'],['By contradiction, assume C ≠ ∅. By the WOP, C has a least element m.','WOP'],['m ≠ 0: at n = 0 both sides equal … (compute BOTH).','base'],
+    ['So m − 1 ∈ ℕ, and as m − 1 < m, m − 1 ∉ C: [the formula for m − 1].','m − 1 is fine'],['Add the last term, do the algebra → the formula for m. So m ∉ C — contradiction.','step'],['Hence C = ∅, and P(n) holds for every n ∈ ℕ. ∎','conclusion']])),
+  indtemplate:()=>h('div',{class:'pic'},steps([['Proof by induction on n, with P(n) ::= ….','method + predicate'],['Base case n = 0 (the first n of the claim): compute both sides.','base'],['Inductive step: let n ≥ 0 and assume P(n).','IH'],
+    ['Split off the last term · use the IH · algebra → P(n + 1).','step, with reasons'],['By induction, P(n) holds for all n ∈ ℕ. ∎','conclusion']]),h('p',{class:'ru'},'Сильная индукция: IH = P(0), …, P(n); баз столько, на сколько шаг смотрит назад.')),
+  gauges:()=>h('div',{class:'pic'},h('table',{class:'t'},h('tbody',{},[['↑s','strictly increasing','every move raises it'],['↑w','weakly increasing','no move lowers it'],['↓s','strictly decreasing','every move lowers it — ℕ-valued ⇒ the machine terminates'],['↓w','weakly decreasing','no move raises it'],['const','constant','no move changes it: an invariant number'],['none','none of these','one move raises it, another lowers it']].map(r=>h('tr',{},h('td',{class:'mono'},r[0]),h('td',{},h('b',{},r[1])),h('td',{},r[2])))))),
+  ritinv:()=>h('div',{class:'pic'},steps([['Every day each suitor goes to the best partner who has not rejected him yet.','serenade'],['Each receiver keeps her favourite under the balcony and rejects the rest.','keep one'],
+    ['Invariant: if w has rejected m, she has a suitor she prefers to m. Her options only improve, his only get worse.','preserved'],['No rejections ⇒ weddings. A rogue couple (m, w) would mean w rejected m for someone worse — impossible. So the matching is stable.','stable'],['Each suitor ends with his OPTIMAL partner, each receiver with her PESSIMAL one (Th 6.4.9).','who wins']])),
+};
+C.explore=function(box,L,api,done){
+  let k=0;
+  function show(){
+    const K=L.cards[k],tb=h('div',{class:'toy'});
+    box.replaceChildren(h('div',{class:'row',style:'justify-content:space-between'},h('div',{class:'stage-tag',style:'margin:0'},`Card ${k+1} of ${L.cards.length}`),
+        h('div',{class:'dots'},L.cards.map((_,i)=>h('button',{class:'dot2'+(i===k?' on':''),type:'button','aria-label':'card '+(i+1),onclick:()=>{k=i;show();}})))),
+      h('h3',{class:'th'},K.h),K.ids?h('p',{class:'ids'},'≙ notebook: '+K.ids):null,
+      (K.p||[]).map(t=>h('p',{class:'tp'},t)),K.ru?h('p',{class:'ru'},K.ru):null,
+      K.pic?PICS[K.pic]():null,
+      K.try?h('div',{class:'try'},h('b',{},'Poke it'),h('ul',{},K.try.map(t=>h('li',{},t)))):null,
+      K.toy?tb:null,
+      h('div',{class:'row',style:'margin-top:14px'},k>0?h('button',{class:'btn',onclick:()=>{k--;show();}},'← Back'):null,
+        h('button',{class:'btn primary',onclick:()=>{if(k<L.cards.length-1){k++;show();window.scrollTo({top:0});}else{api.stars=3;api.summary='Маяк пройден — возвращайся сюда, когда что-то забудется.';done();}}},k<L.cards.length-1?'Next card →':'Finish')));
+    if(K.toy)TOYS[K.toy].run(tb,K.opt||{});
+  }
+  show();
+};
+const LH={
+  prf:{toys:['impl','logbal','hunt'],cards:[
+    {h:'An implication is a promise',ids:'L·D5 · L·D4 · L·!1',p:['P ⇒ Q promises: whenever P happens, Q happens. It is broken in exactly one situation: P true and Q false.','Negate both sides AND swap them, and you get the same promise (the contrapositive). Only swap, or only negate, and you get a different one.'],ru:'Импликация — обещание; нарушается только при P = T, Q = F.',toy:'impl',try:['Find the only row that breaks the promise.','Visit all four rows. Which line always lights up exactly like P ⇒ Q?']},
+    {h:'Five proof shapes',ids:'L·M1 – L·M6',p:['Every proof in chapter 1 has one of these shapes. Decide the shape first — the first sentence of the proof names it.'],ru:'Сначала форма, потом вычисления. Первая фраза называет метод.',pic:'methods'},
+    {h:'Irrational = the prime atoms cannot balance',ids:'L·M10 · L·Z8 · L·Z9 · L·!6',p:['log_b a = m/n means bᵐ = aⁿ. Break both sides into primes: by unique factorization every prime must appear equally often on both sides.','A prime on one side only, or two primes that demand different ratios m/n, and nothing balances: the log is irrational.'],ru:'Рационален ⟺ можно подобрать m, n так, чтобы башни простых совпали.',toy:'logbal',try:['log₄ 8: find m and n that balance. That fraction is the log.','log₄ 6: why does the prime 3 never balance?','log₂₀ 50: both primes are on both sides — why does it still fail?']},
+    {h:'Many checks are not a proof',ids:'L·!1',p:['A claim about every n can survive 40 checks and still be false. Only an argument for an arbitrary n proves it; one counterexample kills it.'],toy:'hunt',try:['Run n² + n + 41 until it fails.','How long does n² − 79n + 1601 survive?']}]},
+  wop:{toys:['descent','wopstrip'],cards:[
+    {h:'Every walk down ℕ stops',ids:'L·Th1 · L·D9 · L·Th5 · L·!3',p:['WOP: every nonempty set of naturals has a least element. Picture: whatever you start from, stepping down to smaller elements must stop — there is a floor.','A set of numbers is well ordered exactly when it has no infinite decreasing sequence. Having a minimum is not enough: EVERY nonempty subset needs one.'],ru:'Вполне упорядочено ⟺ любой спуск вниз конечен.',toy:'descent',try:['Walk down ℕ and {n/(n + 1)}: where do you stop?','Walk down {1/n} and inside ℚ≥0: why does it never stop, although ℚ≥0 has a minimum?']},
+    {h:'The least red cell',ids:'L·M7 · L·!7 · L·Z11',p:['Colour each n green if P(n) holds and red if not. C = the red cells. A WOP proof says: suppose there is a red cell; take the leftmost one, m. Its left neighbour m − 1 is green. Show that green at m − 1 forces green at m — contradiction.','When a claim is false, the leftmost red cell sits exactly where that step breaks, or where the base fails.'],ru:'Доказательство WOP: самой левой красной клетки быть не может.',toy:'wopstrip',try:['Pick a true claim: read the step that makes a least red cell impossible.','Pick 2ⁿ ≥ n²: where is the leftmost red cell and why does the step break there?','Pick “F(n) is even”: which base case was missing?']},
+    {h:'The six lines of Ex1',ids:'L·M7',p:['Write exactly these six moves. Each has a fixed phrase; the only real work is the algebra in line 5. Without the WOP the answer gets 0 points.'],pic:'woptemplate'}]},
+  lgc:{toys:['formula','quant'],cards:[
+    {h:'A formula is a tree',ids:'L·D11 · L·D12',p:['Precedence builds the tree: ¬ binds strongest, then ∧, ∨, ⊕, →, ↔. Every node is a connective; its value comes from its children.','Flip a variable and watch the change travel up to the root. One assignment = one row of the truth table.'],ru:'Приоритет связок = форма дерева.',toy:'formula',opt:{preset:4},try:['Read how ¬P ∨ Q ∧ R → S ↔ T was parsed.','Tap rows of the table: which variables can change the root?']},
+    {h:'Valid, satisfiable, equivalent',ids:'L·D15 · L·D16 · L·Th10 · L·M8 · L·M9',p:['Valid: the root is T in every row. Satisfiable: in some row. Equivalent: two formulas have the same column.','“Not valid” needs ONE falsifying row — that row is the whole Ex2.2 answer. “Valid” needs every row, or cases.'],toy:'formula',opt:{preset:3},try:['Ex2.2 is loaded: find its falsifying rows. Then load Ex2.1.','Compare (P ∧ Q) → R with P → (Q → R), then with (P → Q) → R.']},
+    {h:'Quantifiers are rows and columns',ids:'L·D19 · L·!10 · L·Th14 · L·Z35',p:['Draw P(x, y) as a grid: row x, column y. ∀x ∃y = every row has a filled cell. ∃y ∀x = one column is completely filled.','A full column puts a cell into every row, so ∃y∀x ⇒ ∀x∃y is valid. The diagonal fills every row with no full column, so the converse is not.','¬ flips each quantifier: ¬∀x∃y.P ≡ ∃x∀y.¬P = some row is empty.'],toy:'quant',try:['Make ∀x ∃y true and ∃y ∀x false.','Try to make ∃y ∀x true and ∀x ∃y false. Why can you not?']}]},
+  set:{toys:['vennlab','arrows','funcs'],cards:[
+    {h:'Sets are logic in disguise',ids:'A·D4 · A·D8 · A·M1 · A·!2',p:['x ∈ A ∩ B ⟺ x ∈ A ∧ x ∈ B. Likewise ∪ is ∨, A − B is “and not”, the complement is ¬. So every set identity is a propositional equivalence about “x ∈ …”.','Same picture ⟺ same set. Element chasing writes down WHY the pictures agree; a differing region gives a counterexample.'],toy:'vennlab',try:['Distributivity and De Morgan: same pictures?','(A − B) ∪ B vs A: put an element into the red region — that is your counterexample.']},
+    {h:'Four arrow properties',ids:'A·D13 · A·D15 · A·Th2 · A·Th3 · A·!3',p:['Count arrows OUT of each left point: ≤ 1 makes a function, ≥ 1 makes it total. Count arrows INTO each right point: ≤ 1 is injective, ≥ 1 is surjective.','Flip all arrows (R⁻¹): out becomes in, so function ↔ injective and total ↔ surjective swap places.'],toy:'arrows',try:['|A| = 4, |B| = 3: try to build a total injective function.','Make it total and surjective but not injective. Then flip it.','|A| = 0: why is the empty relation a total function?']},
+    {h:'Counting = independent choices',ids:'A·Th5 · A·Z14 · A·Z12 · A·Z27',p:['A total function A → B is a word: one letter of B for each element of A. k positions with n letters each give nᵏ words.','Injective = no letter repeats: n(n − 1)⋯(n − k + 1). Subsets of A = bit strings of length |A|: 2^|A|.'],toy:'funcs',try:['k = 0: how many functions, and which?','Injective with k > n: why 0?']}]},
+  ind:{toys:['dominoes','oddsq'],cards:[
+    {h:'Induction is a row of dominoes',ids:'Ch. 5.1–5.2',p:['Base: push the first domino. Step: every domino knocks over the next. Together: all of them fall — P(n) for every n.','Strong induction: a domino may need several earlier ones (n − 4 for the stamps). Then you need that many base cases.'],toy:'dominoes',try:['Ordinary: push 0 and watch. Now break the step into 2 — that is the horses bug.','Stamps: with only 12 pushed, which stay up? Add base cases until all fall.','Two back: why two base cases?']},
+    {h:'The step = add the next piece',ids:'Ch. 5.1 · sums',p:['In a sum proof the step splits off the last term: Σ up to n + 1 = (Σ up to n) + the new term; then use the IH.','Picture it: odd numbers are L-shapes that grow a square.'],toy:'oddsq',try:['Increase n: which colour is the new L, and how many cells does it add?']},
+    {h:'The skeleton',ids:'Ch. 5 · Ex1 of midterm 2',pic:'indtemplate'}]},
+  mac:{toys:['board','jugs2'],cards:[
+    {h:'An invariant is a colour you cannot leave',ids:'Ch. 6.2 · Invariant Principle',p:['A preserved predicate P: if P holds in a state, it still holds after any move. If it also holds at the start, it holds in every reachable state.','Colour the states by P: the walk never changes colour, so a target of the other colour is unreachable.'],toy:'board',try:['Diagonal moves: try to reach (1, 0).','Switch to straight moves: does the colour still hold? Why does that make (1, 0) reachable?']},
+    {h:'Jugs: the gcd never changes',ids:'Ch. 6.2 · Die Hard',p:['Every new amount is built from old amounts and the jug sizes with + and −, so gcd(a, b) always divides what is in the jugs.'],toy:'jugs2',try:['A = 5, B = 3: get 4 litres.','A = 12, B = 6: which amounts appear at all?']},
+    {h:'Derived variables are gauges',ids:'Ch. 6.3',p:['A derived variable is a number computed from the state. For termination you need an ℕ-valued one that strictly decreases at every move.'],pic:'gauges'}]},
+  rit:{toys:['ritual'],cards:[
+    {h:'The ritual, day by day',ids:'Ch. 6.4 · Th 6.4.9',p:['Each day every suitor goes to the best partner who has not rejected him yet; each receiver keeps her favourite and rejects the rest. When nobody is rejected, they marry.','The same lists give a different matching when the other side serenades: suitors get their optimal partner, receivers their pessimal one.'],toy:'ritual',try:['Step through the days of the Ex2 boss instance.','Switch to “women serenade”: who gains, who loses? Compare the rank sums.','Build your own matching and hunt the rogue couples.']},
+    {h:'Why the result is stable',ids:'Ch. 6.4',pic:'ritinv'}]},
+  str:{toys:['unbox','recmatch'],cards:[
+    {h:'Strings are nested boxes',ids:'Ch. 7.1',p:['A* is defined recursively: λ, or ⟨a, s′⟩. Every function on strings (length, ·, f*) is defined by the same two cases, and every structural induction follows them.'],toy:'unbox',try:['Follow |s · t| = |s| + |t| box by box.','Make s empty: which line is the base case?']},
+    {h:'RecMatch: build it, then count',ids:'Ch. 7.1 · Ex1 of midterm 2',p:['For “if s ∈ RecMatch, then …” induct on the definition of RecMatch: base λ, constructor [u]v with two IHs, P(u) and P(v).'],toy:'recmatch',try:['[[]][] and [[][]]: every box balances.','][ has equal counts but is not in RecMatch. Which direction of the claim does that kill?']}]},
+  inf:{toys:['pairing','diagonal','arrows'],cards:[
+    {h:'Countable = a list that reaches everyone',ids:'Ch. 8.1',p:['A set is countable if you can list it so that every element gets a finite place. ℕ × ℕ is countable — if you walk the right way.'],toy:'pairing',try:['Walk by diagonals: what is the place of (2, 3)?','Row by row: why does (1, 0) never get a place?']},
+    {h:'The diagonal escapes every list',ids:'Ch. 8.1 · Cantor · Th 8.2.2',p:['Given ANY list of infinite 0/1 sequences, flip the diagonal: d(n) = 1 − sₙ(n). d differs from every row, so it is missing. Hence {0,1}^ω and pow(ℕ) are uncountable.','The same self-reference shows that No-halt is not recognizable.'],toy:'diagonal',try:['Flip a diagonal cell: d changes exactly there.','Add d to the list. Is the new list complete?']},
+    {h:'Arrows compare sizes',ids:'Ch. 8.1 · surj, inj',p:['A surj B means: there is a surjective function A → B, so A is at least as big as B. For infinite sets this is how sizes are compared.'],toy:'arrows',try:['|A| = 4, |B| = 3: can you make a surjective function? A total injective one?']}]},
+};
+const LABONLY={dck:['wopstrip','formula','vennlab','funcs'],skl:['dominoes','unbox','recmatch','ritual','diagonal','board']};
+WORLDS.forEach(W=>{const X=LH[W.id];
+  if(X){W.toys=X.toys;W.levels.unshift({id:W.id+'0',title:'Lighthouse · theory you can poke',ru:'Маяк: наглядная теория и песочницы',type:'explore',
+    brief:'Short theory cards with your notebook IDs, each with a toy: change something and watch what happens. No hearts, nothing to lose.',briefRu:'Карточки теории + песочницы. Тыкай, меняй, смотри, что от чего зависит. Сердечек нет.',
+    lesson:'Come back to the lighthouse whenever a level feels like guessing. Inside every level of this island the same toys are in the Lab below the task.',cards:X.cards});}
+  else if(LABONLY[W.id])W.toys=LABONLY[W.id];});
 </script>
 
 <script>
@@ -995,26 +2316,28 @@ const app=$('#app');
 let view={v:'map'};
 const allLevels=()=>WORLDS.flatMap(w=>w.levels);
 function starsOf(id){return prog[id]||0;}
-function unlocked(W,idx){return idx===0||starsOf(W.levels[idx-1].id)>0;}
+function unlocked(W,idx){const L=W.levels[idx];if(L.type==='explore'||starsOf(L.id)>0)return true;for(let j=idx-1;j>=0;j--){if(W.levels[j].type==='explore')continue;return starsOf(W.levels[j].id)>0;}return true;}
 function starStr(n){return h('span',{class:'stars','aria-label':n+' of 3 stars'},h('b',{},'★'.repeat(n)),'★'.repeat(3-n));}
-function renderScore(){const L=allLevels(),st=L.reduce((a,l)=>a+starsOf(l.id),0),cl=L.filter(l=>starsOf(l.id)>0).length;$('#score').replaceChildren(h('span',{},h('span',{class:'star'},'★ '),`${st}/${L.length*3}`),h('span',{},`${cl}/${L.length} cleared`));}
+function renderScore(){const cn=$('#counts');if(cn)cn.textContent=`${WORLDS.length} islands, ${allLevels().length} levels`;const L=allLevels(),st=L.reduce((a,l)=>a+starsOf(l.id),0),cl=L.filter(l=>starsOf(l.id)>0).length;$('#score').replaceChildren(h('span',{},h('span',{class:'star'},'★ '),`${st}/${L.length*3}`),h('span',{},`${cl}/${L.length} cleared`));}
 function go(v){view=v;render();window.scrollTo({top:0});}
 function render(){renderScore();if(view.v==='map')renderMap();else if(view.v==='island')renderIsland(WORLDS.find(w=>w.id===view.w));else renderLevel(WORLDS.find(w=>w.id===view.w),view.l);}
 
 function blob(cx,cy,r,seed){let p='';const N=14;for(let k=0;k<=N;k++){const a=k/N*Math.PI*2,rr=r*(0.82+0.18*Math.sin(a*3+seed)+0.08*Math.cos(a*5+seed*2));const x=cx+rr*Math.cos(a)*1.25,y=cy+rr*Math.sin(a)*0.8;p+=(k?'L':'M')+x.toFixed(1)+','+y.toFixed(1);}return p+'Z';}
-const PORTRAIT=[[115,105],[285,285],[115,465],[285,645],[115,825],[285,1005]];
 function renderMap(){
   const tall=window.innerWidth<640;
-  const VW=tall?400:1000,VH=tall?1130:700,R=tall?56:70;
-  const P=WORLDS.map((w,i)=>tall?PORTRAIT[i]:[w.x,w.y]);
-  const svg=sv('svg',{viewBox:`0 0 ${VW} ${VH}`,role:'img','aria-label':'Map of six islands'});
+  const z2=Math.max(0,WORLDS.findIndex(W=>W.zone===2));
+  const P=WORLDS.map((w,i)=>tall?[i%2?285:115,130+180*i+(i>=z2?70:0)]:[w.x,w.y]);
+  const VW=tall?400:1000,VH=tall?P[P.length-1][1]+150:1000,R=tall?56:62;
+  const svg=sv('svg',{viewBox:`0 0 ${VW} ${VH}`,role:'img','aria-label':`Map of ${WORLDS.length} islands`});
   for(let y=40;y<VH;y+=48)svg.append(sv('path',{d:`M0,${y} `+[...Array(Math.ceil(VW/50)+1)].map((_,k)=>`Q${k*50+25},${y+(k%2?6:-6)} ${k*50+50},${y}`).join(' '),class:'wave',opacity:.6}));
   svg.append(sv('path',{d:'M'+P.map(p=>p.join(',')).join(' L'),class:'route'}));
+  svg.append(sv('text',{x:tall?20:24,y:40,class:'zone'},'MIDTERM 1 · CH. 1–4'),sv('text',{x:tall?20:24,y:tall?P[z2][1]-92:440,class:'zone'},'MIDTERM 2 · CH. 5–8'));
   WORLDS.forEach((W,i)=>{const [x,y]=P[i],done=W.levels.filter(l=>starsOf(l.id)>0).length,st=W.levels.reduce((a,l)=>a+starsOf(l.id),0);
+    const lw=Math.max(W.name.length*12.5,W.ch.length*7.4),lx=Math.min(Math.max(x,lw/2+6),VW-lw/2-6);
     const g=sv('g',{class:'isl',tabindex:0,role:'button','aria-label':`${W.name}, ${W.ch}, ${done} of ${W.levels.length} levels`});
     g.append(sv('path',{d:blob(x,y,R+8,i*1.7+1),class:'ring',transform:`translate(0,6)`}),sv('path',{d:blob(x,y,R,i*1.7+1),class:'land',style:`fill:var(--i-${W.c}-s)`}),
       sv('path',{d:blob(x,y-4,R*0.57,i*2.3+3),style:`fill:var(--i-${W.c})`,opacity:.9}),
-      sv('text',{x,y:y+R+30,'text-anchor':'middle',class:'isl-name'},W.name),sv('text',{x,y:y+R+48,'text-anchor':'middle',class:'isl-sub'},W.ch),
+      sv('text',{x:lx,y:y+R+30,'text-anchor':'middle',class:'isl-name'},W.name),sv('text',{x:lx,y:y+R+48,'text-anchor':'middle',class:'isl-sub'},W.ch),
       sv('text',{x,y:y+5,'text-anchor':'middle',class:'isl-stars'},`${done}/${W.levels.length} · ★${st}`));
     const open=()=>go({v:'island',w:W.id});g.addEventListener('click',open);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});svg.append(g);});
   let ni=WORLDS.findIndex(W=>W.levels.some(l=>!starsOf(l.id)));if(ni<0)ni=WORLDS.length-1;const [nx,ny]=P[ni];
@@ -1024,8 +2347,9 @@ function renderMap(){
   const idle=()=>resetBox.replaceChildren(h('button',{class:'btn',onclick:ask},'Reset progress'));
   idle();
   app.replaceChildren(h('div',{class:'sea'},svg),
-    h('div',{class:'legend-list'},WORLDS.map(W=>h('button',{class:'btn',style:`--ic:var(--i-${W.c})`,onclick:()=>go({v:'island',w:W.id})},h('span',{class:'t'},W.name),h('span',{class:'ru'},W.ch+' · '+W.ru)))),
-    h('p',{class:'tip ru'},'Острова открыты все; уровни внутри острова — по порядку. Сердечки: 3 на уровень. Звёзды: 3 — без ошибок. Прогресс хранится на этом устройстве. Твои слабые места с мидтерма — боссы Recursion Reef (Ex1) и Diagonal Deep (Ex3). Skeleton Shipyard — режим письма: заполняешь пропуски в скелетах Ex1/Ex2/Ex3, без сердечек.'),
+    [1,2].map(z=>[h('p',{class:'h3 legend-h'},z===1?'Midterm 1 · chapters 1–4 · Ex1 WOP, Ex2 valid/not, Ex3 counting':'Midterm 2 · chapters 5–8 · Ex1 induction, Ex2 ritual, Ex3 halting'),
+      h('div',{class:'legend-list',style:'margin-top:8px'},WORLDS.filter(W=>W.zone===z).map(W=>h('button',{class:'btn',style:`--ic:var(--i-${W.c})`,onclick:()=>go({v:'island',w:W.id})},h('span',{class:'t'},W.name),h('span',{class:'ru'},W.ch+' · '+W.ru))))]).flat(),
+    h('p',{class:'tip ru'},'Острова открыты все; уровни внутри острова — по порядку. Верхний ряд — главы 1–4 (мидтерм 1 и финал), нижний — главы 5–8. Сердечки: 3 на уровень. Звёзды: 3 — без ошибок. Прогресс хранится на этом устройстве. Твои слабые места с мидтерма 2 — боссы Recursion Reef (Ex1) и Diagonal Deep (Ex3). Skeleton Dock и Skeleton Shipyard — режим письма: заполняешь пропуски в экзаменационных скелетах, без сердечек.'),
     resetBox);
 }
 let _rz=null,_wasTall=window.innerWidth<640;
@@ -1034,16 +2358,23 @@ function renderIsland(W){
   const band=h('div',{class:'band',style:`--ic:var(--i-${W.c});--ics:var(--i-${W.c}-s)`},h('div',{class:'ch'},W.ch),h('h2',{},W.name),h('p',{class:'ru',style:'margin-top:4px'},W.ru),
     W.write?h('p',{style:'margin:8px 0 0;font-size:14px'},'Write mode: no hearts. Fill every gap of the exam skeleton, press Check, compare with the model. Answers in a different but equivalent form: you judge them yourself.',h('span',{class:'ru',style:'display:block'},'Без сердечек. Заполни пропуски, сверь с образцом; если форма другая, но смысл тот же — отметь сама.')):null);
   const trail=h('ol',{class:'trail',style:`--ic:var(--i-${W.c});--ics:var(--i-${W.c}-s)`},W.levels.map((L,i)=>{const ok=unlocked(W,i);
-    return h('li',{},h('button',{class:'node'+(L.boss?' boss':''),disabled:!ok,onclick:()=>go({v:'level',w:W.id,l:L.id})},h('span',{class:'num'},L.boss?'♛':i+1),
-      h('span',{},h('span',{class:'tt'},L.title,L.boss&&(W.id==='str'||W.id==='inf')?h('span',{class:'tag'},'midterm trap'):null,W.write?h('span',{class:'tag write'},'write'):null),h('span',{class:'meta',style:'display:block'},L.ru+(ok?'':' · locked: clear the level before'))),starStr(starsOf(L.id))));}));
+    return h('li',{},h('button',{class:'node'+(L.boss?' boss':''),disabled:!ok,onclick:()=>go({v:'level',w:W.id,l:L.id})},h('span',{class:'num'},L.type==='explore'?'✦':L.boss?'♛':W.levels[0].type==='explore'?i:i+1),
+      h('span',{},h('span',{class:'tt'},L.title,L.tag?h('span',{class:'tag'},L.tag):L.boss&&(W.id==='str'||W.id==='inf')?h('span',{class:'tag'},'midterm trap'):null,W.write?h('span',{class:'tag write'},'write'):null,L.type==='explore'?h('span',{class:'tag theory'},'theory · toys'):null),h('span',{class:'meta',style:'display:block'},L.ru+(ok?'':' · locked: clear the level before'))),starStr(starsOf(L.id))));}));
   app.replaceChildren(h('div',{class:'row',style:'margin-bottom:12px'},h('button',{class:'btn',onclick:()=>go({v:'map'})},'← Map')),band,trail);
+}
+function labDrawer(ids,st){
+  const body=h('div',{});let cur=null;
+  const tabs=h('div',{class:'row'},ids.map(id=>h('button',{class:'btn',type:'button',onclick:e=>{cur=id;$$('button',tabs).forEach(b=>b.classList.remove('sel'));e.currentTarget.classList.add('sel');const tb=h('div',{class:'toy'});body.replaceChildren(tb);TOYS[id].run(tb,{});}},TOYS[id].name)));
+  const d=h('details',{class:'lab',style:st},h('summary',{},'Lab — poke the idea while you answer',h('span',{class:'ru'},' · песочница: проверь догадку, это не тратит сердечки')),h('div',{class:'labin'},tabs,body));
+  d.addEventListener('toggle',()=>{if(d.open&&!cur)tabs.firstChild.click();});return d;
 }
 function renderLevel(W,lid){
   const idx=W.levels.findIndex(l=>l.id===lid),L=W.levels[idx];let hearts=3,mistakes=0,over=false;
   const st=`--ic:var(--i-${W.c});--ics:var(--i-${W.c}-s)`;
   const heartsEl=h('div',{class:'hearts','aria-live':'polite'});
   const fb=h('div',{class:'feedback','aria-live':'polite'});
-  const play=h('div',{}),endBox=h('div',{hidden:true}),cardEl=h('div',{class:'card'},play,fb);
+  const play=h('div',{}),endBox=h('div',{hidden:true}),cardEl=h('div',{class:'card',style:st},play,fb);
+  const lab=W.toys&&L.type!=='explore'?labDrawer(W.toys,st):null;
   function drawHearts(){heartsEl.replaceChildren(...[0,1,2].map(k=>h('span',{class:k<hearts?'':'lost'},'♥')));heartsEl.setAttribute('aria-label',hearts+' hearts left');}
   const api={stars:null,summary:null,
     mistake(msg){if(over)return;mistakes++;hearts--;drawHearts();try{navigator.vibrate&&navigator.vibrate(60);}catch(e){}fb.className='feedback bad';fb.replaceChildren(h('b',{},'−1 ♥  '),msg);if(hearts<=0)fail();},
@@ -1054,15 +2385,15 @@ function renderLevel(W,lid){
   function win(){if(over)return;over=true;cardEl.hidden=true;endBox.hidden=false;const s=api.stars??(mistakes===0?3:mistakes===1?2:1);prog[L.id]=Math.max(starsOf(L.id),s);save();renderScore();
     const nxt=W.levels[idx+1];const wi=WORLDS.indexOf(W),nextW=WORLDS[wi+1];
     fb.className='feedback';fb.replaceChildren();
-    endBox.replaceChildren(h('div',{class:'card result pop'},h('p',{class:'big'},L.boss?'Boss defeated!':L.type==='cloze'?'Skeleton checked':'Level cleared'),starStr(s),h('p',{class:'ru'},api.summary?api.summary:s===3?'Без единой ошибки.':`Ошибок: ${mistakes}.`),
+    endBox.replaceChildren(h('div',{class:'card result pop'},h('p',{class:'big'},L.boss?'Boss defeated!':L.type==='cloze'?'Skeleton checked':L.type==='explore'?'Lighthouse visited':'Level cleared'),starStr(s),h('p',{class:'ru'},api.summary?api.summary:s===3?'Без единой ошибки.':`Ошибок: ${mistakes}.`),
       h('div',{class:'lesson'},h('b',{},'Take away: '),L.lesson),
       h('div',{class:'row',style:'margin-top:14px'},nxt?h('button',{class:'btn primary',onclick:()=>go({v:'level',w:W.id,l:nxt.id})},'Next level →'):nextW?h('button',{class:'btn primary',onclick:()=>go({v:'island',w:nextW.id})},`Sail to ${nextW.name} →`):null,
         h('button',{class:'btn',onclick:()=>go({v:'island',w:W.id})},'Island'),h('button',{class:'btn',onclick:()=>go({v:'level',w:W.id,l:L.id})},'Replay'))));}
-  drawHearts();heartsEl.hidden=L.type==='cloze';
+  drawHearts();heartsEl.hidden=L.type==='cloze'||L.type==='explore';
   app.replaceChildren(h('div',{class:'row',style:'margin-bottom:12px'},h('button',{class:'btn',onclick:()=>go({v:'island',w:W.id})},'← '+W.name)),
-    h('div',{class:'lvbar'},h('div',{},h('div',{class:'stage-tag'},`${W.name} · ${L.boss?'boss':'level '+(idx+1)}`),h('h2',{},L.title)),heartsEl),
+    h('div',{class:'lvbar'},h('div',{},h('div',{class:'stage-tag'},`${W.name} · ${L.type==='explore'?'lighthouse':L.boss?'boss':'level '+(W.levels[0].type==='explore'?idx:idx+1)}`),h('h2',{},L.title)),heartsEl),
     h('div',{class:'brief',style:st},h('p',{},L.brief),h('p',{class:'ru'},L.briefRu)),
-    cardEl,endBox);
+    cardEl,lab,endBox);
   C[L.type](play,L,api,win);
 }
 function start(data){if(data&&data.view)view=data.view;try{window.claude?.hot?.snapshot?.(()=>({view}));}catch(e){}render();}

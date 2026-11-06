@@ -1,5 +1,5 @@
 // Proof Archipelago — offline cache. Bump VERSION after changing any file.
-const VERSION = 'pa-v3';
+const VERSION = 'pa-v4';
 const CORE = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './maskable-512.png',
   './apple-touch-icon.png', './favicon-64.png'];

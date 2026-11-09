@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /* Smoke test for Proof Archipelago.
    It serves the repository, opens the real game in a headless browser and checks the things that have broken before:
-   level data, every level and lab toy on a narrow phone (EN and RU), Russian texts, Back button and links,
-   multi-part levels, carrying progress, and the offline / update behaviour of the service worker.
+   level data, every level and lab toy on a narrow phone (EN and RU), Russian texts, a play-through of the levels with
+   the keyed answers, Back button and links, multi-part levels, carrying progress, and the offline / update behaviour
+   of the service worker.
 
    Run:  cd tests && npm ci && npx playwright install chromium && npm test
    A failing check prints FAIL with details and the script exits with code 1. */
@@ -30,7 +31,7 @@ function check(name, ok, detail) {
 
 /* Strings that are the same in Russian (formulas with English identifiers, names of sets). Everything else in the level
    data that contains an English word must have a Russian entry — add it to the dictionary, or list the string here. */
-const SAME_IN_RUSSIAN = [/dreams\(p, d\)/, /solve\(x\)/, /^const$/, /^(No|Empty|Always)-halt$/];
+const SAME_IN_RUSSIAN = [/dreams\(p, d\)/, /solve\(x\)/, /^const$/, /^(No|Empty|Always)-halt$/, /^(indeg|outdeg|depth)\([A-Z]\) = \?$/];
 
 async function main() {
   await new Promise(r => server.listen(0, '127.0.0.1', r));
@@ -114,7 +115,7 @@ async function main() {
       check('no text in a picture is cut off at the sides', r.cut.length === 0, r.cut.slice(0, 8));
       if (lang === 'ru') {
         const miss = await page.evaluate(() => {
-          const out = [], seen = new Set(), SKIP = new Set(['id', 'type', 'c', 'ru', 'data', 'keys', 'lab', 'toys', 'toy', 'pic', 'fig', 'kind', 'mode', 'book']);
+          const out = [], seen = new Set(), SKIP = new Set(['id', 'type', 'c', 'ru', 'data', 'keys', 'lab', 'toys', 'toy', 'pic', 'fig', 'mode', 'book', 'dag', 'suitors', 'opt']);
           const walk = (v, at, cloze) => {
             if (typeof v === 'string') { if (cloze || seen.has(v) || !/[A-Za-z]{4}/.test(v)) return; seen.add(v); MISS.delete(v); tr(v); if (MISS.has(v)) out.push(at + ': ' + v.slice(0, 120)); return; }
             if (!v || typeof v !== 'object' || v.nodeType) return;
@@ -128,6 +129,51 @@ async function main() {
         const real = miss.filter(m => !SAME_IN_RUSSIAN.some(re => re.test(m.slice(m.indexOf(': ') + 2))));
         check('every text of the level data has a Russian translation', real.length === 0, real.slice(0, 12));
       }
+      await page.context().close();
+    }
+
+    /* ---------- every level built from standard parts can be won with the keyed answers ---------- */
+    console.log('\nPlaying the levels');
+    {
+      const page = await open();
+      const r = await page.evaluate(async () => {
+        const CAN = new Set(['mc', 'input', 'order', 'cloze', 'explore', 'topo', 'debruijn', 'matchpick']);
+        const sleep = ms => new Promise(f => setTimeout(f, ms)), click = el => el.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        const out = { played: 0, skipped: 0, bad: [] };
+        for (const W of WORLDS) for (const L of W.levels) {
+          const parts = L.type === 'stages' ? L.stages : [L];
+          if (!parts.every(P => CAN.has(P.type))) { out.skipped++; continue; }
+          prog = {}; __quest.go({ v: 'level', w: W.id, l: L.id }); out.played++;
+          const card = () => document.querySelector('#app .card:not(.result)');
+          const part = () => { if (L.type !== 'stages') return L; const m = /part (\d+) of/.exec(card().querySelector('.stage-tag')?.textContent || ''); return m ? parts[m[1] - 1] : parts[0]; };
+          const question = P => { const m = [...card().querySelectorAll('.stage-tag')].map(t => /Question (\d+) of/.exec(t.textContent)).find(Boolean); return P.qs[m[1] - 1]; };
+          const primary = (re) => { const b = [...card().querySelectorAll('.btn.primary')].filter(x => !x.hidden && !x.disabled && (!re || re.test(x.textContent))).pop(); if (b) b.click(); return !!b; };
+          let why = '';
+          for (let step = 0; step < 400 && !document.querySelector('#app .result'); step++) {
+            const c = card(), P = part();
+            try {
+              if (P.type === 'explore') primary();
+              else if (P.type === 'mc') { const q = question(P), bs = [...c.querySelectorAll('.opts button')]; if (bs.every(x => x.disabled)) primary(); else bs.find(x => +x.dataset.k === q.a).click(); }
+              else if (P.type === 'input') { const q = question(P), inp = c.querySelector('input[type=number]'); if (inp.disabled) primary(); else { inp.value = String(q.a); primary(/Check/); } }
+              else if (P.type === 'order') { const placed = [...c.querySelectorAll('ol.proof > li')].filter(li => !li.classList.contains('pop') && !li.classList.contains('empty')).length, rs = c.querySelector('.reasons');
+                (rs ? [...rs.querySelectorAll('button')].find(x => x.dataset.r === P.lines[placed].r) : c.querySelector(`.pool button[data-i="${placed}"]`)).click(); }
+              else if (P.type === 'cloze') { if (c.querySelector('.modelproof')) primary(); else { for (const k of Object.keys(P.gaps)) document.getElementById(`cz-${L.id}-${k}`).value = P.gaps[k].o ? P.gaps[k].a : P.gaps[k].a[0]; primary(/skeleton/); } }
+              else if (P.type === 'matchpick') { const D = DATA[P.data], res = P.suitors === 'women' ? ritualRun(D.pw, D.pm).wife : ritualRun(D.pm, D.pw).wife; res.forEach((j, i) => { document.getElementById('mp-' + i).value = String(j); }); primary(/Check/); }
+              else if (P.type === 'debruijn') { if (c.querySelector('.why')) primary(); else { const have = c.querySelectorAll('.bit').length; [...c.querySelectorAll('.row .btn')].find(x => x.textContent === '0001011100'[have]).click(); } }
+              else if (P.type === 'topo') { if (c.querySelector('.why')) primary(); else { const G = DAGS[P.dag], ids = Object.keys(G.v), nodes = [...c.querySelectorAll('.tk')], el = Object.fromEntries(ids.map((v, i) => [v, nodes[i]]));
+                const done = v => el[v].classList.contains('done'), ready = ids.filter(v => !done(v) && dagPre(G, v).every(done));
+                if (P.mode === 'par') { ready.forEach(v => { if (!el[v].classList.contains('sel')) click(el[v]); }); primary(/Start/); } else click(el[ready[0]]); } }
+            } catch (e) { why = String(e.message || e); break; }
+            await sleep(2);
+          }
+          for (let i = 0; i < 80 && !document.querySelector('#app .result'); i++) await sleep(25); // some parts finish after a short delay
+          const res = document.querySelector('#app .result .big'), hearted = !['cloze', 'explore'].includes(L.type);
+          if (!res || /Out of hearts/.test(res.textContent)) out.bad.push(L.id + ': not finished' + (why ? ' (' + why + ')' : ''));
+          else if (hearted && prog[L.id] !== 3) out.bad.push(L.id + ': the keyed answers lost a heart');
+        }
+        return out;
+      });
+      check(r.played + ' levels can be won with the keyed answers (' + r.skipped + ' with their own mini-game are not played)', r.bad.length === 0 && r.played > 60 && page.errors.length === 0, [...r.bad, ...page.errors].slice(0, 10));
       await page.context().close();
     }
 

@@ -2,7 +2,7 @@
 // The game page (index.html) keeps itself up to date: it is served from the cache at once, and every time the game
 // is opened the page asks this worker to compare the cached copy with the server ('pa-check' below).
 // Bump VERSION only after changing an icon, the manifest or this file.
-const VERSION = 'pa-v9';
+const VERSION = 'pa-v10';
 const CORE = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './maskable-512.png',
   './apple-touch-icon.png', './favicon-64.png'];

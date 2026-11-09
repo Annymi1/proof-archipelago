@@ -1,7 +1,7 @@
 {
   "name": "Proof Archipelago",
   "short_name": "Proofs",
-  "description": "Course quest for ITB8832 Mathematics for Computer Science (MCS book, chapters 1–8): proofs, WOP, logic, sets, induction, state machines, stable matching, recursive data, infinity and halting. English and Russian.",
+  "description": "Course quest for ITB8832 Mathematics for Computer Science (MCS book, chapters 1–10): proofs, WOP, logic, sets, induction, state machines, stable matching, recursive data, infinity and halting, number theory and RSA, directed graphs and scheduling. English and Russian.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",

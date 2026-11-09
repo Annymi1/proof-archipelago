@@ -1,0 +1,11 @@
+{
+  "name": "proof-archipelago-tests",
+  "private": true,
+  "description": "Smoke test: opens the game in a headless browser and checks levels, translations, navigation and offline behaviour.",
+  "scripts": {
+    "test": "node smoke.js"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

@@ -105,6 +105,10 @@ input[type=number]{width:6em}
 .legend-list .t{font-family:var(--f-disp);font-weight:700;font-size:16px}
 .tip{margin-top:14px;font-size:14px}
 .reset{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--pencil)}
+.carry,.carry-out{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--pencil)}
+.carry-out:empty{display:none}
+.carry-in{flex:1 1 220px;min-width:0;max-width:440px;font-size:13px}
+.offer{margin-bottom:14px;border-color:var(--accent);border-width:1.5px}
 
 /* island */
 .band{border-radius:16px;padding:18px clamp(14px,2.6vw,26px);background:var(--ics);border:1.5px solid var(--ic);margin-bottom:16px}
@@ -417,6 +421,9 @@ b.bad{color:var(--bad)}
 .t.fit td,.t.fit th{padding:4px 10px}
 .gauge{display:flex;align-items:flex-end;gap:3px;margin-top:8px;min-height:50px}
 .gbar{display:inline-block;width:14px;background:var(--accent);border-radius:3px 3px 0 0}
+.upd{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;display:flex;gap:8px;align-items:center;width:max-content;max-width:calc(100vw - 24px);background:var(--ink);color:var(--paper);border-radius:14px;padding:8px 8px 8px 16px;font-size:14px;box-shadow:0 8px 28px rgba(0,0,0,.28)}
+.upd .btn{padding:6px 12px;font-weight:700}
+.upd .updx{background:transparent;border-color:transparent;color:var(--paper);font-size:18px;line-height:1;padding:4px 8px}
 .langsw{display:inline-flex;gap:0;border:1.5px solid var(--rule);border-radius:10px;overflow:hidden}
 .langsw button{font:inherit;font-size:13px;font-weight:700;border:0;background:var(--paper);color:var(--pencil);padding:5px 10px;cursor:pointer}
 .langsw button.on{background:var(--accent);color:var(--on-accent)}
@@ -2931,6 +2938,9 @@ RU_TPL.forEach(([en,ru])=>{en=en.trim();ru=ru.trim();const re=new RegExp('^'+en.
   RU_PAT.push([re,(...a)=>ru.replace(/\{(\d+)\}/g,(_,k)=>tr(a[+k]??''))]);});
 Object.assign(RU,{"1grd3rw":"письмо","1sx9v84":"Толкнуть!"});
 Object.assign(RU,{"na1dbe":"d ∉ No-halt, и этому ничто не противоречит"});
+Object.assign(RU,{"1ajabko":"Прогресс на другом устройстве:","1q4m9cu":"Скопировать ссылку с моим прогрессом","q07nwb":"Ввести код","mo84a8":"Пока переносить нечего: сначала пройди уровень.","s79xyz":"Скопируй эту ссылку и открой её на другом устройстве: звёзды добавятся там.","tmw281":"Ссылка скопирована. Открой её на другом устройстве: звёзды добавятся там.","nb745e":"ссылка с прогрессом","jydchu":"Вставь ссылку или код","17rv3f8":"Добавить","12u0v7t":"Это не код прогресса.","3s9glt":"Ничего нового: на этом устройстве уже есть всё из этого кода.","1vft4u7":"Добавить его на это устройство? Для каждого уровня останется лучший результат.","1089riv":"Добавить прогресс","vtubr7":"Нет, спасибо","19ya07z":"прогресс из ссылки","1bnhhb9":"Вышла новая версия игры.","7acg4s":"Обновить","1wsths9":"Позже"});
+RU_PAT.push([/^Done\. Levels with new stars: (\d+)\.$/,(m,a)=>'Готово. Уровней с новыми звёздами: '+a+'.']);
+RU_PAT.push([/^This link carries progress: levels cleared — (\d+), stars — (\d+)\.$/,(m,a,b)=>'В этой ссылке прогресс: пройдено уровней — '+a+', звёзд — '+b+'.']);
 RU_PAT.push([/^is (s\d+) in W$/,(m,a)=>a+' принадлежит W?']);
 RU_PAT.unshift([/^parity so far: (.*)$/,(m,a)=>'чётность на пути: '+a.replace(/\beven\b/g,'чёт').replace(/\bodd\b/g,'нечёт')]);
 </script>
@@ -2944,8 +2954,38 @@ const allLevels=()=>WORLDS.flatMap(w=>w.levels);
 function starsOf(id){return prog[id]||0;}
 const isMain=L=>L.type!=='explore'&&!L.side;
 function unlocked(W,idx){const L=W.levels[idx];if(!isMain(L)||starsOf(L.id)>0)return true;for(let j=idx-1;j>=0;j--){if(!isMain(W.levels[j]))continue;return starsOf(W.levels[j].id)>0;}return true;}
+/* ---- progress as a short code, to carry it to another device: PA1.prf-0C1C2B_s1C.wop-1A
+   one part per island: its id, then for every cleared level the rest of the level id and A, B or C for 1, 2 or 3 stars.
+   Only letters, digits, “_”, “-” and “.”, so that a messenger keeps the whole link clickable. */
+const progTok=(W,L)=>L.id.startsWith(W.id)?L.id.slice(W.id.length):L.id;
+function progCode(){
+  const parts=WORLDS.map(W=>{const xs=W.levels.filter(L=>starsOf(L.id)>0).map(L=>progTok(W,L)+'ABC'[Math.min(3,starsOf(L.id))-1]);return xs.length?W.id+'-'+xs.join(''):null;}).filter(Boolean);
+  return parts.length?'PA1.'+parts.join('.'):'';}
+const progLink=()=>location.origin+location.pathname+'#p='+progCode();
+/* reads a code or a whole link; null = no code in the text, otherwise {level id: stars} for the levels this game knows */
+function progParse(text){
+  let t=String(text||'');try{t=decodeURIComponent(t);}catch(e){}
+  const m=/PA1\.([A-Za-z0-9_.\-]+)/.exec(t);if(!m)return null;const out={};
+  m[1].split('.').forEach(seg=>{const k=seg.indexOf('-'),W=k>0?WORLDS.find(w=>w.id===seg.slice(0,k)):null;if(!W)return;
+    const byTok={};W.levels.forEach(L=>{byTok[progTok(W,L)]=L.id;});
+    seg.slice(k+1).replace(/([0-9a-z_]+?)([ABC])/g,(_,a,b)=>{if(byTok[a])out[byTok[a]]=' ABC'.indexOf(b);return '';});});
+  return out;}
+/* adds a parsed code to this device: for every level the better result is kept. Returns how many levels gained stars. */
+function progMerge(got){let n=0;for(const id in got){if(got[id]>starsOf(id)){prog[id]=got[id];n++;}}if(n)save();return n;}
+/* a link opened as …/#p=PA1.… waits here until the player says yes or no on the map */
+let incoming=null;
+function takeIncoming(){try{const m=/^#p=(.+)$/.exec(location.hash);if(m){const got=progParse(m[1]);if(got&&Object.keys(got).length)incoming=got;}}catch(e){}}
 function starStr(n){return h('span',{class:'stars','aria-label':n+' of 3 stars'},h('b',{},'★'.repeat(n)),'★'.repeat(3-n));}
-function renderHeader(){$('#brand-h').textContent=tr('Proof Archipelago');$('#brand-p').replaceChildren('Course quest · chapters 1–8',' · ',`${WORLDS.length} islands, ${allLevels().length} levels`);document.title=tr('Proof Archipelago');
+/* ---- a new version is waiting: offer a reload instead of doing it in the middle of a level ---- */
+let updReady=false,updHidden=false;
+function drawUpdate(){
+  let bar=$('#upd');
+  if(!updReady||updHidden){if(bar)bar.remove();return;}
+  if(!bar){bar=h('div',{id:'upd',class:'upd',role:'status'});document.body.append(bar);}
+  bar.replaceChildren(h('span',{},'A new version of the game is ready.'),h('button',{class:'btn',type:'button',onclick:()=>location.reload()},'Reload'),
+    h('button',{class:'btn updx',type:'button','aria-label':'Later',onclick:()=>{updHidden=true;drawUpdate();}},'×'));}
+function showUpdate(){updReady=true;drawUpdate();}
+function renderHeader(){drawUpdate();$('#brand-h').textContent=tr('Proof Archipelago');$('#brand-p').replaceChildren('Course quest · chapters 1–8',' · ',`${WORLDS.length} islands, ${allLevels().length} levels`);document.title=tr('Proof Archipelago');
   $('#langsw').replaceChildren(...[['en','EN'],['ru','RU']].map(([v,t])=>h('button',{type:'button',class:LANG===v?'on':'','aria-pressed':String(LANG===v),onclick:()=>{if(LANG===v)return;LANG=v;try{localStorage.setItem(LANGKEY,v);}catch(e){}document.documentElement.lang=v;render();}},t)));}
 function renderScore(){renderHeader();const L=allLevels(),st=L.reduce((a,l)=>a+starsOf(l.id),0),cl=L.filter(l=>starsOf(l.id)>0).length;$('#score').replaceChildren(h('span',{},h('span',{class:'star'},'★ '),`${st}/${L.length*3}`),h('span',{},`${cl}/${L.length} cleared`));}
 /* ---- navigation with browser history: the system Back button goes level → island → map instead of leaving
@@ -2978,7 +3018,7 @@ window.addEventListener('popstate',e=>{
   if(pend){const q=pend,st=hstate();pend=null;clearTimeout(pendT);hset(false,q,st?Math.min(st.n,depth(q)):0);show(q);return;}
   const s=e.state;
   if(s&&s.pa===1){show(okView(s.view));return;}
-  const v=viewOfHash();hset(false,v,0);show(v); /* a hash typed by hand */
+  takeIncoming();const v=viewOfHash();hset(false,v,0);show(v); /* a hash typed by hand, or a progress link */
 });
 try{history.scrollRestoration='manual';}catch(e){}
 function render(){renderScore();if(view.v==='map')renderMap();else if(view.v==='island')renderIsland(WORLDS.find(w=>w.id===view.w));else renderLevel(WORLDS.find(w=>w.id===view.w),view.l);}
@@ -3007,11 +3047,32 @@ function renderMap(){
   const ask=()=>resetBox.replaceChildren(h('span',{},'Erase all stars?'),h('button',{class:'btn',onclick:()=>{prog={};save();render();}},'Yes, erase'),h('button',{class:'btn',onclick:idle},'Cancel'));
   const idle=()=>resetBox.replaceChildren(h('button',{class:'btn',onclick:ask},'Reset progress'));
   idle();
-  app.replaceChildren(h('div',{class:'sea'},svg),
+  /* carry progress to another device */
+  const carry=h('div',{class:'carry'}),carryOut=h('div',{class:'carry-out','aria-live':'polite'});
+  const copyLink=()=>{if(!progCode()){carryOut.replaceChildren(h('span',{},'Nothing to carry yet: clear a level first.'));return;}
+    const link=progLink(),box=h('input',{type:'text',class:'carry-in',readonly:true,value:link,'aria-label':'link with progress',onfocus:e=>e.target.select()}),msg=h('span',{},'Copy this link and open it on the other device: the stars will be added there.');
+    carryOut.replaceChildren(box,msg);
+    try{navigator.clipboard.writeText(link).then(()=>{msg.textContent=tr('Link copied. Open it on the other device: the stars will be added there.');},()=>{});}catch(e){}};
+  const enterCode=()=>{const inp=h('input',{type:'text',class:'carry-in',placeholder:'Paste the link or the code',autocomplete:'off',autocapitalize:'off',spellcheck:'false','aria-label':'Paste the link or the code'}),msg=h('span',{});
+    const add=()=>{const got=progParse(inp.value);if(!got||!Object.keys(got).length){msg.textContent=tr('This is not a progress code.');return;}
+      const n=progMerge(got);if(n){render();$('.carry-out').replaceChildren(h('span',{},`Done. Levels with new stars: ${n}.`));}else msg.textContent=tr('Nothing new: this device already has everything from that code.');};
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')add();});
+    carryOut.replaceChildren(inp,h('button',{class:'btn',type:'button',onclick:add},'Add'),msg);inp.focus();};
+  carry.append(h('span',{},'Progress on another device:'),h('button',{class:'btn',type:'button',onclick:copyLink},'Copy a link with my progress'),h('button',{class:'btn',type:'button',onclick:enterCode},'Enter a code'));
+  /* a progress link was opened: ask before adding anything */
+  let offer=null;
+  if(incoming){const got=incoming,ids=Object.keys(got),stars=ids.reduce((a,id)=>a+got[id],0);
+    const close=()=>{incoming=null;offer.remove();};
+    offer=h('div',{class:'card offer',role:'region','aria-label':'progress from a link'},h('p',{style:'margin:0;font-family:var(--f-disp);font-weight:700;font-size:17px'},`This link carries progress: levels cleared — ${ids.length}, stars — ${stars}.`),
+      h('p',{style:'margin:6px 0 0'},'Add it to this device? For every level the better result is kept.'),
+      h('div',{class:'row',style:'margin-top:12px'},h('button',{class:'btn primary',type:'button',onclick:()=>{const n=progMerge(got);incoming=null;render();
+          $('.carry-out').replaceChildren(h('span',{},n?`Done. Levels with new stars: ${n}.`:'Nothing new: this device already has everything from that code.'));}},'Add progress'),
+        h('button',{class:'btn',type:'button',onclick:close},'No, thanks')));}
+  app.replaceChildren(offer,h('div',{class:'sea'},svg),
     [1,2].map(z=>[h('p',{class:'h3 legend-h'},z===1?'Midterm 1 · chapters 1–4 · Ex1 WOP, Ex2 valid/not, Ex3 counting':'Midterm 2 · chapters 5–8 · Ex1 induction, Ex2 ritual, Ex3 halting'),
       h('div',{class:'legend-list',style:'margin-top:8px'},WORLDS.filter(W=>W.zone===z).map(W=>h('button',{class:'btn',style:`--ic:var(--i-${W.c})`,onclick:()=>go({v:'island',w:W.id})},h('span',{class:'t'},W.name),h('span',{class:'ru'},W.ch))))]).flat(),
     h('p',{class:'tip'},'All islands are open; the levels inside an island go in order. Top row: chapters 1–4 (midterm 1 and the final), bottom row: chapters 5–8. Hearts: 3 per level; stars: 3 for no mistakes. 💡 Hints are free everywhere except in boss fights, which work like the real midterm. Side quests from the book are optional and always open. Skeleton Dock and Skeleton Shipyard are write mode: fill the gaps of exam skeletons, no hearts. Progress is stored on this device.'),
-    resetBox);
+    resetBox,carry,carryOut);
 }
 let _rz=null,_wasTall=window.innerWidth<640;
 window.addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(()=>{const t=window.innerWidth<640;if(t!==_wasTall){_wasTall=t;if(view.v==='map')renderMap();}},150);});
@@ -3080,6 +3141,7 @@ function renderLevel(W,lid){
   C[L.type](play,L,api,win);
 }
 function start(data){
+  takeIncoming();
   const st=hstate();
   if(data&&data.view)view=okView(data.view);
   else if(st)view=okView(st.view); /* reload: same place, the entries below are still ours */
@@ -3092,16 +3154,25 @@ window.__quest={WORLDS,C,DATA,ritualRun,rogues,go,MISS,RU,HK};
 </script>
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
-  /* When a new worker takes control (first visit or an update), its cache has no fonts yet: they were loaded
-     before it could see them. Ask for the same font files once more, so the game keeps its fonts offline. */
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
+  const sw = navigator.serviceWorker, had = !!sw.controller;
+  window.addEventListener('load', () => sw.register('./sw.js').catch(() => {}));
+  sw.addEventListener('controllerchange', () => {
+    /* A new worker took control (first visit or an update). Its cache has no fonts yet: they were loaded before it
+       could see them. Ask for the same font files once more, so the game keeps its fonts offline. */
     try {
       performance.getEntriesByType('resource').map(e => e.name)
         .filter(u => /^https:\/\/fonts\.(googleapis|gstatic)\.com\//.test(u))
         .forEach(u => fetch(u).catch(() => {}));
     } catch (e) {}
+    if (had) showUpdate(); /* it replaced an older worker: this page is the old version */
   }, { once: true });
+  /* The page itself comes from the cache. Ask the worker to compare it with the server: on load, and again when the
+     game is opened after an hour or more. If the server has a newer page, the worker stores it and answers. */
+  sw.addEventListener('message', e => { if (e.data && e.data.type === 'pa-update') showUpdate(); });
+  let asked = 0;
+  const ask = () => { const c = sw.controller; if (c && Date.now() - asked > 36e5) { asked = Date.now(); c.postMessage({ type: 'pa-check' }); } };
+  sw.ready.then(ask).catch(() => {});
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') ask(); });
 }
 </script>
 </body>

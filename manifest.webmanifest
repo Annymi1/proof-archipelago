@@ -1,7 +1,7 @@
 {
   "name": "Proof Archipelago",
   "short_name": "Proofs",
-  "description": "Midterm 2 quest for ITB8832 Mathematics for Computer Science: induction, state machines, stable matching, recursive data, infinity and halting.",
+  "description": "Course quest for ITB8832 Mathematics for Computer Science (MCS book, chapters 1–8): proofs, WOP, logic, sets, induction, state machines, stable matching, recursive data, infinity and halting. English and Russian.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",
@@ -10,8 +10,21 @@
   "background_color": "#0d1826",
   "theme_color": "#0d1826",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }

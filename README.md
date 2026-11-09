@@ -1,30 +1,26 @@
-# Proof Archipelago — игра на телефон
+# Proof Archipelago
 
-Квест по ITB8832, главы 1–8: 11 островов, 70 уровней. На каждом острове глав — Маяк (наглядная теория с песочницами), в каждом задании — Лаборатория; два острова режима письма (Skeleton Dock — мидтерм 1, Skeleton Shipyard — мидтерм 2). Работает без интернета, ставится на экран телефона как приложение. Прогресс хранится на самом телефоне.
+A browser game for **ITB8832 Mathematics for Computer Science** (TalTech), built on the course book — Lehman, Leighton, Meyer, *Mathematics for Computer Science* (2018), chapters 1–8.
 
-## Что в папке
-- `index.html` — сама игра
-- `manifest.webmanifest` — имя, иконка, режим «как приложение»
-- `sw.js` — офлайн-кэш (после первого открытия игра работает без сети)
-- `` — иконки
+**Play:** https://annymi1.github.io/proof-archipelago/
 
-## Как выложить (один раз, ~5 минут) — GitHub Pages
-1. github.com → **New repository** → имя, например `proof-archipelago` → **Public** → Create.
-2. На странице репозитория: **Add file → Upload files** → перетащи ВСЁ содержимое этой папки (все файлы) → **Commit changes**.
-3. **Settings → Pages** → Source: *Deploy from a branch* → Branch: `main`, папка `/ (root)` → Save.
-4. Через 1–2 минуты появится адрес вида `https://<твой-логин>.github.io/proof-archipelago/`.
+- 11 islands: proofs, the Well Ordering Principle, logic, sets and counting (midterm 1); induction, state machines, stable matching, recursive data, infinity and halting (midterm 2).
+- Every chapter island opens with a **lighthouse**: short theory cards with references to the book, each with a toy you can poke.
+- Every level has a **lab** with toys for that topic, and a free **💡 hint**. Boss levels have neither — they work like the real midterm.
+- **Side quests from the book**: Bill’s courtyard, the unstacking game, fast exponentiation, the impossible Fifteen, Russell’s paradox, and bogus proofs to debug.
+- Two **write-mode** islands: fill the gaps of exam proof skeletons.
+- **EN / RU** switch in the top right corner.
+- Works offline after the first visit; progress stays on your device.
 
-## Как поставить на телефон
-- **iPhone (Safari):** открой адрес → кнопка «Поделиться» → **На экран «Домой»**.
-- **Android (Chrome):** открой адрес → меню ⋮ → **Установить приложение** (или «Добавить на главный экран»).
-
-Иконка с островом появится на экране. Запускается на весь экран, без браузера.
-
-## Если что-то обновишь
-Поменяй файл и в `sw.js` увеличь `VERSION` (например `pa-v5`), иначе телефон будет показывать старую копию из кэша.
-
-## Проверить на Mac без выкладки
-В этой папке: `python3 -m http.server 8000` → открой `http://localhost:8000`. (С телефона по Wi-Fi тоже откроется, но офлайн-режим работает только по https — поэтому для телефона нужен GitHub Pages.)
+**Install on a phone:** open the link → iPhone (Safari): *Share → Add to Home Screen*; Android (Chrome): *⋮ → Install app*.
 
 ---
-**EN, short:** upload the folder contents to any static HTTPS host (GitHub Pages: Settings → Pages → deploy from `main` / root), open the URL on the phone and choose *Add to Home Screen* / *Install app*. Works offline after the first visit. Bump `VERSION` in `sw.js` after any change.
+
+# Proof Archipelago — по-русски
+
+Игра по курсу ITB8832 по книге MCS (2018), главы 1–8. 11 островов, на каждом острове главы — маяк с теорией и игрушками, в каждом уровне — лаборатория и бесплатная 💡 подсказка (кроме боссов: они как настоящий мидтерм), побочные квесты из книги, два острова режима письма. Переключатель EN / RU — справа вверху. Работает офлайн, прогресс хранится на твоём устройстве.
+
+**Играть:** https://annymi1.github.io/proof-archipelago/ · на телефоне: «Поделиться → На экран „Домой“» (iPhone) или «⋮ → Установить приложение» (Android).
+
+---
+<sub>Hosting your own copy: upload `index.html`, `manifest.webmanifest`, `sw.js` and the icons to any static HTTPS host (GitHub Pages: Settings → Pages → deploy from `main` / root). After changing a file, bump `VERSION` in `sw.js`.</sub>

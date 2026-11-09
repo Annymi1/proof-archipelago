@@ -11,6 +11,7 @@ A browser game for **ITB8832 Mathematics for Computer Science** (TalTech), built
 - Two **write-mode** islands: fill the gaps of exam proof skeletons.
 - **EN / RU** switch in the top right corner.
 - Works offline after the first visit; progress stays on your device.
+- The browser **Back** button goes level → island → map, a reload keeps your place, and every island and level has its own link (for example `…/#prf/prf1`).
 
 **Install on a phone:** open the link → iPhone (Safari): *Share → Add to Home Screen*; Android (Chrome): *⋮ → Install app*.
 
@@ -18,7 +19,7 @@ A browser game for **ITB8832 Mathematics for Computer Science** (TalTech), built
 
 # Proof Archipelago — по-русски
 
-Игра по курсу ITB8832 по книге MCS (2018), главы 1–8. 11 островов, на каждом острове главы — маяк с теорией и игрушками, в каждом уровне — лаборатория и бесплатная 💡 подсказка (кроме боссов: они как настоящий мидтерм), побочные квесты из книги, два острова режима письма. Переключатель EN / RU — справа вверху. Работает офлайн, прогресс хранится на твоём устройстве.
+Игра по курсу ITB8832 по книге MCS (2018), главы 1–8. 11 островов, на каждом острове главы — маяк с теорией и игрушками, в каждом уровне — лаборатория и бесплатная 💡 подсказка (кроме боссов: они как настоящий мидтерм), побочные квесты из книги, два острова режима письма. Переключатель EN / RU — справа вверху. Работает офлайн, прогресс хранится на твоём устройстве. Кнопка «Назад» в браузере ведёт уровень → остров → карта, а у каждого острова и уровня есть своя ссылка.
 
 **Играть:** https://annymi1.github.io/proof-archipelago/ · на телефоне: «Поделиться → На экран „Домой“» (iPhone) или «⋮ → Установить приложение» (Android).
 

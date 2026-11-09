@@ -1,5 +1,5 @@
 // Proof Archipelago — offline cache. Bump VERSION after changing any file.
-const VERSION = 'pa-v7';
+const VERSION = 'pa-v8';
 const CORE = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './maskable-512.png',
   './apple-touch-icon.png', './favicon-64.png'];
@@ -13,6 +13,8 @@ self.addEventListener('activate', e => {
     .then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
+// only good answers go into the cache: a 404 or a 500 must not be served forever
+const keep = r => r && r.ok;
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
@@ -21,14 +23,15 @@ self.addEventListener('fetch', e => {
   if (url.host === 'fonts.googleapis.com' || url.host === 'fonts.gstatic.com') {
     e.respondWith(caches.open(VERSION).then(async c => {
       const hit = await c.match(req);
-      const net = fetch(req).then(r => { c.put(req, r.clone()); return r; }).catch(() => hit);
+      const net = fetch(req).then(r => { if (keep(r)) c.put(req, r.clone()); return r; }).catch(() => hit || Response.error());
       return hit || net;
     }));
     return;
   }
   if (url.origin !== location.origin) return;
-  // the game itself: cache first, fall back to the network
+  // the game itself: cache first, fall back to the network; offline, a page request gets the game
   e.respondWith(caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).then(r => {
-    const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return r;
-  }).catch(() => caches.match('./index.html'))));
+    if (keep(r)) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
+    return r;
+  }).catch(async () => (req.mode === 'navigate' && await caches.match('./index.html')) || Response.error())));
 });

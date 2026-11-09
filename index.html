@@ -16,7 +16,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" crossorigin href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" crossorigin href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&family=Onest:wght@500;700;800&family=Golos+Text:wght@400;700&display=swap">
 <style>
 /* Layout: a sea chart. Map view = five chapter islands on one voyage route; island view = a trail of level nodes;
    level view = a play board with hearts, an instruction card and live feedback. Island colours follow the chapter tabs. */
@@ -43,6 +43,12 @@
     --sq-a:#25304d; --sq-b:#3a321e; --water:#3f80cc; --glass:#1f2633;
     color-scheme:dark;
   }
+}
+/* Russian: Bricolage Grotesque and Atkinson Hyperlegible have no Cyrillic letters, so a Russian page would mix them with
+   whatever the device has. In Russian the whole text uses a pair that covers both alphabets (loaded only when needed). */
+:root:lang(ru){
+  --f-disp:"Onest","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 :root[data-theme="dark"]{
   --sea:#0d1826; --sea-line:#16263b; --paper:#16212f; --ink:#e7edf5; --pencil:#9cadc4; --rule:#27364c;

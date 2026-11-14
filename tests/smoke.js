@@ -115,7 +115,7 @@ async function main() {
       check('no text in a picture is cut off at the sides', r.cut.length === 0, r.cut.slice(0, 8));
       if (lang === 'ru') {
         const miss = await page.evaluate(() => {
-          const out = [], seen = new Set(), SKIP = new Set(['id', 'type', 'c', 'ru', 'data', 'keys', 'lab', 'toys', 'toy', 'pic', 'fig', 'mode', 'book', 'dag', 'suitors', 'opt']);
+          const out = [], seen = new Set(), SKIP = new Set(['id', 'type', 'c', 'ru', 'data', 'keys', 'lab', 'toys', 'toy', 'pic', 'fig', 'mode', 'book', 'dag', 'suitors', 'opt', 'size', 'cap']);
           const walk = (v, at, cloze) => {
             if (typeof v === 'string') { if (cloze || seen.has(v) || !/[A-Za-z]{4}/.test(v)) return; seen.add(v); MISS.delete(v); tr(v); if (MISS.has(v)) out.push(at + ': ' + v.slice(0, 120)); return; }
             if (!v || typeof v !== 'object' || v.nodeType) return;
@@ -161,8 +161,11 @@ async function main() {
               else if (P.type === 'matchpick') { const D = DATA[P.data], res = P.suitors === 'women' ? ritualRun(D.pw, D.pm).wife : ritualRun(D.pm, D.pw).wife; res.forEach((j, i) => { document.getElementById('mp-' + i).value = String(j); }); primary(/Check/); }
               else if (P.type === 'debruijn') { if (c.querySelector('.why')) primary(); else { const have = c.querySelectorAll('.bit').length; [...c.querySelectorAll('.row .btn')].find(x => x.textContent === '0001011100'[have]).click(); } }
               else if (P.type === 'topo') { if (c.querySelector('.why')) primary(); else { const G = DAGS[P.dag], ids = Object.keys(G.v), nodes = [...c.querySelectorAll('.tk')], el = Object.fromEntries(ids.map((v, i) => [v, nodes[i]]));
-                const done = v => el[v].classList.contains('done'), ready = ids.filter(v => !done(v) && dagPre(G, v).every(done));
-                if (P.mode === 'par') { ready.forEach(v => { if (!el[v].classList.contains('sel')) click(el[v]); }); primary(/Start/); } else click(el[ready[0]]); } }
+                const done = v => el[v].classList.contains('done'), ready = ids.filter(v => !done(v) && dagPre(G, v).every(done)), tap = S => S.forEach(v => click(el[v]));
+                if (P.mode === 'chain') { tap(dagLongest(G)); primary(/Check/); }
+                else if (P.mode === 'anti') { tap(dagAntichain(G, P.size)); primary(/Check/); }
+                else if (P.mode === 'par') { tap(P.cap ? dagPlan(G, P.cap).pick(ids.filter(done)) : ready); primary(/Start/); }
+                else click(el[ready[0]]); } }
             } catch (e) { why = String(e.message || e); break; }
             await sleep(2);
           }

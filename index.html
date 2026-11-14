@@ -239,7 +239,8 @@ table.t th{font-size:12px;color:var(--pencil);font-weight:600}
 .tk.hot rect,.tk.hot circle{stroke:var(--gold);stroke-width:3.5}
 .tk:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .tk-n{font-family:var(--f-mono);font-size:10.5px;fill:var(--pencil)}
-.tk-b{font-family:var(--f-mono);font-size:11.5px;font-weight:700;fill:var(--good)}
+.tk-b{font-family:var(--f-mono);font-size:11.5px;font-weight:700;fill:var(--paper)}
+.tk .tk-bc,.tk.done .tk-bc,.tk.sel .tk-bc,.tk.hot .tk-bc{fill:var(--good);stroke:var(--paper);stroke-width:1.5}
 .bits{display:flex;flex-wrap:wrap;gap:4px;min-height:38px;margin:10px 0}
 .bit{width:28px;height:34px;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;border:1.5px solid var(--rule);border-radius:7px;background:var(--paper)}
 .bit.last{border-color:var(--accent);background:var(--accent-soft)}
@@ -3011,11 +3012,15 @@ const DAGS={
   div12:{w:300,h:300,bw:32,bh:32,round:true,alt:T('the numbers 1 to 12; an arrow a → b when b / a is prime','числа от 1 до 12; стрелка a → b, когда b / a простое'),
     v:Object.fromEntries([...Array(12).keys()].map(i=>{const k=i+1,a=(k%12)*Math.PI/6-Math.PI/2;return [k,[Math.round(150+118*Math.cos(a)),Math.round(150+118*Math.sin(a))]];})),
     e:[[1,2],[1,3],[1,5],[1,7],[1,11],[2,4],[2,6],[2,10],[3,6],[3,9],[4,8],[4,12],[5,10],[6,12]].map(e=>e.map(String))},
+  refit:{w:340,h:270,bw:32,bh:32,round:true,alt:T('thirteen tasks, A to M, in four rows','тринадцать дел, от A до M, в четыре ряда'),
+    v:{A:[50,32],B:[130,32],C:[210,32],D:[290,32],E:[50,100],F:[130,100],G:[210,100],H:[290,100],I:[50,168],J:[130,168],K:[210,168],L:[290,168],M:[170,236]},
+    e:[['A','F'],['B','F'],['C','H'],['D','H'],['E','I'],['F','I'],['F','J'],['G','K'],['H','K'],['H','L'],['J','M'],['K','M']]},
 };
 const dagPre=(G,v)=>G.e.filter(e=>e[1]===v).map(e=>e[0]);
 const dagDepth=(G,v)=>Math.max(0,...dagPre(G,v).map(u=>1+dagDepth(G,u)));
 const dagName=(G,v)=>G.v[v][2]?`${v} (${tr(G.v[v][2])})`:String(v);
-/* one drawing routine for the level and for the toy: cls(v) and badge(v) describe the state of a task, on(v) makes it a button */
+/* one drawing routine for the level and for the toy: cls(v) describes the state of a task, badge(v) is a short number shown
+   on the corner of its node, note(v) says in words what that number means (for screen readers), on(v) makes the task a button */
 function dagSvg(G,o={}){
   const s=sv('svg',{viewBox:`0 0 ${G.w} ${G.h}`,class:'toposvg',role:o.on?'group':'img','aria-label':G.alt}),hw=G.bw/2,hh=G.bh/2;
   s.append(sv('defs',{},sv('marker',{id:'mkd',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:7,markerHeight:7,orient:'auto'},sv('path',{d:'M0,0 L10,5 L0,10 z',class:'mk'}))));
@@ -3023,23 +3028,44 @@ function dagSvg(G,o={}){
   G.e.forEach(([u,v])=>{const [x1,y1]=G.v[u],[x2,y2]=G.v[v],[ax,ay]=edge(x1,y1,x2-x1,y2-y1),[bx,by]=edge(x2,y2,x1-x2,y1-y2),d=Math.hypot(bx-ax,by-ay);
     s.append(sv('line',{x1:ax,y1:ay,x2:bx-(bx-ax)/d*3,y2:by-(by-ay)/d*3,class:'arr'+(o.dim&&o.dim(u,v)?' dim':''),'marker-end':'url(#mkd)'}));});
   Object.keys(G.v).forEach(v=>{const [x,y,nm]=G.v[v],b=o.badge?o.badge(v):'';
-    const g=sv('g',{class:'tk '+(o.cls?o.cls(v):''),tabindex:o.on?0:null,role:o.on?'button':null,'aria-label':o.on?dagName(G,v)+(b?', '+b:''):null},
+    const g=sv('g',{class:'tk '+(o.cls?o.cls(v):''),tabindex:o.on?0:null,role:o.on?'button':null,'aria-label':o.on?dagName(G,v)+(b&&o.note?', '+o.note(v):''):null},
       G.round?sv('circle',{cx:x,cy:y,r:hw}):sv('rect',{x:x-hw,y:y-hh,width:G.bw,height:G.bh,rx:8}),
       sv('text',{x,y:nm?y-2:y+5,'text-anchor':'middle',class:'svg-b'},v),nm?sv('text',{x,y:y+12,'text-anchor':'middle',class:'tk-n'},nm):null,
-      b?sv('text',{x:x+hw-2,y:y-hh-3,'text-anchor':'end',class:'tk-b'},b):null);
+      b?[sv('circle',{cx:x+hw-3,cy:y-hh+3,r:9,class:'tk-bc'}),sv('text',{x:x+hw-3,y:y-hh+7,'text-anchor':'middle',class:'tk-b'},b)]:null);
     if(o.on){const f=()=>o.on(v);g.addEventListener('click',f);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}});}
     s.append(g);});
   return s;}
 
-/* ---- level: order the tasks of a DAG. mode 'sort': one task at a time (a topological sort);
-        mode 'par': every hour start ALL tasks that can start (a parallel schedule of minimum time) ---- */
+/* ---- helpers for task diagrams: who is comparable with whom, a longest chain, an antichain, the best plan with few hands ---- */
+const dagReach=(G,u,v)=>u===v||G.e.some(([a,b])=>a===u&&dagReach(G,b,v));
+const dagComparable=(G,u,v)=>dagReach(G,u,v)||dagReach(G,v,u);
+function dagLongest(G){const ids=Object.keys(G.v),top=Math.max(...ids.map(v=>dagDepth(G,v))),ch=[ids.find(v=>dagDepth(G,v)===top)];
+  while(dagDepth(G,ch[0])>0)ch.unshift(dagPre(G,ch[0]).find(u=>dagDepth(G,u)===dagDepth(G,ch[0])-1));return ch;}
+function dagAntichain(G,k){const ids=Object.keys(G.v),go=(i,S)=>S.length===k?S:i>=ids.length?null:(S.every(u=>!dagComparable(G,u,ids[i]))&&go(i+1,[...S,ids[i]]))||go(i+1,S);return go(0,[]);}
+/* dagPlan(G, cap): need(done) = the fewest hours still needed when the tasks in the set `done` are finished and at most
+   `cap` tasks run per hour; pick(done) = a best set of tasks for the next hour. Filling an hour never hurts, so only full hours are tried. */
+function dagPlan(G,cap){
+  const ids=Object.keys(G.v),bit=Object.fromEntries(ids.map((v,i)=>[v,1<<i])),pre=Object.fromEntries(ids.map(v=>[v,dagPre(G,v).reduce((m,u)=>m|bit[u],0)])),full=(1<<ids.length)-1,memo=new Map();
+  const mask=S=>[...S].reduce((m,v)=>m|bit[v],0),ready=m=>ids.filter(v=>!(m&bit[v])&&(pre[v]&m)===pre[v]);
+  const hours=m=>{const R=ready(m),k=Math.min(cap,R.length),out=[],go=(i,S)=>{if(S.length===k){out.push(S);return;}for(let j=i;j<R.length;j++)go(j+1,[...S,R[j]]);};go(0,[]);return out;};
+  const best=m=>{if(m===full)return [0,[]];if(memo.has(m))return memo.get(m);let r=[Infinity,[]];for(const S of hours(m)){const x=1+best(m|mask(S))[0];if(x<r[0])r=[x,S];}memo.set(m,r);return r;};
+  return {need:done=>best(mask(done))[0],pick:done=>best(mask(done))[1]};}
+
+/* ---- level: work on a task diagram (a DAG). Modes:
+        'sort'  — do the tasks one at a time (a topological sort);
+        'par'   — every hour start all tasks that can start (minimum parallel time); with L.cap, at most that many per hour,
+                  and the plan must finish in the fewest hours possible;
+        'chain' — tap a chain of maximum size;   'anti' — tap an antichain of L.size tasks ---- */
 C.topo=function(box,L,api,done){
-  const G=DAGS[L.dag],ids=Object.keys(G.v),par=L.mode==='par',when={},order=[];let t=0,sel=new Set(),hint=false,fin=false;
+  const G=DAGS[L.dag],ids=Object.keys(G.v),mode=L.mode,par=mode==='par',pickSet=mode==='chain'||mode==='anti',cap=par&&L.cap?L.cap:0,when={},order=[];
+  let t=0,sel=new Set(),hint=false,fin=false;
+  const top=Math.max(...ids.map(v=>dagDepth(G,v)))+1,plan=cap?dagPlan(G,cap):null,goal=cap?plan.need([]):0;
   const ready=v=>!(v in when)&&dagPre(G,v).every(u=>u in when);
   const blocked=v=>dagPre(G,v).filter(u=>!(u in when)).map(u=>dagName(G,u)).join(', ');
+  const names=S=>[...S].map(v=>dagName(G,v)).join(', ');
   function tap(v){
     if(fin||v in when)return;
-    if(par){sel.has(v)?sel.delete(v):sel.add(v);render();return;}
+    if(par||pickSet){sel.has(v)?sel.delete(v):sel.add(v);render();return;}
     if(!ready(v)){api.mistake(tx(`${dagName(G,v)} cannot start yet: it needs ${blocked(v)} first.`,`${dagName(G,v)} пока нельзя начинать: сначала нужно ${blocked(v)}.`));return;}
     when[v]=t++;order.push(v);hint=false;api.clear();if(order.length===ids.length)fin=true;render();
   }
@@ -3047,27 +3073,59 @@ C.topo=function(box,L,api,done){
     if(!sel.size)return api.info(T('Tap the tasks that start this hour first.','Сначала отметь дела, которые начинаются в этот час.'));
     const bad=[...sel].filter(v=>!ready(v));
     if(bad.length){bad.forEach(v=>sel.delete(v));api.mistake(tx(`${dagName(G,bad[0])} cannot start yet: it needs ${blocked(bad[0])} first.`,`${dagName(G,bad[0])} пока нельзя начинать: сначала нужно ${blocked(bad[0])}.`));render();return;}
-    const wait=ids.filter(v=>ready(v)&&!sel.has(v));
-    if(wait.length)return api.info(tx(`There are enough hands, so nothing should wait: ${wait.length} more task(s) can start this hour.`,`Рук хватает, так что ничто не должно ждать: в этот час можно начать ещё ${wait.length}.`));
+    if(cap){
+      if(sel.size>cap)return api.info(tx(`There are only ${cap} pairs of hands: at most ${cap} tasks per hour.`,`Пар рук всего ${cap}: не больше ${cap} дел в час.`));
+      const rest=plan.need([...order,...sel]);
+      if(t+1+rest>goal)return api.mistake(tx(`After this hour the rest still needs ${rest} hours — ${t+1+rest} in all, but ${goal} are enough. Give the hands to tasks that others are waiting for, and do not leave a pair of hands idle.`,
+        `После такого часа на остальное нужно ещё ${rest} ч — всего ${t+1+rest}, а хватает ${goal}. Отдай руки делам, которых ждут другие, и не оставляй пару рук без дела.`));
+    }else{
+      const wait=ids.filter(v=>ready(v)&&!sel.has(v));
+      if(wait.length)return api.info(tx(`There are enough hands, so nothing should wait: ${wait.length} more task(s) can start this hour.`,`Рук хватает, так что ничто не должно ждать: в этот час можно начать ещё ${wait.length}.`));
+    }
     sel.forEach(v=>{when[v]=t;order.push(v);});t++;sel=new Set();hint=false;api.clear();if(order.length===ids.length)fin=true;render();
   }
+  function checkSet(){
+    const S=[...sel],clash=(()=>{for(let i=0;i<S.length;i++)for(let j=i+1;j<S.length;j++)if(dagComparable(G,S[i],S[j])!==(mode==='chain'))return dagReach(G,S[i],S[j])||mode==='chain'?[S[i],S[j]]:[S[j],S[i]];return null;})();
+    if(mode==='chain'){
+      if(S.length<2)return api.info(T('Tap the tasks of the chain first.','Сначала отметь дела цепи.'));
+      if(clash)return api.mistake(tx(`${dagName(G,clash[0])} and ${dagName(G,clash[1])} are not comparable: neither is reachable from the other. In a chain every two tasks are comparable.`,`${dagName(G,clash[0])} и ${dagName(G,clash[1])} не сравнимы: ни одно не достижимо из другого. В цепи любые два дела сравнимы.`));
+      if(S.length<top)return api.mistake(tx(`That is a chain, but only of ${S.length} tasks. There is a chain of ${top}.`,`Это цепь, но всего из ${S.length} дел. Есть цепь из ${top}.`));
+    }else{
+      if(S.length!==L.size)return api.info(tx(`Choose exactly ${L.size} tasks.`,`Число выбранных дел должно быть ровно ${L.size}.`));
+      if(clash)return api.mistake(tx(`${dagName(G,clash[1])} is reachable from ${dagName(G,clash[0])}, so these two are comparable. An antichain has no such pair.`,`${dagName(G,clash[1])} достижимо из ${dagName(G,clash[0])}, значит эти два дела сравнимы. В антицепи таких пар нет.`));
+    }
+    fin=true;hint=false;api.clear();render();
+  }
   function render(){
-    const svg=dagSvg(G,{on:tap,cls:v=>(v in when?'done':sel.has(v)?'sel':hint&&ready(v)?'hot':''),badge:v=>v in when?(par?tx('hour ','час ')+(when[v]+1):'#'+(when[v]+1)):'',dim:(u,v)=>u in when&&v in when});
-    const sizes=[...Array(t).keys()].map(k=>ids.filter(v=>when[v]===k).length);
+    const hot=hint&&!fin?new Set(mode==='chain'?ids.filter(v=>dagDepth(G,v)===top-1):mode==='anti'?ids.filter(v=>!dagPre(G,v).length):cap?plan.pick(order):ids.filter(ready)):new Set();
+    const svg=dagSvg(G,{on:tap,cls:v=>(v in when?'done':sel.has(v)?(fin?'done':'sel'):hot.has(v)?'hot':''),badge:v=>v in when?String(when[v]+1):'',note:v=>(par?tx('hour ','час '):tx('number ','номер '))+(when[v]+1),dim:(u,v)=>u in when&&v in when});
+    const sizes=[...Array(t).keys()].map(k=>ids.filter(v=>when[v]===k).length),low=cap?Math.max(top,Math.ceil(ids.length/cap)):0;
     box.replaceChildren(
-      h('p',{class:'q'},par?T('Plan the work hour by hour. Every task takes one hour, and there are enough hands for any number of tasks at once.','Распиши работу по часам. Каждое дело занимает час, а рук хватает на любое число дел одновременно.')
+      h('p',{class:'q'},mode==='chain'?T('Tap a chain of maximum size: as many tasks as possible, every two of them comparable. Then press Check.','Отметь цепь максимального размера: как можно больше дел, любые два из которых сравнимы. Потом нажми «Проверить».')
+        :mode==='anti'?tx(`Tap an antichain of ${L.size} tasks: no two of them comparable. Then press Check.`,`Отметь антицепь из ${L.size} дел: никакие два не сравнимы. Потом нажми «Проверить».`)
+        :cap?tx(`Only ${cap} pairs of hands now: at most ${cap} tasks per hour, each taking one hour. Finish in as few hours as possible.`,`Теперь пар рук всего ${cap}: не больше ${cap} дел в час, каждое занимает час. Закончи за наименьшее число часов.`)
+        :par?T('Plan the work hour by hour. Every task takes one hour, and there are enough hands for any number of tasks at once.','Распиши работу по часам. Каждое дело занимает час, а рук хватает на любое число дел одновременно.')
         :T('Do the tasks one at a time. A task can start only when every task with an arrow into it is finished.','Делай дела по одному. Дело можно начать, только когда закончены все дела, из которых в него ведёт стрелка.')),
       h('div',{class:'scroll'},svg),
-      h('p',{class:'meta'},fin?'':par?tx(`Hour ${t+1}: tap every task that can start now, then press Start.`,`Час ${t+1}: отметь все дела, которые можно начать сейчас, и нажми «Начать».`):tx(`Your list: ${order.join(', ')||'—'}`,`Твой список: ${order.join(', ')||'—'}`)),
-      par&&!fin?h('div',{class:'row'},h('button',{class:'btn primary',type:'button',onclick:start},T('Start these tasks','Начать эти дела'))):null,
-      fin?h('div',{class:'why'},h('b',{},T('Done. ','Готово. ')),par
-        ?tx(`${t} hours, and no schedule is faster: the tasks of a longest chain must run one after another, and that chain has ${t} tasks. Hour k runs exactly the tasks of depth k − 1; no two of them are comparable (an antichain). The busiest hour needs ${Math.max(...sizes)} pairs of hands.`,
-            `${t} ч, и быстрее нельзя: дела самой длинной цепи идут строго друг за другом, а в ней ${t} дел. В час k идут ровно дела глубины k − 1; никакие два из них не сравнимы (антицепь). В самый занятой час нужно ${Math.max(...sizes)} пар рук.`)
+      h('p',{class:'meta'},fin?(par?T('The number on a task is its hour.','Число на деле — его час.'):pickSet?'':T('The number on a task is its place in your list.','Число на деле — его место в твоём списке.')):pickSet?tx(`Chosen: ${names(sel)||'—'}`,`Выбрано: ${names(sel)||'—'}`):par?tx(`Hour ${t+1}: tap ${cap?'the tasks for this hour':'every task that can start now'}, then press Start.`,`Час ${t+1}: отметь ${cap?'дела на этот час':'все дела, которые можно начать сейчас,'} и нажми «Начать».`):tx(`Your list: ${order.join(', ')||'—'}`,`Твой список: ${order.join(', ')||'—'}`)),
+      !fin&&par?h('div',{class:'row'},h('button',{class:'btn primary',type:'button',onclick:start},T('Start these tasks','Начать эти дела'))):null,
+      !fin&&pickSet?h('div',{class:'row'},h('button',{class:'btn primary',type:'button',onclick:checkSet},'Check'),h('button',{class:'btn',type:'button',disabled:!sel.size,onclick:()=>{sel=new Set();api.clear();render();}},T('Clear','Сбросить'))):null,
+      fin?h('div',{class:'why'},h('b',{},T('Done. ','Готово. ')),
+        mode==='chain'?tx(`${names(sel)} is a chain of ${top} tasks, and no chain is longer. These tasks must run one after another, so the work takes at least ${top} hours, however many hands there are.`,`${names(sel)} — цепь из ${top} дел, и длиннее цепи нет. Эти дела идут строго друг за другом, поэтому работа займёт не меньше ${top} ч, сколько бы ни было рук.`)
+        :mode==='anti'?tx(`No two of ${names(sel)} are comparable, so with enough hands all ${L.size} could run in the same hour.`,`Никакие два из ${names(sel)} не сравнимы, так что при достаточном числе рук все ${L.size} можно делать в один час.`)
+        :cap?tx(`${t} hours with ${cap} pairs of hands, and no plan is shorter. Two bounds are easy to see: ${ids.length} tasks need at least ⌈${ids.length}/${cap}⌉ = ${Math.ceil(ids.length/cap)} hours, and a longest chain needs ${top}.${goal>low?` Here even they are not enough: the tasks that must come early do not fit into the first hours.`:''}`,
+            `${t} ч при ${cap} парах рук, и короче плана нет. Две оценки видны сразу: ${ids.length} делам нужно не меньше ⌈${ids.length}/${cap}⌉ = ${Math.ceil(ids.length/cap)} ч, а самой длинной цепи — ${top}.${goal>low?` Здесь даже их мало: дела, которые должны идти рано, не помещаются в первые часы.`:''}`)
+        :par?tx(`${t} hours, and no schedule is faster: the tasks of a longest chain must run one after another, and that chain has ${t} tasks. Hour k runs exactly the tasks of depth k − 1; no two of them are comparable (an antichain). The busiest hour needs ${Math.max(...sizes)} pairs of hands.`,
+            `${t} ч, и быстрее нельзя: дела самой длинной цепи идут строго друг за другом, а дел в ней ${t}. В час k идут ровно дела глубины k − 1; никакие два из них не сравнимы (антицепь). Пар рук в самый занятой час нужно: ${Math.max(...sizes)}.`)
         :tx(`${order.join(', ')} is a topological sort: every arrow points forward in the list. It is one of many — at each step any task whose prerequisites are done could have been next.`,
             `${order.join(', ')} — топологическая сортировка: каждая стрелка ведёт вперёд по списку. Она одна из многих: на каждом шаге можно было взять любое дело, у которого всё нужное уже сделано.`)):null,
       fin?h('div',{class:'row',style:'margin-top:12px'},h('button',{class:'btn primary',type:'button',onclick:done},T('Continue →','Дальше →'))):null);
   }
-  api.onHint=()=>{if(fin)return null;hint=true;render();return T('The outlined tasks can start now: every arrow into them comes from a finished task, or there is no such arrow.','Обведённые дела можно начинать: каждая стрелка в них идёт из законченного дела, либо таких стрелок нет.');};
+  api.onHint=()=>{if(fin)return null;hint=true;render();
+    return mode==='chain'?T('A longest chain ends in a task of the largest depth — they are outlined. Walk back from one of them against the arrows, always to a task that is one level less deep.','Самая длинная цепь кончается в деле наибольшей глубины — они обведены. Иди от такого дела назад против стрелок, каждый раз в дело на один уровень менее глубокое.')
+      :mode==='anti'?T('Tasks with no arrow into them (outlined) are never comparable with each other. You may also swap one of them for a task that none of the others leads to.','Дела, в которые не входит ни одна стрелка (обведены), никогда не сравнимы между собой. Можно и заменить одно из них делом, в которое не ведёт ни одно из остальных.')
+      :cap?T('The outlined tasks are a good choice for this hour: they keep the fewest hours for the rest.','Обведённые дела — хороший выбор на этот час: после них на остальное уходит меньше всего часов.')
+      :T('The outlined tasks can start now: every arrow into them comes from a finished task, or there is no such arrow.','Обведённые дела можно начинать: каждая стрелка в них идёт из законченного дела, либо таких стрелок нет.');};
   render();
 };
 
@@ -3213,7 +3271,7 @@ TOYS.layers={name:T('Depth, chains and schedules','Глубина, цепи и �
       h('div',{class:'scroll',style:'margin-top:8px'},dagSvg(G,{badge:v=>String(dep[v])})),
       h('table',{class:'t',style:'margin-top:8px'},h('tbody',{},lay.map((L,k)=>h('tr',{},h('td',{},h('b',{},tx(`hour ${k+1}`,`час ${k+1}`)),h('span',{class:'ru'},tx(` · depth ${k}`,` · глубина ${k}`))),h('td',{},L.map(v=>h('span',{class:'chip'},G.v[v][2]?`${v} ${tr(G.v[v][2])}`:v))))))),
       h('div',{class:'why'},tx(`The number on a task is its depth: the length of the longest chain that ends there, not counting the task itself. A longest chain is ${chain.join(' → ')} (${T_} tasks), so ${T_} hours are needed — and enough: run the tasks of depth k − 1 in hour k. Tasks of equal depth are never comparable; the busiest hour needs ${Math.max(...lay.map(L=>L.length))} pairs of hands.`,
-        `Число у дела — его глубина: длина самой длинной цепи, которая в нём кончается, не считая его самого. Самая длинная цепь — ${chain.join(' → ')} (дел: ${T_}), поэтому нужно ${T_} ч — и этого хватает: в час k делай дела глубины k − 1. Дела одной глубины никогда не сравнимы; в самый занятой час нужно ${Math.max(...lay.map(L=>L.length))} пар рук.`)));
+        `Число у дела — его глубина: длина самой длинной цепи, которая в нём кончается, не считая его самого. Самая длинная цепь — ${chain.join(' → ')} (дел: ${T_}), поэтому нужно ${T_} ч — и этого хватает: в час k делай дела глубины k − 1. Дела одной глубины никогда не сравнимы; пар рук в самый занятой час нужно: ${Math.max(...lay.map(L=>L.length))}.`)));
   }
   draw();}};
 
@@ -3520,6 +3578,7 @@ island({id:'mod',name:'Modulo Lagoon',ru:'Лагуна остатков',ch:T('C
 /* ===== Ch. 10 · directed graphs and scheduling ===== */
 FIGS.sail=()=>dagSvg(DAGS.sail);
 FIGS.div12=()=>dagSvg(DAGS.div12);
+FIGS.refit=()=>dagSvg(DAGS.refit);
 island({id:'dag',name:'Arrow Atoll',ru:'Атолл стрелок',ch:T('Ch. 10 · Directed graphs and scheduling','Гл. 10 · Орграфы и расписания'),c:'dag',x:190,y:1140,levels:[
   {id:'dag1',title:T('Walk, path or cycle?','Маршрут, путь или цикл?'),type:'mc',fig:'g1',lab:['walks'],
    brief:T('A walk follows the arrows and may repeat vertices. Each line lists the vertices of a would-be walk in this digraph. What is it?','Маршрут идёт по стрелкам и может повторять вершины. В каждой строке — вершины предполагаемого маршрута в этом орграфе. Что это?'),
@@ -3585,6 +3644,21 @@ island({id:'dag',name:'Arrow Atoll',ru:'Атолл стрелок',ch:T('Ch. 10 
      {q:T('How many tasks are in a largest antichain?','Сколько дел в самой большой антицепи?'),a:3,why:T('For example {A, B, C} or {D, E, F}. Four is impossible: the chains A-D-G-H, B-E and C-F cover everything, and an antichain takes at most one task from each chain.','Например, {A, B, C} или {D, E, F}. Четыре невозможно: цепи A-D-G-H, B-E и C-F покрывают всё, а антицепь берёт из каждой цепи не больше одного дела.')},
      {q:T('Only TWO pairs of hands. How many hours are needed at least?','Всего ДВЕ пары рук. Сколько часов нужно как минимум?'),a:5,why:T('Four hours would put H in hour 4 and G, F in hour 3. Then A, B, C, D and E must all be done in hours 1 and 2 — five tasks for four slots. Five hours work: AB, CD, EF, G, H.','За четыре часа H попадает в час 4, а G и F — в час 3. Тогда A, B, C, D и E надо успеть за часы 1 и 2 — пять дел на четыре места. За пять часов получается: AB, CD, EF, G, H.')},
     ]}]},
+  {id:'dag7',title:T('Exam drill: thirteen tasks','Экзаменационная тренировка: тринадцать дел'),type:'stages',lab:['layers'],
+   brief:T('The final exam likes one picture with four questions: a chain of maximum size, an antichain of a given size, a schedule of minimum time, and the best schedule with only a few processors. Careful: the rows of the picture are not the hours.','На итоговом экзамене любят одну картинку с четырьмя вопросами: цепь максимального размера, антицепь заданного размера, расписание минимального времени и лучшее расписание при малом числе процессоров. Осторожно: ряды картинки — это не часы.'),
+   lesson:T('Depth first: write next to every task the length of the longest chain that ends there. A longest chain gives the minimum parallel time; the tasks of one depth form an antichain and one hour of the schedule. With p processors and n tasks you need at least ⌈n/p⌉ hours and at least the longest chain — then show a schedule that reaches the bound.','Сначала глубина: подпиши у каждого дела длину самой длинной цепи, которая в нём кончается. Самая длинная цепь даёт минимальное параллельное время; дела одной глубины образуют антицепь и один час расписания. При p процессорах и n делах нужно не меньше ⌈n/p⌉ часов и не меньше длины самой длинной цепи — после этого предъяви расписание, которое достигает оценки.'),
+   stages:[
+    {type:'topo',dag:'refit',mode:'chain',tag:T('Chain','Цепь')},
+    {type:'topo',dag:'refit',mode:'anti',size:5,tag:T('Antichain','Антицепь')},
+    {type:'topo',dag:'refit',mode:'par',tag:T('Parallel schedule','Параллельное расписание')},
+    {type:'topo',dag:'refit',mode:'par',cap:3,tag:T('Three processors','Три процессора')},
+    {type:'mc',tag:T('Count the hands','Посчитай руки'),fig:'refit',qs:[
+     {q:T('Why can three pairs of hands not finish these 13 tasks in 4 hours?','Почему три пары рук не закончат эти 13 дел за 4 часа?'),opts:[T('4 hours give at most 4·3 = 12 tasks','За 4 часа выйдет не больше 4·3 = 12 дел'),T('The longest chain has 5 tasks','В самой длинной цепи 5 дел'),T('The largest antichain has 6 tasks','В самой большой антицепи 6 дел'),T('Two arrows end in M','В M входят две стрелки')],a:0,
+      wrong:{1:T('The longest chain has 4 tasks: A, F, J, M for example.','В самой длинной цепи 4 дела: например, A, F, J, M.'),2:T('True, but a large antichain only says that many tasks COULD run together.','Верно, но большая антицепь говорит лишь, что много дел МОГУТ идти вместе.')},
+      why:T('n tasks and p processors need at least ⌈n/p⌉ hours: here ⌈13/3⌉ = 5. On the exam, give this bound and then a schedule that reaches it.','n делам при p процессорах нужно не меньше ⌈n/p⌉ часов: здесь ⌈13/3⌉ = 5. На экзамене приведи эту оценку, а затем расписание, которое её достигает.')},
+     {q:T('And with FOUR pairs of hands, what is the minimum?','А при ЧЕТЫРЁХ парах рук каков минимум?'),opts:[T('4 hours: the longest chain needs 4, and ⌈13/4⌉ = 4','4 часа: самой длинной цепи нужно 4, и ⌈13/4⌉ = 4'),T('5 hours, as with three','5 часов, как при трёх'),T('3 hours, because 13/4 < 4','3 часа, потому что 13/4 < 4'),T('6 hours','6 часов')],a:0,
+      why:T('Both bounds give 4, and it works: A, B, C, D — then E, F, G, H — then I, J, K, L — then M.','Обе оценки дают 4, и это достижимо: A, B, C, D — затем E, F, G, H — затем I, J, K, L — затем M.')},
+    ]}]},
   {id:'dag6',title:T('Boss: the divisor clock','Босс: часы делителей'),type:'stages',boss:true,
    brief:T('The numbers 1 … 12 are tasks; a must be done before b when b / a is a prime. Schedule them with unlimited hands, then answer five questions.','Числа 1 … 12 — это дела; a надо сделать раньше b, когда b / a — простое. Составь расписание без ограничения на руки, затем ответь на пять вопросов.'),
    lesson:T('Minimum parallel time = longest chain. The tasks of equal depth form an antichain. Dilworth: a DAG with n vertices has a chain longer than t or an antichain of at least n/t vertices.','Минимальное параллельное время равно длине самой длинной цепи. Дела одной глубины образуют антицепь. Дилуорс: в DAG с n вершинами есть цепь длиннее t или антицепь не меньше чем из n/t вершин.'),
@@ -3638,6 +3712,28 @@ island({id:'dag',name:'Arrow Atoll',ru:'Атолл стрелок',ch:T('Ch. 10 
     {q:T('How many rankings does this tournament have?','Сколько рейтингов у этого турнира?'),opts:['3','1','6','24'],a:0,why:T('D lost to everyone, so D is last. Before D comes the cycle A → B → C → A, started anywhere: ABCD, BCAD, CABD.','D проиграл всем, поэтому он последний. Перед ним — цикл A → B → C → A, начатый с любого места: ABCD, BCAD, CABD.')},
     {q:T('A tournament digraph that is a DAG has …','У турнирного орграфа, который является DAG, …'),opts:[T('exactly one ranking','ровно один рейтинг'),T('no ranking','нет рейтинга'),T('at least two rankings','не меньше двух рейтингов'),T('one ranking per player','по рейтингу на игрока')],a:0,why:T('At least one, like every finite tournament. And two different rankings would close a cycle: where they first differ, one of the two players beat the other, yet comes later in the other ranking.','Хотя бы один — как у любого конечного турнира. А два разных рейтинга замкнули бы цикл: там, где они впервые расходятся, один из двух игроков победил другого, но в другом рейтинге стоит позже.')},
     {q:T('Induction step: remove a player x, rank the others as v₁ … vₙ, and put x back …','Шаг индукции: убери игрока x, расставь остальных как v₁ … vₙ и верни x …'),opts:[T('just before the first vᵢ that x beat, or at the end if x beat nobody','прямо перед первым vᵢ, которого x победил, или в конец, если x никого не победил'),T('always at the front','всегда в начало'),T('always at the end','всегда в конец'),T('just after the last vᵢ that x beat','сразу после последнего vᵢ, которого x победил')],a:0,why:T('Then the player in front of x beat x (x did not beat him), and x beat the player behind him.','Тогда игрок перед x победил x (ведь x его не победил), а x победил игрока за собой.')},
+   ]},
+  {id:'dag_s3',title:T('Sixteen subsets, few hands','Шестнадцать подмножеств и мало рук'),type:'mc',kind:'book problem',book:'Problem 10.23',lab:['layers'],
+   brief:T('The tasks are the 16 subsets of {1, 2, 3, 4}; A must be finished before B whenever A ⊂ B. A longest chain has 5 sets, so with enough hands the work takes 5 hours. What if there are fewer hands?','Дела — это 16 подмножеств {1, 2, 3, 4}; A надо закончить раньше B всякий раз, когда A ⊂ B. В самой длинной цепи 5 множеств, так что при достаточном числе рук работа занимает 5 часов. А если рук меньше?'),
+   lesson:T('In a schedule of minimum time a task on a longest chain has no freedom: it runs in the hour of its depth. Here every set lies on a longest chain, so 5 hours put all six 2-element sets into hour 3. With fewer hands, count: ∅ and {1, 2, 3, 4} each run alone, and the other 14 tasks share the hours in between.','В расписании минимального времени у дела на самой длинной цепи нет свободы: оно идёт в час своей глубины. Здесь каждое множество лежит на самой длинной цепи, поэтому 5 часов отправляют все шесть двухэлементных множеств в час 3. Когда рук меньше, считай: ∅ и {1, 2, 3, 4} идут в одиночку, а остальные 14 дел делят часы между ними.'),
+   qs:[
+    {q:T('The plan takes 5 hours. In which hour does {1, 2} run?','План занимает 5 часов. В какой час идёт {1, 2}?'),opts:[T('hour 3','час 3'),T('hour 2 or hour 3','час 2 или час 3'),T('any hour from 2 to 4','любой час от 2 до 4'),T('hour 2','час 2')],a:0,why:T('∅ ⊂ {1} ⊂ {1, 2} ⊂ {1, 2, 3} ⊂ {1, 2, 3, 4} is a chain of five tasks in five hours: each gets exactly one hour, in this order.','∅ ⊂ {1} ⊂ {1, 2} ⊂ {1, 2, 3} ⊂ {1, 2, 3, 4} — цепь из пяти дел на пять часов: каждому достаётся ровно один час, в этом порядке.')},
+    {q:T('So how many pairs of hands does a 5-hour plan need?','Сколько же пар рук нужно пятичасовому плану?'),opts:['6','4','5','16'],a:0,why:T('All six 2-element sets run in hour 3. None contains another, so six pairs of hands can do them together.','Все шесть двухэлементных множеств идут в час 3. Ни одно не содержит другого, так что шесть пар рук сделают их вместе.')},
+    {q:T('With FIVE pairs of hands, what is the minimum time?','Каково минимальное время при ПЯТИ парах рук?'),opts:[T('6 hours','6 часов'),T('5 hours','5 часов'),T('7 hours','7 часов'),T('8 hours','8 часов')],a:0,why:T('Five hours need six hands. Six hours work: one pair {a, b} waits until hour 4 and runs next to the two triples that do not contain it; the other two triples follow in hour 5, and {1, 2, 3, 4} in hour 6.','Пяти часам нужно шесть пар рук. За шесть получается: одна пара {a, b} ждёт до часа 4 и идёт рядом с двумя тройками, которые её не содержат; две другие тройки — в час 5, а {1, 2, 3, 4} — в час 6.')},
+    {q:T('With FOUR pairs of hands?','А при ЧЕТЫРЁХ парах рук?'),opts:[T('6 hours','6 часов'),T('7 hours','7 часов'),T('5 hours','5 часов'),T('8 hours','8 часов')],a:0,why:T('Hour 1: ∅. Hour 2: the four singletons. Hour 3: {1, 2}, {1, 3}, {2, 3}, {1, 4}. Hour 4: {1, 2, 3}, {2, 4}, {3, 4}. Hour 5: the other three triples. Hour 6: {1, 2, 3, 4}. And five hours are impossible even with five hands.','Час 1: ∅. Час 2: четыре одноэлементных. Час 3: {1, 2}, {1, 3}, {2, 3}, {1, 4}. Час 4: {1, 2, 3}, {2, 4}, {3, 4}. Час 5: остальные три тройки. Час 6: {1, 2, 3, 4}. А пяти часов не хватает даже при пяти парах рук.')},
+    {q:T('With THREE pairs of hands?','А при ТРЁХ парах рук?'),opts:[T('7 hours','7 часов'),T('6 hours','6 часов'),T('8 hours','8 часов'),T('5 hours','5 часов')],a:0,why:T('∅ and {1, 2, 3, 4} each run alone: 2 hours. The other 14 tasks need at least ⌈14/3⌉ = 5 more. Seven can be reached: singletons {1}, {2}, {3} — then {1, 2}, {1, 3}, {2, 3} — then {4} and {1, 2, 3} — then the pairs with 4 — then the triples with 4.','∅ и {1, 2, 3, 4} идут в одиночку: 2 часа. Остальным 14 делам нужно ещё не меньше ⌈14/3⌉ = 5. Семь достижимо: {1}, {2}, {3} — затем {1, 2}, {1, 3}, {2, 3} — затем {4} и {1, 2, 3} — затем пары с 4 — затем тройки с 4.')},
+   ]},
+  {id:'dag_s4',title:T('DAGs without end','DAG без конца'),type:'mc',kind:'book problem',book:'Problem 10.42',
+   brief:T('Infinite DAGs keep the definitions but lose the guarantees. D: the natural numbers, with an edge a → b when b is a multiple of a and b ≠ a. D′: the same rule on the integers from 2 on.','Бесконечные DAG сохраняют определения, но теряют гарантии. D: натуральные числа с ребром a → b, когда b кратно a и b ≠ a. D′: то же правило на целых числах начиная с 2.'),
+   lesson:T('Minimal: not reachable from any other vertex. Minimum: every other vertex is reachable from it. Maximal and maximum are the mirror images. A finite DAG always has minimal and maximal vertices and a topological sort; an infinite one need not.','Минимальный: не достижим ни из какой другой вершины. Наименьший: из него достижима любая другая вершина. Максимальный и наибольший — зеркальные понятия. У конечного DAG всегда есть минимальные и максимальные вершины и топологическая сортировка; у бесконечного их может не быть.'),
+   qs:[
+    {q:T('Which number is the minimum of D?','Какое число — наименьший элемент D?'),opts:['1','0','2',T('there is none','его нет')],a:0,why:T('Every natural number is a multiple of 1, so everything is reachable from 1.','Любое натуральное число кратно 1, так что из 1 достижимо всё.')},
+    {q:T('Which number is the maximum of D?','Какое число — наибольший элемент D?'),opts:['0','1',T('the largest prime','наибольшее простое'),T('there is none','его нет')],a:0,why:T('0 = a·0 is a multiple of every a, so 0 is reachable from every other number.','0 = a·0 кратно любому a, поэтому 0 достижим из любого другого числа.')},
+    {q:T('Which set is an infinite chain in D′?','Какое множество — бесконечная цепь в D′?'),opts:['{2, 4, 8, 16, …}',T('the primes','простые числа'),'{2, 3, 4, 5, …}','{6, 10, 15}'],a:0,why:T('Each power of 2 divides the next one. The primes are the opposite, an infinite antichain: no prime divides another.','Каждая степень двойки делит следующую. Простые числа — наоборот, бесконечная антицепь: ни одно простое не делит другое.')},
+    {q:T('What are the minimal elements of D′?','Каковы минимальные элементы D′?'),opts:[T('exactly the primes','в точности простые числа'),T('only 2','только 2'),T('there are none','их нет'),T('the even numbers','чётные числа')],a:0,why:T('m is minimal when no other number from 2 on divides it.','m минимально, когда его не делит никакое другое число начиная с 2.')},
+    {q:T('Does D′ have a minimum?','Есть ли в D′ наименьший элемент?'),opts:[T('No: it would have to divide both 2 and 3','Нет: он должен был бы делить и 2, и 3'),T('Yes: 2','Да: 2'),T('Yes: every prime is one','Да: каждое простое'),T('Yes: 1','Да: 1')],a:0,why:T('A minimum reaches every other vertex. Here there are many minimal elements and no minimum.','Из наименьшего достижима любая другая вершина. Здесь минимальных элементов много, а наименьшего нет.')},
+    {q:T('What are the maximal elements of D′?','Каковы максимальные элементы D′?'),opts:[T('there are none: from m there is always an edge to 2m','их нет: из m всегда есть ребро в 2m'),T('the primes','простые числа'),'0',T('the powers of 2','степени двойки')],a:0,why:T('In D the number 0 closed everything off. Without it every number has a larger multiple.','В D всё замыкал 0. Без него у каждого числа есть большее кратное.')},
+    {q:T('The integers ℤ with the edges k → k + 1 form a DAG. It has …','Целые числа ℤ с рёбрами k → k + 1 образуют DAG. У него …'),opts:[T('no minimal element and no topological sort','нет ни минимального элемента, ни топологической сортировки'),T('the minimal element 0','минимальный элемент 0'),T('a cycle','есть цикл'),T('exactly one topological sort','ровно одна топологическая сортировка')],a:0,why:T('Every k is reachable from k − 1. And a list that starts with some k has no place for k − 1 in front of it.','Каждое k достижимо из k − 1. А в списке, который начинается с некоторого k, для k − 1 нет места перед ним.')},
    ]},
 ]);
 
